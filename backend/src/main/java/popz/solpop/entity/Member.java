@@ -21,8 +21,8 @@ public class Member {
   @Column(name = "mem_id")
   private Integer memberId;
 
-  @Column(name = "mem_user_id")
-  private String userId;
+  @Column(name = "mem_user_name") // SSAFY 금융 API // 로그인 할 때 쓰는 아이디
+  private String userName;
 
   @Column(name = "mem_pw")
   private String password;
@@ -46,9 +46,18 @@ public class Member {
   @Column(name = "mem_last_login_at")
   private LocalDateTime lastLoginAt;
 
+  @Column(name = "mem_user_id")  // SSAFY 금융 API // 이메일
+  private String userId;
+
+  @Column(name = "user_key") // SSAFY 금융 API
+  private String userKey;
+
+
   @ManyToOne
   @JoinColumn(name = "level_id")
   private Level level;
+
+
 
 
 

@@ -64,4 +64,7 @@ public class Store {
   @OneToOne(mappedBy = "store")
   private Raffle raffle;
 
+  @OneToMany(mappedBy = "store")
+  private List<Like> likeList;
+
 }

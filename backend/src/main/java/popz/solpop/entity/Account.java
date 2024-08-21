@@ -25,8 +25,4 @@ public class Account {
   @Column(name = "account_no")
   private String accountNo;
 
-  @Column(name = "account_balance")
-  private int accountBalance;
-
-
 }
