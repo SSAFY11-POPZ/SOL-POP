@@ -1,5 +1,7 @@
 package popz.solpop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +22,9 @@ public class Raffle {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer raffleId;
 
+  @Column(name = "raffle_name")
+  private String raffleName;
+
   @Column(name = "raffle_start_date")
   private LocalDateTime raffleStartDate;
 
@@ -32,6 +37,9 @@ public class Raffle {
   @Column(name = "raffle_detail")
   private String raffleDetail;
 
+  @Column(name = "raffle_thumbnail_url")
+  private String raffleThumbnailUrl;
+
   @Column(name = "raffle_price")
   private long rafflePrice;
 
@@ -43,10 +51,12 @@ public class Raffle {
 
   @OneToOne
   @JoinColumn(name = "store_id")
+  @JsonManagedReference
   private Store store;
 
 
   // 참조
   @OneToMany(mappedBy = "raffle")
+  @JsonBackReference
   private List<EnterRaffle> enterRaffleList;
 }

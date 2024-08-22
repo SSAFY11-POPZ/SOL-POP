@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 //@RequestMapping("/api/v1/")
-public class LikeController {
+public class HeartController {
 
-    private static final Logger logger = LoggerFactory.getLogger(LikeController.class);
+    private static final Logger logger = LoggerFactory.getLogger(HeartController.class);
 
 
 }

@@ -2,6 +2,8 @@ package popz.solpop.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,10 +24,12 @@ public class EnterRaffle {
 
   @ManyToOne
   @JoinColumn(name = "mem_id")
+  @JsonManagedReference
   private Member member;
 
   @ManyToOne
   @JoinColumn(name = "raffle_id")
+  @JsonManagedReference
   private Raffle raffle;
 
 

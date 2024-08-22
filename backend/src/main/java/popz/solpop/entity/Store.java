@@ -1,5 +1,6 @@
 package popz.solpop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,7 @@ public class Store {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "store_id")
-  private Integer id;
+  private Integer storeId;
 
   @Column(name = "store_name")
   private String storeName;
@@ -44,8 +45,8 @@ public class Store {
   @Column(name = "store_capacity")
   private Integer storeCapacity;
 
-  @Column(name = "store_thumnail_url")
-  private String thumnailUrl;
+  @Column(name = "store_thumbnail_url")
+  private String storeThumbnailUrl;
 
   @Column(name = "store_price")
   private Integer storePrice;
@@ -56,15 +57,26 @@ public class Store {
 
   // 참조
   @OneToMany(mappedBy = "store")
+  @JsonBackReference
   private List<Image> imageList;
 
   @OneToMany(mappedBy = "store")
+  @JsonBackReference
   private List<Reservation> reservationList;
 
   @OneToOne(mappedBy = "store")
+  @JsonBackReference
   private Raffle raffle;
 
   @OneToMany(mappedBy = "store")
-  private List<Like> likeList;
+  @JsonBackReference
+  private List<Heart> heartList;
+
+
+  public interface StoreCard {
+    Integer getStoreId();
+    String getStoreName();
+    String getStoreThumbnailUrl();
+  }
 
 }

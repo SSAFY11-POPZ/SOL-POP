@@ -1,5 +1,7 @@
 package popz.solpop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,20 +12,23 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "like")
-public class Like {
+@Table(name = "heart")
+public class Heart {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "like_id")
-  private Integer likeId;
+  @Column(name = "heart_id")
+  private Integer heartId;
 
   @ManyToOne
   @JoinColumn(name = "mem_id", nullable = false)
+  @JsonManagedReference
   private Member member;
 
   @ManyToOne
   @JoinColumn(name = "store_id", nullable = false)
+  @JsonManagedReference
   private Store store;
+
 
 }

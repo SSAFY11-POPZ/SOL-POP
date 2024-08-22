@@ -19,7 +19,7 @@ public class Level {
   private Integer levelId;
 
   @Column(name = "level_name")
-  private Integer levelName;
+  private String levelName;
 
   @Column(name = "level_discount_rate")
   private Integer discountRate;
