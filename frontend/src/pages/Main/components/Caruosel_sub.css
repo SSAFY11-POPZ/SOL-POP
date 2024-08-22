@@ -1,0 +1,45 @@
+.sub-carousel-container {
+  width: 100%; /* 가로폭을 전체로 설정 */
+  height: auto; /* 자동 높이 설정 */
+  margin-bottom: 20px; /* 메인 캐러셀과의 간격 조정 */
+  overflow: hidden; /* 불필요한 스크롤 제거 */
+}
+
+.slide-with-image .slide-image {
+  width: 18px; 
+  height: 18px;
+}
+
+.sub-carousel-container .swiper-wrapper {
+  height: 80px;
+}
+
+.sub-carousel-container .sub_Swiper1 {
+  height: 80px;
+}
+
+.sub_SwiperSlide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 75px;
+  height: 40px;
+  border: 2px solid #ccc;
+  border-radius: 20px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+}
+
+.sub_SwiperSlide.active {
+  border: 2px solid #0066ff;
+  background-color: #ffffff;
+  color: #0066ff;
+  font-weight: bold;
+}
+
+.sub_SwiperSlide.active span {
+  color: #0066ff;
+}
+
