@@ -1,7 +1,12 @@
-import React from "react";
+import React from 'react';
+import ImageGrid from './ImageGrid';
 
 const SearchPage = () => {
-  return <div></div>;
+  return (
+    <div>
+      <ImageGrid />
+    </div>
+  );
 };
 
 export default SearchPage;
