@@ -6,7 +6,7 @@ import { RecoilRoot } from "recoil";
 import MainPage from "./pages/Main/MainPage";
 import RankPage from "./pages/Rank/RankPage";
 import CalendarPage from "./pages/Calendar/CalendarPage";
-import SearchPage from "./pages/Search/SearchPage";
+import SearchPage from "./pages/Search/SearchPage"; 
 import DetailPage from "./pages/Detail/DetailPage";
 import RafflePage from "./pages/Raffle/RafflePage";
 import RaffleDetailPage from './pages/Raffle/RaffleDetailPage';
