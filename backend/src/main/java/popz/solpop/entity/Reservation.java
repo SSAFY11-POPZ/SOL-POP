@@ -1,5 +1,6 @@
 package popz.solpop.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,10 +24,12 @@ public class Reservation {
 
   @ManyToOne
   @JoinColumn(name = "store_id")
+  @JsonManagedReference
   private Store store;
 
   @ManyToOne
   @JoinColumn(name = "mem_id")
+  @JsonManagedReference
   private Member member;
 
   @Column(name = "reserve_date")

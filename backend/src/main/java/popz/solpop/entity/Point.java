@@ -1,5 +1,6 @@
 package popz.solpop.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,9 +21,9 @@ public class Point {
   @Column(name = "point_id")
   private Integer pointId;
 
-
   @OneToOne
   @JoinColumn(name = "mem_id")
+  @JsonManagedReference
   private Member member;
 
   @Column(name = "point_used_at")

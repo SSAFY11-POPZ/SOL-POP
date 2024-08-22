@@ -1,5 +1,7 @@
 package popz.solpop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +22,9 @@ public class Account {
 
   @ManyToOne
   @JoinColumn(name = "mem_id", nullable = false)
+  @JsonManagedReference
   private Member member;
+
 
   @Column(name = "account_no")
   private String accountNo;

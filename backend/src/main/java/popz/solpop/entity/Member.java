@@ -1,5 +1,7 @@
 package popz.solpop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,12 +16,13 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(name = "member")
 public class Member {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "mem_id")
-  private Integer memberId;
+  private Integer memId;
 
   @Column(name = "mem_user_name") // SSAFY 금융 API // 로그인 할 때 쓰는 아이디
   private String userName;
@@ -36,7 +39,6 @@ public class Member {
   @Column(name = "token")
   private String token;
 
-
   @Column(name = "mem_created_at")
   private LocalDateTime createdAt;
 
@@ -52,9 +54,9 @@ public class Member {
   @Column(name = "user_key") // SSAFY 금융 API
   private String userKey;
 
-
   @ManyToOne
   @JoinColumn(name = "level_id")
+  @JsonManagedReference
   private Level level;
 
 
@@ -63,17 +65,22 @@ public class Member {
 
   // 참조
   @OneToMany(mappedBy = "member")
+  @JsonBackReference
   private List<EnterRaffle> enterRaffleList;
 
   @OneToMany(mappedBy = "member")
-  private List<Like> likeList;
+  @JsonBackReference
+  private List<Heart> heartList;
 
   @OneToMany(mappedBy = "member")
+  @JsonBackReference
   private List<Reservation> reservationList;
 
   @OneToMany(mappedBy = "member")
+  @JsonBackReference
   private List<Account> accountList;
 
   @OneToOne(mappedBy = "member")
+  @JsonBackReference
   private Point point;
 }

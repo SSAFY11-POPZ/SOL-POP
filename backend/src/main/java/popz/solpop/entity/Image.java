@@ -1,5 +1,7 @@
 package popz.solpop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +21,7 @@ public class Image {
 
   @ManyToOne
   @JoinColumn(name = "store_id", nullable = false)
+  @JsonManagedReference
   private Store store;
 
   @Column(name = "image_url")
