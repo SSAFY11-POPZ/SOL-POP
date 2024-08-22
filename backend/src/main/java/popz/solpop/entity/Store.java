@@ -1,6 +1,7 @@
 package popz.solpop.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -57,7 +58,7 @@ public class Store {
 
   // 참조
   @OneToMany(mappedBy = "store")
-  @JsonBackReference
+  @JsonManagedReference
   private List<Image> imageList;
 
   @OneToMany(mappedBy = "store")

@@ -67,10 +67,14 @@ public class StoreController {
     }
 
     @GetMapping("/{storeId}")
-    public ResponseEntity<Store> getStoreByStoreId(
+    public ResponseEntity<?> getDetailByStoreId(
             @PathVariable Integer storeId
     ) {
-        return ResponseEntity.ok(storeService.getStoreByStoreId(storeId));
+        Store store = storeService.getStoreByStoreId(storeId);
+        if (store == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(store);
     }
 
     @GetMapping("/search")
