@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 
@@ -33,13 +35,15 @@ public class Reservation {
   private Member member;
 
   @Column(name = "reserve_date")
-  private Date reserveDate;
+  private LocalDate reserveDate;
 
   @Column(name = "reserve_time")
-  private Date reserveTime;
+  private LocalTime reserveTime;
 
-  @Column(name = "is_enter")
+
+  @Column(name = "is_enter", columnDefinition = "BOOLEAN DEFAULT false")
   private Boolean isEnter;
 
+  
 
 }
