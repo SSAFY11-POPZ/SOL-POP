@@ -109,5 +109,13 @@ public class TokenProvider {
         principal.setUserName(userName);
         return new UsernamePasswordAuthenticationToken(principal, token,  Collections.emptyList());
     }
+
+    public String getUserName(String token) {
+        Map<String, Object> tokenData = validateJwt(token);
+        if (tokenData == null) {
+            return null;
+        }
+        return (String) tokenData.get("userName");
+    }
 }
 

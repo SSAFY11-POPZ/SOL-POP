@@ -30,11 +30,14 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
     @Query("SELECT store FROM Store store WHERE store.storeStartDate <= :dateTime AND store.storeEndDate >= :dateTime")
     List<Store> findStoresByDateTime(LocalDateTime dateTime);
 
-    @Query("SELECT store FROM Store store WHERE store.storeEndDate >= NOW()")
+    @Query("SELECT store FROM Store store WHERE store.storeStartDate <= NOW() AND store.storeEndDate >= NOW()")
     List<Store.StoreCard> findAllByStoreEndDateBefore();
 
     @Query("SELECT store FROM Store store WHERE store.storeName LIKE %:query%")
     List<Store.StoreCard> findStoreByQuery(String query);
 
     Optional<Store> findStoreByStoreId(Integer storeId);
+
+    @Query("SELECT COUNT(heart) FROM Heart heart WHERE heart.store.storeId = :storeId")
+    int countHeartsByStoreId(Integer storeId);
 }

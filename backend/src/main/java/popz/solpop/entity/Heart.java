@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Setter
 @Getter
 @Data
@@ -29,6 +32,16 @@ public class Heart {
   @JoinColumn(name = "store_id", nullable = false)
   @JsonManagedReference
   private Store store;
+
+  public interface MyHeart {
+    StoreInfo getStore();
+
+    interface StoreInfo {
+      Integer getStoreId();
+      String getStoreName();
+      String getStorePlace();
+    }
+  }
 
 
 }

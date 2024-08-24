@@ -45,4 +45,7 @@ public class StoreService {
   public Store getStoreByStoreId(Integer storeId) {
     return storeRepository.findStoreByStoreId(storeId).orElse(null);
   }
+  public int getHeartCountByStoreId(Integer storeId) {
+    return storeRepository.countHeartsByStoreId(storeId);
+  }
 }
