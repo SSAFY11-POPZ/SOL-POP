@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import "./ImageGrid.css";
-
 import image1 from '@/assets/SearchImg/1.png';
 import image2 from '@/assets/SearchImg/2.png';
 import image3 from '@/assets/SearchImg/3.jpg';
@@ -48,39 +46,39 @@ const ImageGrid = () => {
     setFilteredImages(filtered);
   }, [searchTerm]);
 
-  const handleSearch = () => {
-    const filtered = imageData.filter(item =>
-      item.popUpStoreNo.includes(searchTerm)
-    );
-    setFilteredImages(filtered);
-  };
-
   const handleImageClick = (id) => {
     navigate(`/detail/${id}`);
   };
 
   return (
-    <div className="image-grid-container">
-      <div className="search-bar">
+    <div className="flex flex-col min-h-screen p-2 w-full pb-14 box-border">
+      <div className="flex justify-center items-center mb-4">
         <input
           type="text"
           placeholder="검색"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full p-1 border border-gray-300 rounded-md outline-none"
         />
-        {/* <button className="search-button" onClick={handleSearch}>
-          Search
-        </button> */}
       </div>
-      <div className="image-grid">
+      <div className="grid grid-cols-3 gap-1 flex-grow content-start">
         {filteredImages.length > 0 ? (
           filteredImages.map((item) => (
-            <div className="image-grid-item" key={item.id} onClick={() => handleImageClick(item.id)}>
-              <img src={item.imageUrl} alt={item.title} />
+            <div
+              className="relative text-center h-36 overflow-hidden rounded-sm cursor-pointer transition-transform duration-300 hover:scale-105"
+              key={item.id}
+              onClick={() => handleImageClick(item.id)}
+            >
+              <img
+                src={item.imageUrl}
+                alt={item.title}
+                className="w-full h-full object-cover rounded-sm"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 transition-opacity duration-300 hover:opacity-100 rounded-sm"></div>
             </div>
           ))
         ) : (
-          <div className="no-results-message">검색 결과가 없습니다.</div>
+          <div className="text-center whitespace-nowrap">검색 결과가 없습니다.</div>
         )}
       </div>
     </div>

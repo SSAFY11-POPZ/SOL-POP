@@ -1,63 +1,108 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
-const LocationTab = ({ address }) => {
+function KakaoMap({ address }) {
+  const mapContainerRef = useRef(null);
+  const [map, setMap] = useState(null);
+  const markerRef = useRef(null);
+  const customOverlayRef = useRef(null);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_KAKAO_API_KEY;
+    const initializeMap = (coords) => {
+      const container = mapContainerRef.current;
+      const options = {
+        center: coords,
+        level: 3,
+      };
 
-    const script = document.createElement('script');
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&libraries=services`;
-    script.async = true;
+      const newMap = new window.kakao.maps.Map(container, options);
+      setMap(newMap);
 
-    script.onload = () => {
-      if (window.kakao && window.kakao.maps) {
-        const geocoder = new window.kakao.maps.services.Geocoder();
+      const marker = new window.kakao.maps.Marker({
+        map: newMap,
+        position: coords,
+      });
+      markerRef.current = marker;
 
-        geocoder.addressSearch(address, (result, status) => {
-          if (status === window.kakao.maps.services.Status.OK) {
-            const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+      const content = `
+        <div style="
+          padding: 10px;
+          border-radius: 8px;
+          background-color: rgba(255, 255, 255, 0.9);
+          box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+          text-align: center;
+          font-size: 14px;
+          color: #333;
+          font-weight: bold;
+          ">
+          <p>${address}</p>
+        </div>`;
 
-            const container = document.getElementById('map');
-            const options = {
-              center: coords,
-              level: 3,
-              mapTypeId: window.kakao.maps.MapTypeId.ROADMAP,
-            };
+      const customOverlay = new window.kakao.maps.CustomOverlay({
+        map: newMap,
+        position: coords,
+        content: content,
+        yAnchor: 2.2,
+        clickable: true,
+      });
+      customOverlayRef.current = customOverlay;
 
-            const map = new window.kakao.maps.Map(container, options);
+      window.kakao.maps.event.addListener(marker, 'click', () => {
+        if (customOverlay.getMap()) {
+          customOverlay.setMap(null);
+        } else {
+          customOverlay.setMap(newMap);
+        }
+      });
+    };
 
+    const loadKakaoMapScript = () => {
+      const script = document.createElement('script');
+      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=5041c243f01f8929fde8aa993ae8fe51&autoload=false&libraries=services`;
+      script.async = true;
 
-            const markerImage = new window.kakao.maps.MarkerImage(
-              'public/custom-marker.png',
-              new window.kakao.maps.Size(64, 69),
-              { offset: new window.kakao.maps.Point(27, 69) }
-            );
-
-            const marker = new window.kakao.maps.Marker({
-              map: map,
-              position: coords,
-              image: markerImage,
-            });
-
-            const infowindow = new window.kakao.maps.InfoWindow({
-              content: `<div style="width:150px;text-align:center;padding:6px 0;">${address}</div>`
-            });
-            infowindow.open(map, marker);
-          } else {
-            console.error("Geocode was not successful for the following reason: " + status);
-          }
+      script.onload = () => {
+        window.kakao.maps.load(() => {
+          const geocoder = new window.kakao.maps.services.Geocoder();
+          geocoder.addressSearch(address, (result, status) => {
+            if (status === window.kakao.maps.services.Status.OK) {
+              const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+              initializeMap(coords);
+            } else {
+              console.error('주소 검색 결과를 가져오지 못했습니다.');
+            }
+          });
         });
-      }
+      };
+
+      script.onerror = () => {
+        console.error('Failed to load Kakao maps SDK.');
+      };
+
+      document.head.appendChild(script);
+
+      return () => {
+        document.head.removeChild(script);
+      };
     };
 
-    document.head.appendChild(script);
+    if (!window.kakao || !window.kakao.maps) {
+      loadKakaoMapScript();
+    } else if (!map) {
+      const geocoder = new window.kakao.maps.services.Geocoder();
+      geocoder.addressSearch(address, (result, status) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+          initializeMap(coords);
+        } else {
+          console.error('주소 검색 결과를 가져오지 못했습니다.');
+        }
+      });
+    }
+  }, [address, map]);
 
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, [address]);
+  return (
+    <div ref={mapContainerRef} style={{ width: '100%', height: '320px' }}></div>
+  );
+}
 
-  return <div id="map" style={{ width: '100%', height: '400px' }}></div>;
-};
-
-export default LocationTab;
+export default KakaoMap;

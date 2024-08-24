@@ -3,14 +3,14 @@ import { NavLink } from 'react-router-dom';
 import './Navbar.css';
 
 
-import homeIcon from '@/assets/NavImg/Home.png';
-import homeIconWhite from '@/assets/NavImg/Home_white.png';
-import searchIcon from '@/assets/NavImg/Search_black.png';
-import searchIconWhite from '@/assets/NavImg/Search_white.png';
-import favIcon from '@/assets/NavImg/Fav.png';
-import favIconWhite from '@/assets/NavImg/Fav_white.png';
-import profileIcon from '@/assets/NavImg/Person.png';
-import profileIconWhite from '@/assets/NavImg/Person_white.png';
+import homeIcon from '@/assets/NavImg/Home.svg';
+import homeIconWhite from '@/assets/NavImg/Home_white.svg';
+import searchIcon from '@/assets/NavImg/Search_black.svg';
+import searchIconWhite from '@/assets/NavImg/Search_white.svg';
+import favIcon from '@/assets/NavImg/Fav.svg';
+import favIconWhite from '@/assets/NavImg/Fav_white.svg';
+import profileIcon from '@/assets/NavImg/Person.svg';
+import profileIconWhite from '@/assets/NavImg/Person_white.svg';
 
 const Navbar = () => {
   return (
