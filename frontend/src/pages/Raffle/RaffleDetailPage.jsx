@@ -2,6 +2,8 @@ import {useState, useEffect} from 'react'
 import {useParams} from 'react-router-dom'
 import RaffleCard from './components/RaffleCard';
 import UpperBar from './components/UpperBar';
+import RaffleTest from '../../assets/RaffleImg/RaffleTest.png'
+
 
 const RaffleDetailPage = () => {
   const {raffleId} = useParams();
@@ -14,7 +16,7 @@ const RaffleDetailPage = () => {
         "title": "LMC x BE@RBRICK 100% & 400%",
         "price": 100,
         "participants": 1,
-        "thumbnail": "src/assets/raffle_test.png"
+        "thumbnail": RaffleTest
       })
   },[])
 

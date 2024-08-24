@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import axios from "axios";
 
 import UpperBar from "./components/UpperBar";
-import raffleBanner from '../../assets/raffleBanner.png'
+import RaffleBanner from '../../assets/RaffleImg/RaffleBanner.png';
+import RaffleTest from '../../assets/RaffleImg/RaffleTest.png'
 import RaffleCard from "./components/RaffleCard";
+
 
 const RafflePage = () => {
   const [raffles, setRaffles] = useState([]);
@@ -36,70 +38,70 @@ const RafflePage = () => {
         "title": "LMC x BE@RBRICK 100% & 400%",
         "price": 100,
         "participants": 1,
-        "thumbnail": "src/assets/raffle_test.png"
+        "thumbnail": RaffleTest
       },
       {
         "pk": 2,
         "title": "Nike Air Jordan 1",
         "price": 200,
         "participants": 2,
-        "thumbnail": "src/assets/raffle_test.png"
+        "thumbnail": RaffleTest
       },
       {
         "pk": 3,
         "title": "Supreme Box Logo Tee",
         "price": 150,
         "participants": 3,
-        "thumbnail": "src/assets/raffle_test.png"
+        "thumbnail": RaffleTest
       },
       {
         "pk": 4,
         "title": "Adidas Yeezy Boost 350 V2",
         "price": 250,
         "participants": 4,
-        "thumbnail": "src/assets/raffle_test.png"
+        "thumbnail": RaffleTest
       },
       {
         "pk": 5,
         "title": "Apple AirPods Pro",
         "price": 300,
         "participants": 5,
-        "thumbnail": "src/assets/raffle_test.png"
+        "thumbnail": RaffleTest
       },
       {
         "pk": 6,
         "title": "Nintendo Switch",
         "price": 400,
         "participants": 6,
-        "thumbnail": "src/assets/raffle_test.png"
+        "thumbnail": RaffleTest
       },
       {
         "pk": 7,
         "title": "Sony PlayStation 5",
         "price": 500,
         "participants": 7,
-        "thumbnail": "src/assets/raffle_test.png"
+        "thumbnail": RaffleTest
       },
       {
         "pk": 8,
         "title": "Samsung Galaxy S21",
         "price": 600,
         "participants": 8,
-        "thumbnail": "../src/assets/raffle_test.png"
+        "thumbnail": RaffleTest
       },
       {
         "pk": 9,
         "title": "Google Pixel 6",
         "price": 700,
         "participants": 9,
-        "thumbnail": "src/assets/raffle_test.png"
+        "thumbnail": RaffleTest
       },
       {
         "pk": 10,
         "title": "MacBook Pro 16-inch",
         "price": 800,
         "participants": 10,
-        "thumbnail": "src/assets/raffle_test.png"
+        "thumbnail": RaffleTest
       }
     ]);
   },[]);
@@ -119,7 +121,7 @@ const RafflePage = () => {
   return (
     <div className="my-3">
       <UpperBar />
-      <img src={raffleBanner} alt="래플페이지 배너" className="aspect-[1/1] w-full rounded-lg my-3 "/>
+      <img src={RaffleBanner} alt="래플페이지 배너" className="aspect-[1/1] w-full my-3 "/>
       <div className="h-8 px-4 justify-start items-center gap-3 inline-flex text-lg">
           <p onClick={() => handleRaffles("all")} className={`${selected == "all" ? "text-black font-bold" :"text-slate-700" }`}>전체</p>
           <p onClick={() => handleRaffles("available")} className={`${selected == "available" ? "text-black font-bold" :"text-slate-700"}`}>응모 가능한 래플</p>
