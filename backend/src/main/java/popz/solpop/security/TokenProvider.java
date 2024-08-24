@@ -74,6 +74,7 @@ public class TokenProvider {
     public Map<String,Object> validateJwt(String token) {
         try {
             // 서명 확인을 통한 JWT 검증
+
             SignedJWT signedJWT = SignedJWT.parse(token);
             JWSVerifier verifier = new MACVerifier(SECURITY_KEY.getBytes());
             if (signedJWT.verify(verifier)) {

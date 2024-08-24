@@ -39,7 +39,6 @@ public class Member {
   @Column(name = "token")
   private String token;
 
-
   @Column(name = "mem_created_at")
   private LocalDateTime createdAt;
 

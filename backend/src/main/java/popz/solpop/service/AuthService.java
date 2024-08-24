@@ -83,32 +83,35 @@ public class AuthService {
     public Response<LoginResponse> login(Login dto, HttpServletResponse response) {
         String userName = dto.getUserName();
         String password = dto.getPassword();
-        String userType = dto.getUserType();
+
+        // 아이디로 멤버 조회
         Member memberEntity = memberRepository.findMemberByUserName(userName);
-        try {
-            if (memberEntity == null) {
-                return Response.setFailed("입력하신 아이디로 등록된 계정이 존재하지 않습니다.");
-            }
 
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String encodedPassword = memberEntity.getPassword();
-
-            if (!passwordEncoder.matches(password, encodedPassword)) {
-                return Response.setFailed("비밀번호가 일치하지 않습니다.");
-            }
-        } catch (Exception e) {
-            return Response.setFailed("데이터베이스 연결에 실패했습니다.");
+        // 사용자 검증
+        if (memberEntity == null) {
+            return Response.setFailed("입력하신 아이디로 등록된 계정이 존재하지 않습니다.");
         }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = memberEntity.getPassword();
+
+        if (!passwordEncoder.matches(password, encodedPassword)) {
+            return Response.setFailed("비밀번호가 일치하지 않습니다.");
+        }
+
 
         int accessTokenDuration = 3600; // 1 hour
         int refreshTokenDuration = 1209600; // 2 weeks
+
+        // 토큰 생성
         String accessToken = tokenProvider.createAccessToken(userName, accessTokenDuration);
         String refreshToken = tokenProvider.createRefreshToken(userName, refreshTokenDuration);
 
+        // 리프레시토큰 데이터베이스에 저장
         memberEntity.setToken(refreshToken);
         memberRepository.saveAndFlush(memberEntity);
 
-        // Refresh Token 쿠키 설정
+        // 리프레시토큰 쿠키 설정
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true); // JavaScript에서 접근 불가
         refreshTokenCookie.setSecure(true); // HTTPS를 사용하는 경우에만 적용
@@ -116,11 +119,12 @@ public class AuthService {
         refreshTokenCookie.setMaxAge(refreshTokenDuration);
         response.addCookie(refreshTokenCookie);
 
-        if (accessToken == null || refreshToken == null) {
+        if (accessToken == null) {
             return Response.setFailed("토큰 생성에 실패했습니다.");
         }
 
-        LoginResponse loginResponseDto = new LoginResponse(accessToken, accessTokenDuration, refreshToken, refreshTokenDuration, memberEntity);
+        // 클라이언트에세 엑세스토큰만 전달
+        LoginResponse loginResponseDto = new LoginResponse(accessToken, accessTokenDuration);
 
         return Response.setSuccessData("로그인에 성공했습니다.", loginResponseDto);
     }

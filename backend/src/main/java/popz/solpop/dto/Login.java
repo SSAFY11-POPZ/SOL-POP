@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Login {
-    @NotBlank   // *spring-boot-starter-validation, 필수값
+    @NotBlank
     private String userName;  // mem_user_name에 해당
     @NotBlank
     private String password;  // mem_pw에 해당
