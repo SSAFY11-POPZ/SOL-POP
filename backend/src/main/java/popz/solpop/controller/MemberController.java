@@ -5,14 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import popz.solpop.dto.MemberId;
 import popz.solpop.entity.Heart;
+import popz.solpop.entity.Member;
 import popz.solpop.entity.Reservation;
+import popz.solpop.security.TokenProvider;
 import popz.solpop.service.HeartService;
+import popz.solpop.service.MemberService;
 import popz.solpop.service.ReservationService;
 
 import java.util.List;
@@ -28,18 +28,28 @@ public class MemberController {
     private ReservationService reservationService;
     @Autowired
     private HeartService heartService;
+    @Autowired
+    private TokenProvider tokenProvider;
+    @Autowired
+    private MemberService memberService;
 
     @GetMapping("/reservation")
     public List<Reservation.MyReservation> getMyReservation(
-            @RequestBody MemberId memId
-            ) {
-        return reservationService.getMyReservations(memId.getMemId());
+            @RequestHeader("Authorization") String token
+    ) {
+
+        String userName = tokenProvider.getUserName(token.substring(7));
+        Member member = memberService.getMemberByUserName(userName);
+        return reservationService.getMyReservations(member.getMemId());
     }
     @GetMapping("/heart")
     public List<Heart.MyHeart> getMyHeart(
-            @RequestBody MemberId memId
+            @RequestHeader("Authorization") String token
     ) {
-        return heartService.getMyHeart(memId.getMemId());
+
+        String userName = tokenProvider.getUserName(token.substring(7));
+        Member member = memberService.getMemberByUserName(userName);
+        return heartService.getMyHeart(member.getMemId());
     }
 
 }

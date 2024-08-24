@@ -9,6 +9,7 @@
     import org.springframework.web.bind.annotation.*;
     import popz.solpop.dto.CheckReservation;
     import popz.solpop.dto.ReserveUnavailable;
+    import popz.solpop.dto.StoreDetailResponse;
     import popz.solpop.dto.StoreIdDTO;
     import popz.solpop.entity.Heart;
     import popz.solpop.entity.Member;
@@ -82,7 +83,9 @@
             if (store == null) {
                 return ResponseEntity.notFound().build();
             }
-            return ResponseEntity.ok(store);
+            int heartCount = storeService.getHeartCountByStoreId(storeId);
+
+            return ResponseEntity.ok(new StoreDetailResponse(store, heartCount));
         }
 
         @GetMapping("/search")
