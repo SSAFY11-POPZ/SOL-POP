@@ -3,17 +3,20 @@ package popz.solpop.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import popz.solpop.dto.CheckReservation;
 import popz.solpop.dto.ReservationCount;
-import popz.solpop.dto.ReserveAvailable;
+import popz.solpop.dto.ReserveUnavailable;
+import popz.solpop.entity.Member;
 import popz.solpop.entity.Reservation;
 import popz.solpop.entity.Store;
+import popz.solpop.repository.MemberRepository;
 import popz.solpop.repository.ReservationRepository;
 import popz.solpop.repository.StoreRepository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional
@@ -23,20 +26,49 @@ public class ReservationService {
   private ReservationRepository reservationRepository;
   @Autowired
   private StoreRepository storeRepository;
+  @Autowired
+  private MemberRepository memberRepository;
 
-  public List<ReserveAvailable> getReserveAvailability(Integer storeId, LocalDate date) {
+  public ReserveUnavailable getReserveAvailability(Integer storeId, LocalDate date) {
     Store store = storeRepository.findById(storeId).orElseThrow();
     List<ReservationCount> reservations = reservationRepository.findByStoreAndReserveDate(storeId, date);
-    List<ReserveAvailable> reserveAvailableList = new ArrayList<>();
+
+    ReserveUnavailable reserveUnavailable = new ReserveUnavailable();
+    reserveUnavailable.setReserveDate(date);
+    List<LocalTime> unavailableTime = new ArrayList<>();
     for (ReservationCount r : reservations) {
-      if (r.getCount() >= store.getStoreCapacity()) {
+      if (r.getCount() < store.getStoreCapacity()) { // 예약 불가능한 시간대 return
         continue;
       }
-      ReserveAvailable reserveAvailable = new ReserveAvailable();
-      reserveAvailable.setReserveDate(r.getReserveDate());
-      reserveAvailable.setReserveTime(r.getReserveTime());
-      reserveAvailableList.add(reserveAvailable);
+      unavailableTime.add(r.getReserveTime());
     }
-    return reserveAvailableList;
+    reserveUnavailable.setUnavailableTime(unavailableTime);
+
+    return reserveUnavailable;
+  }
+
+  public boolean existsByStoreIdAndMemId(Integer storeId, Integer memId) {
+    Store store = storeRepository.findById(storeId).orElseThrow();
+    Member member = memberRepository.findById(memId).orElseThrow();
+    return reservationRepository.existsByStoreAndMember(store, member);
+  }
+
+  public CheckReservation checkReservation(Integer storeId, Integer memId) {
+    return reservationRepository.checkReservation(storeId, memId);
+  }
+
+  public Reservation saveReservation(Integer storeId, Integer memberId, LocalDate reserveDate, LocalTime reserveTime) {
+    Store store = storeRepository.findById(storeId).orElseThrow();
+    Member member = memberRepository.findById(memberId).orElseThrow();
+    Reservation reservation = new Reservation();
+    reservation.setStore(store);
+    reservation.setMember(member);
+    reservation.setReserveDate(reserveDate);
+    reservation.setReserveTime(reserveTime);
+    return reservationRepository.save(reservation);
+  }
+
+  public List<Reservation.MyReservation> getMyReservations(Integer memId) {
+    return reservationRepository.findMyReservation(memId);
   }
 }

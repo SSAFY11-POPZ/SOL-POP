@@ -31,8 +31,8 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                         // 래플 응모, 팝업 스토어 예약 시 로그인 유무 확인
-                        .requestMatchers("/api/v1/raffle/request/**").authenticated()
-                        .requestMatchers("/api/v1/store/*/reserve/request").authenticated()
+                        .requestMatchers("/api/v1/raffle111/request/**").authenticated()
+                        .requestMatchers("/api/v1/store111/*/reserve/request").authenticated()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

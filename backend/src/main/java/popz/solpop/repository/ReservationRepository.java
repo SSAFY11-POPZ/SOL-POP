@@ -5,12 +5,14 @@
     import org.springframework.data.jpa.repository.JpaRepository;
     import org.springframework.data.jpa.repository.Query;
     import org.springframework.stereotype.Repository;
+    import popz.solpop.dto.CheckReservation;
     import popz.solpop.dto.ReservationCount;
+    import popz.solpop.entity.Member;
     import popz.solpop.entity.Reservation;
+    import popz.solpop.entity.Store;
 
     import java.time.LocalDate;
     import java.util.List;
-    import java.util.Objects;
 
     @Repository
     @Transactional
@@ -21,5 +23,16 @@
                 + "GROUP BY r.reserveTime")
         List<ReservationCount> findByStoreAndReserveDate(Integer storeId, LocalDate date);
 
+        boolean existsByStoreAndMember(Store store, Member member);
+
+
+        @Query("SELECT new popz.solpop.dto.CheckReservation(r.store.storeId, r.member.memId, r.reserveDate, r.reserveTime) " +
+                "FROM Reservation r WHERE r.store.storeId = :storeId AND r.member.memId = :memId")
+        CheckReservation checkReservation(Integer storeId, Integer memId);
+
+        @Query("SELECT r FROM Reservation r "
+                + "WHERE r.member.memId = :memId AND r.store.storeEndDate >= NOW()"
+                + "ORDER BY r.reserveDate DESC, r.reserveTime DESC")
+        List<Reservation.MyReservation> findMyReservation(Integer memId);
 
     }

@@ -4,13 +4,15 @@
     import org.slf4j.Logger;
     import org.slf4j.LoggerFactory;
     import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
+    import popz.solpop.dto.CheckReservation;
     import popz.solpop.dto.HeartRequest;
-    import popz.solpop.dto.ReserveAvailable;
+    import popz.solpop.dto.MemberId;
+    import popz.solpop.dto.ReserveUnavailable;
     import popz.solpop.entity.Heart;
     import popz.solpop.entity.Member;
-    import popz.solpop.entity.Reservation;
     import popz.solpop.entity.Store;
     import popz.solpop.service.HeartService;
     import popz.solpop.service.MemberService;
@@ -18,6 +20,8 @@
     import popz.solpop.service.StoreService;
 
     import java.time.LocalDate;
+    import java.time.LocalDateTime;
+    import java.time.LocalTime;
     import java.util.List;
 
     @Slf4j
@@ -109,13 +113,45 @@
 
         // 예약 현황
         @GetMapping("{storeId}/reserve")
-        public List<ReserveAvailable> getReserveAvailability(
+        public ReserveUnavailable getReserveAvailability(
                 @PathVariable Integer storeId,
                 @RequestParam LocalDate date
         ) {
-
-
             return reservationService.getReserveAvailability(storeId, date);
+        }
+
+        @PostMapping("/{storeId}/reserve/request")
+        public ResponseEntity<?> requestReservation(
+                @PathVariable Integer storeId,
+                @RequestParam("datetime") LocalDateTime dateTime,
+                @RequestBody MemberId memberId
+        ) {
+            LocalDate reserveDate = dateTime.toLocalDate();
+            LocalTime reserveTime = dateTime.toLocalTime();
+            Integer memId = memberId.getMemId();
+
+
+            boolean alreadyBooked = reservationService.existsByStoreIdAndMemId(storeId, memId);
+            if (alreadyBooked) {
+                CheckReservation checkReservation = reservationService.checkReservation(storeId, memId);
+                return ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .body("Already booked : "
+                                + checkReservation.getReserveDate()
+                                + "T"
+                                + checkReservation.getReserveTime());
+            }
+            Store store = storeService.getStoreByStoreId(storeId);
+            LocalDateTime start = store.getStoreStartDate();
+            LocalDateTime end = store.getStoreEndDate();
+
+            if (start.isAfter(dateTime) || end.isBefore(dateTime) || start.toLocalTime().isAfter(reserveTime) || end.toLocalTime().isBefore(reserveTime)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This Schedule Cannot Be Reserved");
+            }
+
+
+            reservationService.saveReservation(storeId, memId, reserveDate, reserveTime);
+            return ResponseEntity.ok().build();
         }
 
     }
