@@ -83,7 +83,7 @@ public class AuthService {
     public Response<LoginResponse> login(Login dto, HttpServletResponse response) {
         String userName = dto.getUserName();
         String password = dto.getPassword();
-//        String userType = dto.getUserType();
+        String userType = dto.getUserType();
         Member memberEntity = memberRepository.findMemberByUserName(userName);
         try {
             if (memberEntity == null) {
