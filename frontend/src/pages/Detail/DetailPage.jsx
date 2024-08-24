@@ -3,12 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import InfoTab from './components/InfoTab';
 import ReservationTab from './components/ReservationTab';
 import LocationTab from './components/LocationTab';
-import image1 from '@/assets/SearchImg/1.png';
-import image2 from '@/assets/SearchImg/2.png';
-import image3 from '@/assets/SearchImg/3.jpg';
-import image4 from '@/assets/SearchImg/4.jpg';
-import image5 from '@/assets/SearchImg/5.jpeg';
-import image6 from '@/assets/SearchImg/6.jpg';
+import image1 from '../../../public/SearchImg/1.png';
+import image2 from '../../../public/SearchImg/2.png';
+import image3 from '../../../public/SearchImg/3.jpg';
+import image4 from '../../../public/SearchImg/4.jpg';
+import image5 from '../../../public/SearchImg/5.jpeg';
+import image6 from '../../../public/SearchImg/6.jpg';
 
 const images = {
   1: image1,

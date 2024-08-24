@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import image1 from '@/assets/SearchImg/1.png';
-import image2 from '@/assets/SearchImg/2.png';
-import image3 from '@/assets/SearchImg/3.jpg';
-import image4 from '@/assets/SearchImg/4.jpg';
-import image5 from '@/assets/SearchImg/5.jpeg';
-import image6 from '@/assets/SearchImg/6.jpg';
-import image7 from '@/assets/SearchImg/7.jpg';
-import image8 from '@/assets/SearchImg/8.jpg';
-import image9 from '@/assets/SearchImg/9.jpg';
-import image10 from '@/assets/SearchImg/10.png';
-import image11 from '@/assets/SearchImg/11.jpg';
-import image12 from '@/assets/SearchImg/12.jpg';
-import image13 from '@/assets/SearchImg/13.png';
-import image14 from '@/assets/SearchImg/14.png';
-import image15 from '@/assets/SearchImg/15.jpg';
+import image1 from '../../../public/SearchImg/1.png';
+import image2 from '../../../public/SearchImg/2.png';
+import image3 from '../../../public/SearchImg/3.jpg';
+import image4 from '../../../public/SearchImg/4.jpg';
+import image5 from '../../../public/SearchImg/5.jpeg';
+import image6 from '../../../public/SearchImg/6.jpg';
+import image7 from '../../../public/SearchImg/7.jpg';
+import image8 from '../../../public/SearchImg/8.jpg';
+import image9 from '../../../public/SearchImg/9.jpg';
+import image10 from '../../../public/SearchImg/10.png';
+import image11 from '../../../public/SearchImg/11.jpg';
+import image12 from '../../../public/SearchImg/12.jpg';
+import image13 from '../../../public/SearchImg/13.png';
+import image14 from '../../../public/SearchImg/14.png';
+import image15 from '../../../public/SearchImg/15.jpg';
 
 const ImageGrid = () => {
   const [searchTerm, setSearchTerm] = useState("");

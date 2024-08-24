@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import ReservationModal from './ReservationModal';
-import sampleImage from '@/assets/SearchImg/sampleImage.png'; // 예시 이미지 넣어봄
 
 const ReservationTab = ({ reservationTimes, storeId }) => {
   const [showModal, setShowModal] = useState(false);
@@ -25,7 +24,7 @@ const ReservationTab = ({ reservationTimes, storeId }) => {
         </div>
         <div className="ml-4">
           <img
-            src={sampleImage}
+            src="/SearchImg/sampleImage.png"  // 절대 경로 사용
             alt="성수 파묘 팝업"
             className="w-24 h-20 rounded-md object-cover"
           />
