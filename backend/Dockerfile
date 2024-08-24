@@ -1,9 +1,4 @@
-# OpenJDK 기반의 Spring Boot 앱 Dockerfile
 FROM openjdk:17
-
 WORKDIR /app
-
-COPY target/*.jar app.jar
-
+COPY build/libs/backend-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
-
