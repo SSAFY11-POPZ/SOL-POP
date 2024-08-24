@@ -10,6 +10,8 @@ import RafflePage from "./pages/Raffle/RafflePage";
 import RaffleDetailPage from './pages/Raffle/RaffleDetailPage';
 import ProfilePage from "./pages/Profile/ProfilePage";
 import Navbar from './components/Navbar';
+import LoginPage from './components/Login';
+import RegisterPage from './components/Register';
 
 function App() {
   return (
@@ -41,6 +43,8 @@ const MainLayout = () => {
             <Route path="/raffle/:raffleId" element={<RaffleDetailPage />} />
             <Route path="/detail/:id" element={<DetailPage />} /> {/* 여기서 Navbar 숨기기 */}
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/Login" element={<LoginPage />} />
+            <Route path="/Register" element={<RegisterPage />} />
           </Routes>
         </div>
       </div>

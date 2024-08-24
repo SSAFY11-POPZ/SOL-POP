@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import axios from 'axios';
 
 const ReservationDrawer = ({ onClose, reservationTimes, storeId }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -24,21 +25,15 @@ const ReservationDrawer = ({ onClose, reservationTimes, storeId }) => {
     if (selectedDate && selectedTime) {
       const formattedDate = selectedDate.toISOString().split('T')[0];
       const datetime = `${formattedDate}T${selectedTime}`;
-      const reservationData = {
-        date: formattedDate,
-        time: selectedTime,
-      };
 
       try {
-        const response = await fetch(`/api/v1/store/${storeId}/reserve/request?datetime=${datetime}`, {
-          method: 'POST',
+        const response = await axios.post(`/api/v1/store/${storeId}/reserve/request?datetime=${datetime}`, {}, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(reservationData),
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           alert('예약이 완료되었습니다.');
           onClose();
         } else {
