@@ -19,8 +19,8 @@ public class MemberService {
   @Autowired
   private MemberRepository memberRepository;
 
-  public Member getMemberByMemId(Integer memId) {
-    return memberRepository.findMemberByMemId(memId).orElse(null);
+  public Member getMemberByUserName(String userName) {
+    return memberRepository.findMemberByUserName(userName);
   }
 
   @Autowired

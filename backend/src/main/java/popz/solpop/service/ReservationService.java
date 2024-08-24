@@ -47,9 +47,8 @@ public class ReservationService {
     return reserveUnavailable;
   }
 
-  public boolean existsByStoreIdAndMemId(Integer storeId, Integer memId) {
+  public boolean existsByStoreIdAndMemId(Integer storeId, Member member) {
     Store store = storeRepository.findById(storeId).orElseThrow();
-    Member member = memberRepository.findById(memId).orElseThrow();
     return reservationRepository.existsByStoreAndMember(store, member);
   }
 
@@ -57,15 +56,14 @@ public class ReservationService {
     return reservationRepository.checkReservation(storeId, memId);
   }
 
-  public Reservation saveReservation(Integer storeId, Integer memberId, LocalDate reserveDate, LocalTime reserveTime) {
+  public void saveReservation(Integer storeId, Member member, LocalDate reserveDate, LocalTime reserveTime) {
     Store store = storeRepository.findById(storeId).orElseThrow();
-    Member member = memberRepository.findById(memberId).orElseThrow();
     Reservation reservation = new Reservation();
     reservation.setStore(store);
     reservation.setMember(member);
     reservation.setReserveDate(reserveDate);
     reservation.setReserveTime(reserveTime);
-    return reservationRepository.save(reservation);
+    reservationRepository.save(reservation);
   }
 
   public List<Reservation.MyReservation> getMyReservations(Integer memId) {

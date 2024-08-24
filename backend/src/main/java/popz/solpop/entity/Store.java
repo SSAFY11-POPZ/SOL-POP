@@ -80,4 +80,8 @@ public class Store {
     String getStoreThumbnailUrl();
   }
 
+  public interface StoreId {
+    Integer getStoreId();
+  }
+
 }

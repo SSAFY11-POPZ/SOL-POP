@@ -11,6 +11,7 @@ import popz.solpop.dto.EnterRaffleRequest;
 import popz.solpop.entity.EnterRaffle;
 import popz.solpop.entity.Member;
 import popz.solpop.entity.Raffle;
+import popz.solpop.security.TokenProvider;
 import popz.solpop.service.EnterRaffleService;
 import popz.solpop.service.MemberService;
 import popz.solpop.service.RaffleService;
@@ -32,6 +33,8 @@ public class RaffleController {
     private EnterRaffleService enterRaffleService;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private TokenProvider tokenProvider;
 
 
     @GetMapping("")
@@ -50,10 +53,14 @@ public class RaffleController {
 
     @PostMapping("/request")
     public ResponseEntity<?> enterRaffle(
+            @RequestHeader("Authorization") String token,
             @RequestBody EnterRaffleRequest enterRaffleRequest
         ) {
-
-        Member member = memberService.getMemberByMemId(enterRaffleRequest.getMemId());
+        String userName = tokenProvider.getUserName(token.substring(7));
+        if (userName == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+        Member member = memberService.getMemberByUserName(userName);
         Raffle raffle = raffleService.getRaffleByRaffleId(enterRaffleRequest.getRaffleId());
         if (member == null || raffle == null) {
             return ResponseEntity.badRequest().body("Invalid member or raffle");

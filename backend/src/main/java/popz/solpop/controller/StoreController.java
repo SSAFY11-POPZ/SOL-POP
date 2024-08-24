@@ -8,12 +8,12 @@
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
     import popz.solpop.dto.CheckReservation;
-    import popz.solpop.dto.HeartRequest;
-    import popz.solpop.dto.MemberId;
     import popz.solpop.dto.ReserveUnavailable;
+    import popz.solpop.dto.StoreIdDTO;
     import popz.solpop.entity.Heart;
     import popz.solpop.entity.Member;
     import popz.solpop.entity.Store;
+    import popz.solpop.security.TokenProvider;
     import popz.solpop.service.HeartService;
     import popz.solpop.service.MemberService;
     import popz.solpop.service.ReservationService;
@@ -39,6 +39,8 @@
         private MemberService memberService;
         @Autowired
         private ReservationService reservationService;
+        @Autowired
+        private TokenProvider tokenProvider;
 
 
         @GetMapping("/main/carousel")
@@ -92,11 +94,13 @@
 
         @PostMapping("/heart")
         public ResponseEntity<?> addHeart(
-                @RequestBody HeartRequest heartRequest
+                @RequestBody StoreIdDTO storeIdDTO,
+                @RequestHeader("Authorization") String token
         ) {
 
-            Member member = memberService.getMemberByMemId(heartRequest.getMemId());
-            Store store = storeService.getStoreByStoreId(heartRequest.getStoreId());
+            String userName = tokenProvider.getUserName(token.substring(7));
+            Member member = memberService.getMemberByUserName(userName);
+            Store store = storeService.getStoreByStoreId(storeIdDTO.getStoreId());
 
             if (member == null || store == null) {
                 return ResponseEntity.badRequest().build();
@@ -124,14 +128,17 @@
         public ResponseEntity<?> requestReservation(
                 @PathVariable Integer storeId,
                 @RequestParam("datetime") LocalDateTime dateTime,
-                @RequestBody MemberId memberId
+                @RequestHeader("Authorization") String token
         ) {
+
             LocalDate reserveDate = dateTime.toLocalDate();
             LocalTime reserveTime = dateTime.toLocalTime();
-            Integer memId = memberId.getMemId();
+            String userName = tokenProvider.getUserName(token.substring(7));
 
+            Member member = memberService.getMemberByUserName(userName);
+            Integer memId = member.getMemId();
 
-            boolean alreadyBooked = reservationService.existsByStoreIdAndMemId(storeId, memId);
+            boolean alreadyBooked = reservationService.existsByStoreIdAndMemId(storeId, member);
             if (alreadyBooked) {
                 CheckReservation checkReservation = reservationService.checkReservation(storeId, memId);
                 return ResponseEntity
@@ -150,7 +157,7 @@
             }
 
 
-            reservationService.saveReservation(storeId, memId, reserveDate, reserveTime);
+            reservationService.saveReservation(storeId, member, reserveDate, reserveTime);
             return ResponseEntity.ok().build();
         }
 
