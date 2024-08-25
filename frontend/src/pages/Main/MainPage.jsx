@@ -10,7 +10,6 @@ function MainPage() {
       <Carousel_main 
         spaceBetween={30}
         slidesPerView={1.2}
-        fetchUrl="https://api.example.com/images"
       />
       <div className="button_main1">
         <Buttons_main />
