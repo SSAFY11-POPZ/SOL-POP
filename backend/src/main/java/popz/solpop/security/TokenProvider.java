@@ -84,6 +84,7 @@ public class TokenProvider {
                     return null;
                 }
 
+
                 Map<String, Object> tokenData = new HashMap<>();
                 tokenData.put("userName", signedJWT.getJWTClaimsSet().getSubject());
                 tokenData.put("issuedAt", signedJWT.getJWTClaimsSet().getIssueTime());

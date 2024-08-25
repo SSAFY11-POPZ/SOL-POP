@@ -25,7 +25,6 @@ public class Account {
   @JsonManagedReference
   private Member member;
 
-
   @Column(name = "account_no")
   private String accountNo;
 

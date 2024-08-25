@@ -5,9 +5,11 @@ import popz.solpop.dto.LoginResponse;
 import popz.solpop.dto.Response;
 import popz.solpop.dto.SignUp;
 
+import popz.solpop.entity.Account;
 import popz.solpop.entity.Level;
 import popz.solpop.entity.Member;
 
+import popz.solpop.repository.AccountRepository;
 import popz.solpop.repository.LevelRepository;
 import popz.solpop.repository.MemberRepository;
 import popz.solpop.security.TokenProvider;
@@ -30,11 +32,13 @@ public class AuthService {
     private TokenProvider tokenProvider;
     @Autowired
     private LevelRepository levelRepository;
+    @Autowired
+    private AccountRepository accountRepository;
+
 
     public Response<?> signUp(SignUp dto) {
         String userName = dto.getUserName();
         String password = dto.getPassword();
-        Integer levelId = dto.getLevelId();
 
         try {
             if(memberRepository.existsByUserName(userName)) {
@@ -44,20 +48,9 @@ public class AuthService {
             return Response.setFailed("데이터베이스 연결에 실패했습니다.");
         }
 
-        Level level = levelRepository.findById(levelId)
+        // 회원 가입 시 기본 레벨 설정
+        Level level = levelRepository.findById(1)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid level ID"));
-
-        Member memberEntity = Member.builder()
-                .userName(dto.getUserName())
-                .password(dto.getPassword())
-                .name(dto.getName())
-                .userId(dto.getUserId())
-                .token(dto.getToken())
-                .isAccountLink(dto.getIsAccountLink())
-                .createdAt(LocalDateTime.now())
-                .editedAt(LocalDateTime.now())
-                .level(level)
-                .build();
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String hashedPassword = passwordEncoder.encode(password);
@@ -65,13 +58,36 @@ public class AuthService {
         boolean isPasswordMatch = passwordEncoder.matches(password, hashedPassword);
 
         if(!isPasswordMatch) {
-            return Response.setFailed("암호화에 실패했습니다.");
+            return Response.setFailed("비밀번호 암호화에 실패했습니다.");
         }
+
+        boolean isAccountLink = dto.getAccountNo() != null;
+
+        Member memberEntity = Member.builder()
+                .userName(dto.getUserName())
+                .password(dto.getPassword())
+                .name(dto.getName())
+                .userId(dto.getUserId())
+                .token(dto.getToken())
+                .isAccountLink(isAccountLink)
+                .createdAt(LocalDateTime.now())
+                .editedAt(LocalDateTime.now())
+                .level(level)
+                .build();
+
 
         memberEntity.setPassword(hashedPassword);
 
         try {
-            memberRepository.save(memberEntity);
+            Member member = memberRepository.save(memberEntity);
+
+            // 계좌 정보를 포함한 회원가입 시 계좌 연동
+            if(isAccountLink){
+                Account account = new Account();
+                account.setMember(member);
+                account.setAccountNo(dto.getAccountNo());
+                accountRepository.save(account);
+            }
         } catch (Exception e) {
             return Response.setFailed("데이터베이스 연결에 실패했습니다.");
         }
@@ -123,7 +139,7 @@ public class AuthService {
             return Response.setFailed("토큰 생성에 실패했습니다.");
         }
 
-        // 클라이언트에세 엑세스토큰만 전달
+        // 클라이언트에 엑세스토큰만 전달
         LoginResponse loginResponseDto = new LoginResponse(accessToken, accessTokenDuration);
 
         return Response.setSuccessData("로그인에 성공했습니다.", loginResponseDto);

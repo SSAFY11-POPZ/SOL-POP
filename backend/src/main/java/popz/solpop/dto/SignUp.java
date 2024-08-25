@@ -20,5 +20,5 @@ public class SignUp {
     private LocalDateTime editedAt;
     private LocalDateTime lastLoginAt;
     private Integer levelId;
-
+    private String accountNo;
 }
