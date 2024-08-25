@@ -9,9 +9,9 @@ const Carousel_main = ({ spaceBetween, slidesPerView }) => {
   const [slides, setSlides] = useState([]);
   const [error, setError] = useState(false);
 
-  const baseURL = 'https://asdfwrg'; // 기본 URL을 설정합니다.
+  // const baseURL = 'https://asdfwrg'; // 기본 URL을 설정합니다.
   // const baseURL = 'http://localhost:5173/'; // 기본 URL을 설정합니다.
-  // const baseURL = 'https://solpop.xyz'; // 기본 URL을 설정합니다.
+  const baseURL = 'https://solpop.xyz'; // 기본 URL을 설정합니다.
 
   const fetchUrl = `${baseURL}/api/v1/store/main/carousel`; // 기본 URL에 엔드포인트를 추가합니다.
 
