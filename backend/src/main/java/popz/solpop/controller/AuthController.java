@@ -65,6 +65,7 @@ public class AuthController {
         return Response.setSuccess("로그아웃에 성공했습니다.");
     }
 
+    // 유저 계좌, 유저 키, 이메일, 이름 포함 전달하기
     @GetMapping("/check-token")
     public Response<?> checkToken(@RequestHeader("Authorization") String token) {
         token = token.substring(7);
