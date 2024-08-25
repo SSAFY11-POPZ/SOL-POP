@@ -59,4 +59,17 @@ public class Raffle {
   @OneToMany(mappedBy = "raffle")
   @JsonBackReference
   private List<EnterRaffle> enterRaffleList;
+
+
+  public interface RaffleCard {
+    Integer getRaffleId();
+
+    String getRaffleName();
+
+    String getRaffleThumbnailUrl();
+
+    Integer getRafflePrice();
+
+    Integer getRaffleNumWinners();
+  }
 }

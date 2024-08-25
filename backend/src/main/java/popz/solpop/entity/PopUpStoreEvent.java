@@ -15,7 +15,7 @@ import lombok.*;
 public class PopUpStoreEvent {
 
   @Id
-  private String popUpStoreEventNo;
+  private long popUpStoreEventNo;
   private String popUpStoreEventQualification;
   private String popUpStoreEventDetail;
 

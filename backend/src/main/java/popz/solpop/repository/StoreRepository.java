@@ -37,4 +37,7 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
     List<Store.StoreCard> findStoreByQuery(String query);
 
     Optional<Store> findStoreByStoreId(Integer storeId);
+
+    @Query("SELECT COUNT(heart) FROM Heart heart WHERE heart.store.storeId = :storeId")
+    int countHeartsByStoreId(Integer storeId);
 }

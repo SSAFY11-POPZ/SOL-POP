@@ -54,6 +54,15 @@ public class Member {
   @Column(name = "user_key") // SSAFY 금융 API
   private String userKey;
 
+  @Column(name = "point_balance, nullable = false")
+  private Integer pointBalance;
+
+  @PrePersist
+  public void prePersist() {
+    this.pointBalance = this.pointBalance != null ? this.pointBalance : 0;
+  }
+
+
   @ManyToOne
   @JoinColumn(name = "level_id")
   @JsonManagedReference
@@ -80,7 +89,11 @@ public class Member {
   @JsonBackReference
   private List<Account> accountList;
 
-  @OneToOne(mappedBy = "member")
+  @OneToMany(mappedBy = "member")
   @JsonBackReference
-  private Point point;
+  private List<Point> pointList;
+
+
+
+
 }

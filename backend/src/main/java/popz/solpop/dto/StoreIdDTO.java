@@ -3,7 +3,6 @@ package popz.solpop.dto;
 import lombok.Data;
 
 @Data
-public class HeartRequest {
-    private Integer memId;
+public class StoreIdDTO {
     private Integer storeId;
 }
