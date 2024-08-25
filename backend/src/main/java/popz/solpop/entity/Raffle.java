@@ -67,5 +67,9 @@ public class Raffle {
     String getRaffleName();
 
     String getRaffleThumbnailUrl();
+
+    Integer getRafflePrice();
+
+    Integer getRaffleNumWinners();
   }
 }
