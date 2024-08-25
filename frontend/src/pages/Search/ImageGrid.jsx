@@ -11,25 +11,35 @@ const ImageGrid = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/v1/store/list');
-        console.log(response.data)
-        const data = Array.isArray(response.data) ? response.data : []; // 배열인지 확인 후 설정
+        const response = await axios.get('https://solpop.xyz/api/v1/store/list');
+        const data = Array.isArray(response.data) ? response.data : [];
         setImages(data);
         setFilteredImages(data);
-        console.log(data)
       } catch (error) {
         console.error("Error fetching the data", error);
       }
     };
-    
+
     fetchData();
   }, []);
 
   useEffect(() => {
-    const filtered = images.filter(item =>
-      item.popUpStoreNo.includes(searchTerm)
-    );
-    setFilteredImages(filtered);
+    const fetchFilteredData = async () => {
+      if (searchTerm.trim() === "") {
+        setFilteredImages(images);
+        return;
+      }
+
+      try {
+        const response = await axios.get(`https://solpop.xyz/api/v1/store/search?query=${encodeURIComponent(searchTerm)}`);
+        const data = Array.isArray(response.data) ? response.data : [];
+        setFilteredImages(data);
+      } catch (error) {
+        console.error("Error fetching filtered data", error);
+      }
+    };
+
+    fetchFilteredData();
   }, [searchTerm, images]);
 
   const handleImageClick = (id) => {
@@ -52,12 +62,12 @@ const ImageGrid = () => {
           filteredImages.map((item) => (
             <div
               className="relative text-center h-36 overflow-hidden rounded-sm cursor-pointer transition-transform duration-300 hover:scale-105"
-              key={item.id}
-              onClick={() => handleImageClick(item.id)}
+              key={item.storeId}
+              onClick={() => handleImageClick(item.storeId)}
             >
               <img
                 src={item.storeThumbnailUrl}
-                alt={item.title}
+                alt={item.storeName}
                 className="w-full h-full object-cover rounded-sm"
               />
               <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 transition-opacity duration-300 hover:opacity-100 rounded-sm"></div>

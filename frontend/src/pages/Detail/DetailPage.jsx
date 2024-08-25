@@ -3,21 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import InfoTab from './components/InfoTab';
 import ReservationTab from './components/ReservationTab';
 import LocationTab from './components/LocationTab';
-import image1 from '../../../public/SearchImg/1.png';
-import image2 from '../../../public/SearchImg/2.png';
-import image3 from '../../../public/SearchImg/3.jpg';
-import image4 from '../../../public/SearchImg/4.jpg';
-import image5 from '../../../public/SearchImg/5.jpeg';
-import image6 from '../../../public/SearchImg/6.jpg';
-
-const images = {
-  1: image1,
-  2: image2,
-  3: image3,
-  4: image4,
-  5: image5,
-  6: image6,
-};
+import ReservationDrawer from './components/ReservationModal'; // Import the drawer
+import axios from 'axios';
 
 const DetailPage = () => {
   const { id } = useParams();
@@ -25,20 +12,19 @@ const DetailPage = () => {
   const [detailData, setDetailData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('info');
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // State to manage drawer visibility
 
   useEffect(() => {
     const fetchDetailData = async () => {
-      const data = {
-        id,
-        title: `Image Title ${id}`,
-        popUpStoreImgUrl: images[id],
-        bookmarkCount: 1218,
-        reservationTimes: ['11:00', '14:00', '17:00'],
-        location: '서울시 성동구 성수이로 18길 20 세원정밀 창고',
-      };
-
-      setDetailData(data);
-      setLoading(false);
+      try {
+        const response = await axios.get(`https://solpop.xyz/api/v1/store/${id}`);
+        const data = response.data;
+        setDetailData(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching detail data", error);
+        setLoading(false);
+      }
     };
 
     fetchDetailData();
@@ -57,9 +43,18 @@ const DetailPage = () => {
       case 'info':
         return <InfoTab detailData={detailData} />;
       case 'reservation':
-        return <ReservationTab reservationTimes={detailData.reservationTimes} />;
+        return (
+          <>
+            <ReservationTab 
+              reservationTimes={detailData.store.reservationTimes} 
+              storeId={detailData.store.storeId} 
+              storeName={detailData.store.storeName} 
+              storeThumbnailUrl={detailData.store.storeThumbnailUrl} 
+            />
+          </>
+        );
       case 'location':
-        return <LocationTab address={detailData.location} />;
+        return <LocationTab address={detailData.store.storePlace} />;
       default:
         return null;
     }
@@ -69,12 +64,16 @@ const DetailPage = () => {
     navigate(-1);
   };
 
+  const handleCloseDrawer = () => {
+    setIsDrawerOpen(false);
+  };
+
   return (
     <div className="max-w-lg mx-auto p-4">
       <div className="relative">
         <img
-          src={detailData.popUpStoreImgUrl}
-          alt={detailData.title}
+          src={detailData.store.storeThumbnailUrl}
+          alt={`Thumbnail for ${detailData.store.storeName}`}
           className="w-full h-[300px] object-cover rounded-md"
         />
         <button 
@@ -99,10 +98,10 @@ const DetailPage = () => {
         </button>
       </div>
       <div className="mt-4">
-        <h2 className="text-xl font-bold">{detailData.title}</h2>
+        <h2 className="text-xl font-bold">{detailData.store.storeName}</h2>
         <div className="flex items-center mt-2">
           <span className="text-2xl">🔖</span>
-          <span className="ml-2 text-lg">{detailData.bookmarkCount}</span>
+          <span className="ml-2 text-lg">{detailData.heartCount}</span>
         </div>
         <div className="flex mt-4 space-x-4">
           <button
@@ -128,6 +127,15 @@ const DetailPage = () => {
           {renderContent()}
         </div>
       </div>
+
+      {/* Add ReservationDrawer component */}
+      {isDrawerOpen && (
+        <ReservationDrawer 
+          onClose={handleCloseDrawer}
+          storeId={detailData.store.storeId}
+          storePlace={detailData.store.storePlace} 
+        />
+      )}
     </div>
   );
 };

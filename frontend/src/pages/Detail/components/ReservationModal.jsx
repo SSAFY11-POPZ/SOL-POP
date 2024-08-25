@@ -3,18 +3,48 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import axios from 'axios';
 
-const ReservationDrawer = ({ onClose, reservationTimes, storeId }) => {
+const ReservationDrawer = ({ onClose, storeId }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState('');
   const [isVisible, setIsVisible] = useState(false);
+  const [reserveDate, setReserveDate] = useState(null);
+  const [unavailableTimes, setUnavailableTimes] = useState([]);
 
   useEffect(() => {
-    // 드로워가 열릴 때 슬라이드 애니메이션 시작
+    // Show the drawer with slide animation
     setIsVisible(true);
-  }, []);
+
+    // Fetch the reserveDate and unavailable times from the API
+    const fetchReserveData = async () => {
+      try {
+        const response = await axios.get(`/api/v1/store/${storeId}/reserve?date=${new Date().toISOString().split('T')[0]}`);
+        const data = response.data;
+
+        if (data.reserveDate) {
+          const reserveDate = new Date(data.reserveDate);
+          setReserveDate(reserveDate);
+
+          // Ensure unavailableTime is defined and is an array
+          if (Array.isArray(data.unavailableTime)) {
+            setUnavailableTimes(data.unavailableTime.map(time => time.slice(0, 5))); // "HH:MM" format
+          } else {
+            console.warn('unavailableTime is not an array or is undefined');
+            setUnavailableTimes([]); // Set to an empty array to prevent errors
+          }
+        } else {
+          console.error('reserveDate is missing in the response');
+        }
+      } catch (error) {
+        console.error('Error fetching reserve date and times:', error);
+      }
+    };
+
+    fetchReserveData();
+  }, [storeId]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    setSelectedTime('');
   };
 
   const handleTimeSelect = (time) => {
@@ -24,7 +54,7 @@ const ReservationDrawer = ({ onClose, reservationTimes, storeId }) => {
   const handleReservationSubmit = async () => {
     if (selectedDate && selectedTime) {
       const formattedDate = selectedDate.toISOString().split('T')[0];
-      const datetime = `${formattedDate}T${selectedTime}`;
+      const datetime = `${formattedDate}T${selectedTime}:00`;
 
       try {
         const response = await axios.post(`/api/v1/store/${storeId}/reserve/request?datetime=${datetime}`, {}, {
@@ -48,7 +78,12 @@ const ReservationDrawer = ({ onClose, reservationTimes, storeId }) => {
     }
   };
 
-  // 오전/오후 시간대별 옵션 생성
+  const isTimeUnavailable = (time) => {
+    // Only disable the times on the reserveDate
+    return selectedDate && reserveDate && selectedDate.toDateString() === reserveDate.toDateString() && unavailableTimes.includes(time);
+  };
+
+  // Morning and afternoon times
   const morningTimes = ['11:00', '11:30'];
   const afternoonTimes = ['13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
 
@@ -56,9 +91,9 @@ const ReservationDrawer = ({ onClose, reservationTimes, storeId }) => {
     <div className="fixed inset-0 flex items-end justify-center z-50 bg-black bg-opacity-50">
       <div
         className={`bg-white p-6 rounded-t-2xl shadow-lg w-full max-w-md h-2/3 transform transition-transform duration-300 ${isVisible ? 'translate-y-0' : 'translate-y-full'}`}
-        style={{ maxHeight: '80%', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }} // 스크롤바 숨기기 (Firefox, IE)
+        style={{ maxHeight: '80%', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {/* 스크롤바 숨기기 (Chrome, Safari, Edge) */}
+        {/* Hide scrollbar (for Chrome, Safari, Edge) */}
         <style>
           {`
             ::-webkit-scrollbar {
@@ -75,7 +110,7 @@ const ReservationDrawer = ({ onClose, reservationTimes, storeId }) => {
 
         <div className="text-center mb-4">
           <h3 className="text-lg font-extrabold text-gray-900">
-            6/14 COMING SOON at SEONGSU
+            {reserveDate ? `Available on ${reserveDate.toDateString()}` : 'Loading...'}
           </h3>
         </div>
 
@@ -83,7 +118,8 @@ const ReservationDrawer = ({ onClose, reservationTimes, storeId }) => {
           <Calendar
             onChange={handleDateChange}
             value={selectedDate}
-            className="rounded-lg shadow-md border-gray-200 transform scale-90" // 크기를 축소
+            tileDisabled={({ date }) => false} // Enable all dates
+            className="rounded-lg shadow-md border-gray-200 transform scale-90"
             tileClassName="p-2 hover:bg-blue-100 rounded-lg transition-all duration-200"
           />
         </div>
@@ -92,14 +128,17 @@ const ReservationDrawer = ({ onClose, reservationTimes, storeId }) => {
           <h4 className="text-gray-700 font-semibold mb-3 text-base">시간 선택</h4>
           <div className="mb-2">
             <h5 className="text-gray-600 font-medium mb-2">오전</h5>
-            <div className="grid grid-cols-3 gap-2"> {/* 오후와 동일하게 3열 배치 */}
+            <div className="grid grid-cols-3 gap-2">
               {morningTimes.map((time) => (
                 <button
                   key={time}
                   onClick={() => handleTimeSelect(time)}
+                  disabled={isTimeUnavailable(time)}
                   className={`py-2 px-4 text-sm font-semibold rounded-full transition-colors duration-200 ${
                     selectedTime === time
                       ? 'bg-blue-600 text-white shadow-lg'
+                      : isTimeUnavailable(time)
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                   }`}
                 >
@@ -116,9 +155,12 @@ const ReservationDrawer = ({ onClose, reservationTimes, storeId }) => {
                 <button
                   key={time}
                   onClick={() => handleTimeSelect(time)}
+                  disabled={isTimeUnavailable(time)}
                   className={`py-2 px-4 text-sm font-semibold rounded-full transition-colors duration-200 ${
                     selectedTime === time
                       ? 'bg-blue-600 text-white shadow-lg'
+                      : isTimeUnavailable(time)
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                   }`}
                 >
@@ -131,7 +173,7 @@ const ReservationDrawer = ({ onClose, reservationTimes, storeId }) => {
 
         <button
           onClick={handleReservationSubmit}
-          className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-lg font-semibold rounded-xl shadow-md  duration-300"
+          className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-lg font-semibold rounded-xl shadow-md duration-300"
         >
           예약 신청하기
         </button>

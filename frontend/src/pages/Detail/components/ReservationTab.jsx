@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReservationModal from './ReservationModal';
 
-const ReservationTab = ({ reservationTimes, storeId }) => {
+const ReservationTab = ({ reservationTimes, storeId, storeName, storeThumbnailUrl }) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleReservationClick = () => {
@@ -20,12 +20,12 @@ const ReservationTab = ({ reservationTimes, storeId }) => {
         className="flex items-center p-4 bg-white shadow-md rounded-lg cursor-pointer border border-gray-300"
       >
         <div className="flex-grow text-left">
-          <h3 className="text-lg font-bold">성수 파묘 팝업</h3>
+          <h3 className="text-lg font-bold">{storeName}</h3>
         </div>
         <div className="ml-4">
           <img
-            src="/SearchImg/sampleImage.png"  // 절대 경로 사용
-            alt="성수 파묘 팝업"
+            src={storeThumbnailUrl}
+            alt={storeName}
             className="w-24 h-20 rounded-md object-cover"
           />
         </div>
@@ -36,6 +36,7 @@ const ReservationTab = ({ reservationTimes, storeId }) => {
           onClose={handleCloseModal}
           reservationTimes={reservationTimes}
           storeId={storeId}
+          storeName = {storeName}
         />
       )}
     </div>

@@ -12,6 +12,8 @@ import ProfilePage from "./pages/Profile/ProfilePage";
 import Navbar from './components/Navbar';
 import LoginPage from './components/Login';
 import RegisterPage from './components/Register';
+import RegisterTestPage from './components/RegisterTest';
+import './index.css';
 
 function App() {
   return (
@@ -45,6 +47,7 @@ const MainLayout = () => {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/Login" element={<LoginPage />} />
             <Route path="/Register" element={<RegisterPage />} />
+            <Route path="/RegisterTest" element={<RegisterTestPage />} />
           </Routes>
         </div>
       </div>
