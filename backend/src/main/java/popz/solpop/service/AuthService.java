@@ -154,4 +154,24 @@ public class AuthService {
 
         return Response.setSuccessData("로그인에 성공했습니다.", loginResponseDto);
     }
+
+    @Transactional
+    public Response<?> updatePassword(Member member, String password) {
+
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashedPassword = passwordEncoder.encode(password);
+
+        boolean isPasswordMatch = passwordEncoder.matches(password, hashedPassword);
+
+        if (!isPasswordMatch) {
+            return Response.setFailed("암호화에 실패했습니다.");
+        }
+
+        member.setPassword(hashedPassword);
+
+        return Response.setSuccess("비밀번호가 변경되었습니다.");
+
+    }
+
 }

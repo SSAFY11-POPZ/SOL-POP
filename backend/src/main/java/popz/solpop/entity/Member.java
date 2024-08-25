@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -92,6 +93,7 @@ public class Member {
   @OneToMany(mappedBy = "member")
   @JsonBackReference
   private List<Point> pointList;
+
 
 
 

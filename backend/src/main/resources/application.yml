@@ -12,3 +12,21 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+
+  # SMTP
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
+
+#properties
+props:
+  reset-password-url: ${FrontEndUrl}
