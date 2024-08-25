@@ -28,13 +28,6 @@ public class Image {
   @JsonBackReference
   private Store store;
 
-// DTO 사용하는걸 추천
-//  @Transient
-//  private Integer storeId;  // 직렬화 전용 필드
-//
-//  public Integer getStoreId() {
-//    return this.store != null ? this.store.getStoreId() : null;
-//  }
 
 
 

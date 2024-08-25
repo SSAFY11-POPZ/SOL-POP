@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import popz.solpop.dto.MemberId;
 import popz.solpop.entity.Heart;
 import popz.solpop.entity.Member;
+import popz.solpop.entity.Point;
 import popz.solpop.entity.Reservation;
 import popz.solpop.security.TokenProvider;
 import popz.solpop.service.HeartService;
 import popz.solpop.service.MemberService;
+import popz.solpop.service.PointService;
 import popz.solpop.service.ReservationService;
 
 import java.util.List;
@@ -32,6 +34,8 @@ public class MemberController {
     private TokenProvider tokenProvider;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private PointService pointService;
 
     @GetMapping("/reservation")
     public List<Reservation.MyReservation> getMyReservation(
@@ -51,5 +55,28 @@ public class MemberController {
         Member member = memberService.getMemberByUserName(userName);
         return heartService.getMyHeart(member.getMemId());
     }
+    @GetMapping("/point/balance")
+    public Integer getMyPointBalance(
+            @RequestHeader("Authorization") String token
+    ) {
+
+        String userName = tokenProvider.getUserName(token.substring(7));
+        Member member = memberService.getMemberByUserName(userName);
+        return member.getPointBalance();
+    }
+
+    @GetMapping("/point/usageHistory")
+    public List<Point> getMyPointUsageHistory(
+            @RequestHeader("Authorization") String token
+    ) {
+
+        String userName = tokenProvider.getUserName(token.substring(7));
+        Member member = memberService.getMemberByUserName(userName);
+
+        return pointService.getMyPointUsageHistory(member.getMemId());
+    }
+
+
+
 
 }

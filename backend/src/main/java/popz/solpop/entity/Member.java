@@ -89,9 +89,9 @@ public class Member {
   @JsonBackReference
   private List<Account> accountList;
 
-  @OneToOne(mappedBy = "member")
+  @OneToMany(mappedBy = "member")
   @JsonBackReference
-  private Point point;
+  private List<Point> pointList;
 
 
 

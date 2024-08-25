@@ -1,5 +1,6 @@
 package popz.solpop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,9 +23,9 @@ public class Point {
   @Column(name = "point_id")
   private Integer pointId;
 
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "mem_id")
-  @JsonManagedReference
+  @JsonBackReference
   private Member member;
 
   @Column(name = "point_used_at")
@@ -33,5 +34,9 @@ public class Point {
   @Column(name = "point_place")
   private String pointPlace;
 
+  @PrePersist
+  public void prePersist() {
+      this.pointUsedAt = LocalDateTime.now();
+  }
 
 }

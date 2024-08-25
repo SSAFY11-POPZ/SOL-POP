@@ -46,4 +46,10 @@ public class MemberService {
 
     memberRepository.save(member);
   }
+
+  public Integer chargePoint(Member member, Integer point) {
+
+    member.setPointBalance(member.getPointBalance() + point);
+    return member.getPointBalance();
+  }
 }
