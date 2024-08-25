@@ -1,3 +1,27 @@
+.main-carousel-container {
+  position: relative;
+}
+
+.main_SwiperSlide {
+  position: relative;
+  cursor: pointer;
+}
+
+.main_SwiperSlide img {
+  width: 100%;
+  height: auto;
+}
+
+.store-name-overlay {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* 흰색 글씨에 그림자 추가 */
+  font-size: 1.2rem;
+}
+
+
 .sub-carousel-container {
   width: 100%; /* 가로폭을 전체로 설정 */
   height: auto; /* 자동 높이 설정 */
