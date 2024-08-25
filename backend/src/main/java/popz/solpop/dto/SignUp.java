@@ -15,6 +15,7 @@ public class SignUp {
     private String name;      // mem_name
     private String userId;    // mem_user_id
     private String token;
+    private String userKey; // SSAFY API user_key
     private Boolean isAccountLink;
     private LocalDateTime createdAt;
     private LocalDateTime editedAt;

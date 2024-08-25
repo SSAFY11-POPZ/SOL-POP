@@ -37,11 +37,12 @@ public class AuthService {
 
 
     public Response<?> signUp(SignUp dto) {
-        String userName = dto.getUserName();
+        String userId = dto.getUserId();
+        String userName = parseUserName(userId);
         String password = dto.getPassword();
 
         try {
-            if(memberRepository.existsByUserName(userName)) {
+            if(memberRepository.existsByUserId(userId)) {
                 return Response.setFailed("중복된 아이디가 있습니다.");
             }
         } catch (Exception e) {
@@ -64,11 +65,12 @@ public class AuthService {
         boolean isAccountLink = dto.getAccountNo() != null;
 
         Member memberEntity = Member.builder()
-                .userName(dto.getUserName())
+                .userName(userName)
                 .password(dto.getPassword())
                 .name(dto.getName())
                 .userId(dto.getUserId())
                 .token(dto.getToken())
+                .userKey(dto.getUserKey())
                 .isAccountLink(isAccountLink)
                 .createdAt(LocalDateTime.now())
                 .editedAt(LocalDateTime.now())
@@ -94,6 +96,14 @@ public class AuthService {
 
         return Response.setSuccess("회원 생성에 성공했습니다.");
     }
+
+    private String parseUserName(String email) {
+        if (email == null || !email.contains("@")) {
+            throw new IllegalArgumentException("유효하지 않은 이메일입니다.");
+        }
+        return email.split("@")[0];  // 이메일에서 @ 앞부분을 파싱하여 반환
+    }
+
 
     @Transactional
     public Response<LoginResponse> login(Login dto, HttpServletResponse response) {
