@@ -41,6 +41,17 @@ function App() {
               <Route path="/detail/:id" element={<DetailPage />} />
               {/* 마이페이지 */}
               <Route path="/profile" element={<ProfilePage />} />
+               {/* 내 찜목록 확인 페이지 */}
+              {/* <Route path="/wishlist" element={<WishlistPage />} /> */}
+              {/* 내 전체 예약목록 페이지*/}
+              <Route path="/profile/reservation" element={<ReservationPage />} />
+              {/* 내 예약 상세 페이지*/}
+              <Route path="/profile/reservation/:reserveId" element={<ReserveDetailPage />} />
+              {/* 로그인 페이지 */}
+              <Route path="/login" element={<LoginPage />} />
+              {/* 회원가입 페이지 */}
+              <Route path="/register" element={<RegisterPage />} />
+              
             </Routes>
           </div>
         </div>
