@@ -84,11 +84,11 @@ public class TokenProvider {
                     return null;
                 }
 
-
                 Map<String, Object> tokenData = new HashMap<>();
                 tokenData.put("userId", signedJWT.getJWTClaimsSet().getSubject());
                 tokenData.put("issuedAt", signedJWT.getJWTClaimsSet().getIssueTime());
                 tokenData.put("expiration", expirationTime);
+
                 return tokenData;
             } else {
                 // 서명이 유효하지 않은 경우
@@ -98,6 +98,7 @@ public class TokenProvider {
             return null;
         }
     }
+
     // JWT로부터 Authentication 객체를 생성하는 메서드 추가
     public Authentication getAuthentication(String token) {
         Map<String, Object> tokenData = validateJwt(token);
@@ -116,7 +117,12 @@ public class TokenProvider {
         if (tokenData == null) {
             return null;
         }
-        return (String) tokenData.get("userName");
+
+        String email = (String) tokenData.get("userId");
+        if (email == null || !email.contains("@")) {
+            throw new IllegalArgumentException("유효하지 않은 이메일입니다.");
+        }
+        return email.split("@")[0];  // 이메일에서 @ 앞부분을 파싱하여 반환
     }
 
     public String getUserId(String token) {
