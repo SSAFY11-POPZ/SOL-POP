@@ -3,10 +3,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import { Autoplay, Navigation } from 'swiper/modules';
 import axios from 'axios';
-import './Caruosel_sub.css';
 
 const slideData = [
-  { label: '전체', imagePath: 'src/pages/Main/img/sub1.JPG' },
+  { label: '전체', imagePath: 'src/pages/Main/img/menu.svg' },
   { label: 'SOL' },
   { label: '코스메틱' },
   { label: '더 현대' },
@@ -23,32 +22,86 @@ const defaultImages = [
   { storeThumbnailUrl: 'src/pages/Main/img/subc5.jpg', storeName: 'Default Store 5', storeId: 5 },
 ];
 
+const styles = {
+  swip1: {
+    height: '24px',
+  },
+  storeNameOverlay: {
+    position: 'absolute',
+    bottom: '0px',
+    left: '10px',
+    color: 'white',
+    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
+    fontSize: '1.2rem',
+  },
+  subCarouselContainer: {
+    width: '100%',
+    height: '250px',
+    marginBottom: '20px',
+    overflow: 'hidden',
+  },
+  slideWithImage: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  slideImage: {
+    marginRight: '8px', // 이미지와 텍스트 사이 간격
+  },
+  subSwiper1: {
+    height: '55px',
+  },
+  subSwiperSlide: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '85px',
+    height: '40px',
+    border: '2px solid #ccc',
+    borderRadius: '20px',
+    backgroundColor: '#f9f9f9',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+  },
+  subSwiperSlideActive: {
+    border: '2px solid #0066ff',
+    backgroundColor: '#ffffff',
+    color: '#0066ff',
+    fontWeight: 'bold',
+  },
+  imageWrapper: {
+    position: 'relative',
+    width: '100%',
+    paddingTop: '100%', // Maintain aspect ratio
+  },
+  image: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  }
+};
+
 const Carousel_sub = () => {
   const [images, setImages] = useState(defaultImages);
   const [activeSlide, setActiveSlide] = useState('전체');
 
-  // const baseURL = 'https://asdfwrg'; // 기본 URL을 설정합니다.
-  // const baseURL = 'http://localhost:5173/'; // 기본 URL을 설정합니다.
-  const baseURL = 'https://solpop.xyz'; // 기본 URL을 설정합니다.
-
-
+  const baseURL = 'https://asdfwrg'; // 기본 URL을 설정합니다.
 
   const fetchImages = async (tag) => {
-
-    
-    const fetchUrl = `${baseURL}/api/v1/store/main/slide?keyword=${tag}`; // fetchUrl을 tag에 따라 동적으로 생성
+    const fetchUrl = `${baseURL}/api/v1/store/main/slide?keyword=${tag}`;
     try {
-      const response = await axios.get(fetchUrl); // 동적으로 생성된 fetchUrl을 사용해 GET 요청
+      const response = await axios.get(fetchUrl);
       const data = response.data;
-      // 데이터를 API의 응답 형식에 맞게 처리합니다.
       setImages(data.length ? data : defaultImages);
     } catch (error) {
-      console.error('Error fetching data: 실패 sub_Carousel', error);
-      setImages(defaultImages); // 요청 실패 시 기본 이미지를 설정합니다.
+      console.error(`Error fetching data: 실패 sub_Carousel ${tag}`, error);
+      setImages(defaultImages);
     }
   };
+
   useEffect(() => {
-    // 컴포넌트가 마운트될 때 '전체'로 이미지 조회
     fetchImages('전체');
   }, []);
 
@@ -58,26 +111,27 @@ const Carousel_sub = () => {
   };
 
   const handleImageClick = (storeId) => {
-    window.location.href = `${baseURL}/detail/${storeId}`; // 클릭 시 해당 Store ID로 이동합니다.
+    window.location.href = `${baseURL}/detail/${storeId}`;
   };
 
   return (
-    <div className="sub-carousel-container">
-      <Swiper
-        className='sub_Swiper1'
+    <div style={styles.subCarouselContainer}>
+      {/* 첫 번째 Swiper: slidesPerView는 기본값 */}
+      <Swiper 
+        style={styles.subSwiper1}
         spaceBetween={15}
-        slidesPerView={'auto'}
+        slidesPerView={'auto'} // 또는 다른 값으로 설정 가능
       >
         {slideData.map((slide, index) => (
           <SwiperSlide
             key={index}
-            className={`sub_SwiperSlide ${activeSlide === slide.label ? 'active' : ''}`}
             onClick={() => handleSlideClick(slide.label)}
+            style={activeSlide === slide.label ? { ...styles.subSwiperSlide, ...styles.subSwiperSlideActive } : styles.subSwiperSlide}
           >
             {slide.imagePath ? (
-              <div className="slide-with-image">
-                <img src={slide.imagePath} alt={slide.label} className="slide-image" />
-                <span className='span1'>{slide.label}</span>
+              <div style={styles.slideWithImage}>
+                <img src={slide.imagePath} alt={slide.label} style={{ ...styles.slideImage, width: '18px', height: '18px' }} />
+                <span style={{ color: activeSlide === slide.label ? '#0066ff' : 'inherit' }}>{slide.label}</span>
               </div>
             ) : (
               <span>{slide.label}</span>
@@ -86,9 +140,10 @@ const Carousel_sub = () => {
         ))}
       </Swiper>
 
+      {/* 두 번째 Swiper: slidesPerView={2.5} 적용 */}
       <Swiper
         spaceBetween={15}
-        slidesPerView={1.2}
+        slidesPerView={2.5} // 2.5 slides visible
         modules={[Navigation, Autoplay]}
         loop={true}
         autoplay={{
@@ -100,8 +155,10 @@ const Carousel_sub = () => {
         {images.map((image, index) => (
           <SwiperSlide key={index}>
             <div onClick={() => handleImageClick(image.storeId)} style={{ cursor: 'pointer' }}>
-              <img src={image.storeThumbnailUrl} alt={`Slide ${index + 1}`} style={{ width: '100%', height: 'auto' }} />
-              <div className="store-name-overlay">{image.storeName}</div>
+              <div style={styles.imageWrapper}>
+                <img src={image.storeThumbnailUrl} alt={`Slide ${index + 1}`} style={styles.image} />
+              </div>
+              <div style={styles.storeNameOverlay}>{image.storeName}</div>
             </div>
           </SwiperSlide>
         ))}
