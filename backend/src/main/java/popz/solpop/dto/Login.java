@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Login {
     @NotBlank
-    private String userName;  // mem_user_name에 해당
+    private String userId;  // mem_user_id에 해당 (이메일)
     @NotBlank
     private String password;  // mem_pw에 해당
 }
