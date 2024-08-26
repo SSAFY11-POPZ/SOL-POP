@@ -1,10 +1,8 @@
 package popz.solpop.controller;
 
 
+import popz.solpop.dto.*;
 import popz.solpop.security.TokenProvider;
-import popz.solpop.dto.Response;
-import popz.solpop.dto.SignUp;
-import popz.solpop.dto.Login;
 import popz.solpop.repository.MemberRepository;
 import popz.solpop.service.AuthService;
 import popz.solpop.entity.Member;
@@ -15,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Cookie;
+import popz.solpop.service.MailService;
+import popz.solpop.service.MemberService;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,10 @@ public class AuthController {
     MemberRepository memberRepository;
     @Autowired
     TokenProvider tokenProvider;
+    @Autowired
+    private MemberService memberService;
+    @Autowired
+    private MailService mailService;
 
     @GetMapping("/check-id")
     public Response<?> checkId(@RequestParam String userName) {
@@ -65,6 +70,7 @@ public class AuthController {
         return Response.setSuccess("로그아웃에 성공했습니다.");
     }
 
+    // 유저 계좌, 유저 키, 이메일, 이름 포함 전달하기
     @GetMapping("/check-token")
     public Response<?> checkToken(@RequestHeader("Authorization") String token) {
         token = token.substring(7);
@@ -125,5 +131,27 @@ public class AuthController {
 
         return Response.setSuccessData("엑세스토큰 재발급에 성공하였습니다.", data);
     }
+
+    @GetMapping("/check/findPassword")
+    public Boolean findPassword(
+            @RequestBody FindPwRequest findPwRequest){
+        return memberService.userEmailCheck(findPwRequest.getUserId(), findPwRequest.getName());
+    }
+
+
+    @PostMapping("/check/findPassword/sendEmail")
+    public void sendEmail(
+            @RequestBody FindPwRequest findPwRequest
+    ){
+        FindPwResponse findPwResponse = mailService.createMailAndChangePassword(findPwRequest.getUserId(), findPwRequest.getName());
+        mailService.mailSend(findPwResponse);
+    }
+
+    @PostMapping("/webClient")
+    public SSAFYUserResponse postWebClient(
+            @RequestBody SSAFYUserRequest ssafyUserRequest)  {
+        return authService.createSSAFYUser(ssafyUserRequest);
+    }
+
 }
 

@@ -35,23 +35,23 @@ public class TokenProvider {
     }
 
     // JWT 생성 메서드 (액세스 토큰)
-    public String createAccessToken(String userName, int duration) {
-        return createJwt(userName, duration, "access");
+    public String createAccessToken(String userId, int duration) {
+        return createJwt(userId, duration, "access");
     }
 
     // JWT 생성 메서드 (리프레시 토큰)
-    public String createRefreshToken(String userName, int duration) {
-        return createJwt(userName, duration, "refresh");
+    public String createRefreshToken(String userId, int duration) {
+        return createJwt(userId, duration, "refresh");
     }
 
     // JWT 생성 메서드 (공용)
-    private String createJwt(String userName, int duration, String tokenType) {
+    private String createJwt(String userId, int duration, String tokenType) {
         try {
             Instant now = Instant.now();
             Instant exprTime = now.plusSeconds(duration);
 
             JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                    .subject(userName)
+                    .subject(userId)
                     .claim("type", tokenType) // 토큰 타입 추가
                     .issueTime(Date.from(now))
                     .expirationTime(Date.from(exprTime))
@@ -84,8 +84,9 @@ public class TokenProvider {
                     return null;
                 }
 
+
                 Map<String, Object> tokenData = new HashMap<>();
-                tokenData.put("userName", signedJWT.getJWTClaimsSet().getSubject());
+                tokenData.put("userId", signedJWT.getJWTClaimsSet().getSubject());
                 tokenData.put("issuedAt", signedJWT.getJWTClaimsSet().getIssueTime());
                 tokenData.put("expiration", expirationTime);
                 return tokenData;
@@ -104,9 +105,9 @@ public class TokenProvider {
             return null;
         }
 
-        String userName = (String) tokenData.get("userName");
+        String userId = (String) tokenData.get("userId");
         Member principal = new Member();  // 권한 리스트는 빈 리스트로 설정
-        principal.setUserName(userName);
+        principal.setUserId(userId);
         return new UsernamePasswordAuthenticationToken(principal, token,  Collections.emptyList());
     }
 
@@ -117,5 +118,14 @@ public class TokenProvider {
         }
         return (String) tokenData.get("userName");
     }
+
+    public String getUserId(String token) {
+        Map<String, Object> tokenData = validateJwt(token);
+        if (tokenData == null) {
+            return null;
+        }
+        return (String) tokenData.get("userId");
+    }
+
 }
 

@@ -26,6 +26,4 @@ public class Level {
 
   @Column(name = "level_benefit")
   private Integer levelBenefit;
-
-
 }

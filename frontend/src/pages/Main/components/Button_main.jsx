@@ -1,17 +1,19 @@
 import React from 'react';
 
+const baseURL = 'https://solpop.xyz'; // 기본 URL을 설정합니다.
+
 const buttonsData = [
   {
     imagePath: 'src/pages/Main/img/b1.JPG',
-    linkUrl: 'https://www.naver.com',
+    linkUrl: `${baseURL}/rank`,
     altText: 'Example Image 1',
-    label: '캘린더',
+    label: '추천',
     width: '50px',
     height: '50px',
   },
   {
     imagePath: 'src/pages/Main/img/b2.JPG', 
-    linkUrl: 'https://www.youtube.com',
+    linkUrl: `${baseURL}/calendar`,
     altText: 'Example Image 2',
     label: '일정',
     width: '50px',
@@ -19,7 +21,7 @@ const buttonsData = [
   },
   {
     imagePath: 'src/pages/Main/img/b3.JPG',
-    linkUrl: 'https://www.google.com',
+    linkUrl: `${baseURL}/raffle`,
     altText: 'Example Image 3',
     label: '알림',
     width: '50px',
@@ -27,20 +29,36 @@ const buttonsData = [
   },
   {
     imagePath: 'src/pages/Main/img/b4.JPG',
-    linkUrl: 'https://project.shinhan-hackathon.com/',
-    altText: 'Example Image 4',
+    linkUrl: 'shinhanSol://',
+    fallbackUrl: 'https://sol.shinhan.com/sup/common/callSupInstallService.jsp?',
+    altText: 'Open Shinhan Card SuperSOL',
+    label: '결제',
     width: '50px',
     height: '50px',
   },
 ];
 
 const Buttons_main = () => {
+  const handleButtonClick = (linkUrl, fallbackUrl) => {
+    if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
+      window.location.href = linkUrl;
+
+      setTimeout(() => {
+        if (!document.hidden) {
+          window.location.href = fallbackUrl;
+        }
+      }, 1000);
+    } else {
+      window.location.href = fallbackUrl;
+    }
+  };
+
   return (
     <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
       {buttonsData.map((button, index) => (
         <button 
           key={index}
-          onClick={() => window.location.href = button.linkUrl}
+          onClick={() => handleButtonClick(button.linkUrl, button.fallbackUrl)}
           style={{ 
             border: '2px solid #ccc',
             borderRadius: '10px',

@@ -52,4 +52,15 @@ public class MemberService {
     member.setPointBalance(member.getPointBalance() + point);
     return member.getPointBalance();
   }
+
+  public boolean userEmailCheck(String userId, String name) {
+
+    Member member = memberRepository.findMemberByUserId(userId);
+    if(member!=null && member.getName().equals(name)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 }
