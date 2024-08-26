@@ -176,11 +176,32 @@ public class AuthController {
         mailService.mailSend(findPwResponse);
     }
 
-    // 싸피 계정 생성
+    // 싸피 사용자 계정 생성
     @PostMapping("/createSSAFYUser")
     public Map<String, Object> postCreateSSAFYUser(
-            @RequestBody Map<String,Object> ssafyUserRequest)  {
-        return authService.createSSAFYUser(ssafyUserRequest);
+            @RequestBody Map<String,Object> ssafyUserCreateRequest)  {
+        return authService.createSSAFYUser(ssafyUserCreateRequest);
+    }
+
+    // 싸피 사용자 계정 조회
+    @PostMapping("/checkSSAFYUser")
+    public Map<String, Object> postCheckSSAFYUser(
+            @RequestBody Map<String,Object> ssafyUserCheckRequest)  {
+        return authService.checkSSAFYUser(ssafyUserCheckRequest);
+    }
+
+    // 싸피 계좌 생성
+    @PostMapping("/createSSAFYAccount")
+    public Map<String, Object> postCreateSSAFYAccount(
+            @RequestBody Map<String,Object> ssafyCreateAccountRequest)  {
+        return authService.createSSAFYAccount(ssafyCreateAccountRequest);
+    }
+
+    // 싸피 계좌 입금
+    @PostMapping("/depositSSAFYAccount")
+    public Map<String, Object> postDepositSSAFYAccount(
+            @RequestBody Map<String,Object> ssafyDepositAccountRequest)  {
+        return authService.depositSSAFYAccount(ssafyDepositAccountRequest);
     }
 
 }
