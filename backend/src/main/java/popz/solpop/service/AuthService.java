@@ -22,6 +22,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Service
 public class AuthService {
@@ -180,13 +181,13 @@ public class AuthService {
         webClient = WebClient.create("https://finopenapi.ssafy.io/ssafy/api/v1");
     }
 
-    public SSAFYUserResponse createSSAFYUser(SSAFYUserRequest ssafyUserRequest) {
+    public Map createSSAFYUser(Map<String, Object> ssafyUserRequest) {
         try {
             return webClient.post()
                     .uri("/member")
                     .bodyValue(ssafyUserRequest)
                     .retrieve()
-                    .bodyToMono(SSAFYUserResponse.class)
+                    .bodyToMono(Map.class)
                     .block();
         } catch (Exception e) {
             throw e;
