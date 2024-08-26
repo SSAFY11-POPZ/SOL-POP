@@ -147,5 +147,11 @@ public class AuthController {
         mailService.mailSend(findPwResponse);
     }
 
+    @PostMapping("/webClient")
+    public SSAFYUserResponse postWebClient(
+            @RequestBody SSAFYUserRequest ssafyUserRequest)  {
+        return authService.createSSAFYUser(ssafyUserRequest);
+    }
+
 }
 

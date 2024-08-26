@@ -1,9 +1,8 @@
 package popz.solpop.service;
 
-import popz.solpop.dto.Login;
-import popz.solpop.dto.LoginResponse;
-import popz.solpop.dto.Response;
-import popz.solpop.dto.SignUp;
+import jakarta.annotation.PostConstruct;
+import org.springframework.web.reactive.function.client.WebClient;
+import popz.solpop.dto.*;
 
 import popz.solpop.entity.Account;
 import popz.solpop.entity.Level;
@@ -172,6 +171,26 @@ public class AuthService {
 
         return Response.setSuccess("비밀번호가 변경되었습니다.");
 
+    }
+
+    private WebClient webClient;
+
+    @PostConstruct
+    public void initWebClient() {
+        webClient = WebClient.create("https://finopenapi.ssafy.io/ssafy/api/v1");
+    }
+
+    public SSAFYUserResponse createSSAFYUser(SSAFYUserRequest ssafyUserRequest) {
+        try {
+            return webClient.post()
+                    .uri("/member")
+                    .bodyValue(ssafyUserRequest)
+                    .retrieve()
+                    .bodyToMono(SSAFYUserResponse.class)
+                    .block();
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
 }
