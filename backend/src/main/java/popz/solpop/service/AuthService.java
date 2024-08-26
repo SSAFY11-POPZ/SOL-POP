@@ -107,11 +107,11 @@ public class AuthService {
 
     @Transactional
     public Response<LoginResponse> login(Login dto, HttpServletResponse response) {
-        String userName = dto.getUserName();
+        String userId = dto.getUserId();
         String password = dto.getPassword();
 
         // 아이디로 멤버 조회
-        Member memberEntity = memberRepository.findMemberByUserName(userName);
+        Member memberEntity = memberRepository.findMemberByUserId(userId);
 
         // 사용자 검증
         if (memberEntity == null) {
@@ -130,8 +130,8 @@ public class AuthService {
         int refreshTokenDuration = 1209600; // 2 weeks
 
         // 토큰 생성
-        String accessToken = tokenProvider.createAccessToken(userName, accessTokenDuration);
-        String refreshToken = tokenProvider.createRefreshToken(userName, refreshTokenDuration);
+        String accessToken = tokenProvider.createAccessToken(userId, accessTokenDuration);
+        String refreshToken = tokenProvider.createRefreshToken(userId, refreshTokenDuration);
 
         // 리프레시토큰 데이터베이스에 저장
         memberEntity.setToken(refreshToken);
