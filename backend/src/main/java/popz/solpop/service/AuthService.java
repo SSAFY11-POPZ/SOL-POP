@@ -223,7 +223,7 @@ public class AuthService {
     public Map depositSSAFYAccount(Map<String, Object> ssafyDepositAccountRequest) {
         try {
             return webClient.post()
-                    .uri("/edu/demandDeposit/createDemandDepositAccount")
+                    .uri("/edu/demandDeposit/updateDemandDepositAccountDeposit")
                     .bodyValue(ssafyDepositAccountRequest)
                     .retrieve()
                     .bodyToMono(Map.class)
