@@ -30,6 +30,27 @@ const DetailPage = () => {
     fetchDetailData();
   }, [id]);
 
+  const handleHeartClick = async () => {
+    try {
+      const response = await axios.post(`https://solpop.xyz/api/v1/store/heart`, {
+        storeId: id
+      });
+
+      if (response.status === 200) {
+        // 서버로부터 반영된 heartCount를 받아와서 detailData 상태를 업데이트
+        setDetailData((prevData) => ({
+          ...prevData,
+          heartCount: prevData.heartCount + 1, // Assuming the server automatically increments the count
+        }));
+      } else {
+        alert('하트를 추가할 수 없습니다.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('에러가 발생했습니다.');
+    }
+  };
+
   if (loading) {
     return <div className="text-center mt-10">Loading...</div>;
   }
@@ -100,7 +121,12 @@ const DetailPage = () => {
       <div className="mt-4">
         <h2 className="text-xl font-bold">{detailData.store.storeName}</h2>
         <div className="flex items-center mt-2">
-          <span className="text-2xl">🔖</span>
+          <span 
+            className="text-2xl cursor-pointer" 
+            onClick={handleHeartClick}
+          >
+            🔖
+          </span>
           <span className="ml-2 text-lg">{detailData.heartCount}</span>
         </div>
         <div className="flex mt-4 space-x-4">

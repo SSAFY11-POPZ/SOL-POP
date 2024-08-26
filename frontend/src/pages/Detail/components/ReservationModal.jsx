@@ -73,25 +73,19 @@ const ReservationDrawer = ({ onClose, storeId }) => {
     if (isDateDisabled(date)) {
       return;
     }
-  
+
     setSelectedDate(date);
-    setSelectedTime('');  // 시간 선택 초기화
+    setSelectedTime('');
     const formattedDate = date.toLocaleDateString('en-CA');
     fetchReserveData(formattedDate);
   };
-  
 
   const handleTimeSelect = (time) => {
     if (isTimeUnavailable(time)) {
-      return; // 선택 불가 시, 리턴만 하도록 수정
+      return;
     }
 
-    // Toggle time selection
-    if (selectedTime === time) {
-      setSelectedTime(''); // 선택 해제 시, 빈 문자열로 설정
-    } else {
-      setSelectedTime(time); // 새로 선택된 시간으로 설정
-    }
+    setSelectedTime(selectedTime === time ? '' : time);
   };
 
   const handleReservationSubmit = async () => {
@@ -99,13 +93,13 @@ const ReservationDrawer = ({ onClose, storeId }) => {
       alert('날짜와 시간을 둘 다 선택해주세요.');
       return;
     }
-
+  
     const formattedDate = selectedDate.toLocaleDateString('en-CA');
-    const datetime = `${formattedDate}T${selectedTime}:00`;
-
+    const datetime = `${formattedDate}${selectedTime}`;
+  
     try {
       const response = await axios.post(
-        `https://solpop.xyz/api/v1/store/${storeId}/reserve/request?datetime=${datetime}`,
+        `https://solpop.xyz/api/v1/store/${storeId}/reserve/request?datetime={${datetime}}`,
         {},
         {
           headers: {
@@ -113,7 +107,7 @@ const ReservationDrawer = ({ onClose, storeId }) => {
           },
         }
       );
-
+  
       if (response.status === 200) {
         alert('예약이 완료되었습니다.');
         onClose();
@@ -125,6 +119,7 @@ const ReservationDrawer = ({ onClose, storeId }) => {
       alert('에러가 발생했습니다.');
     }
   };
+  
 
   const isTimeUnavailable = (time) => {
     return unavailableTimes.includes(time);
@@ -158,26 +153,22 @@ const ReservationDrawer = ({ onClose, storeId }) => {
         className={`bg-white p-6 rounded-t-2xl shadow-lg w-full max-w-md h-2/3 transform transition-transform duration-300 ${
           isVisible ? 'translate-y-0' : 'translate-y-full'
         }`}
-        style={{ maxHeight: '80%', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        style={{
+          maxHeight: '80%',
+          overflowY: 'scroll',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
       >
         <style>
           {`
+            /* For Chrome, Safari, and Opera */
             ::-webkit-scrollbar {
               display: none;
             }
-            .react-calendar__tile:active,
-            .react-calendar__tile:focus {
-              background-color: inherit !important;
-              box-shadow: none !important;
-            }
-            .react-calendar__tile--hovered:not(.react-calendar__tile--now):not(.react-calendar__tile--active) {
-              background-color: #555555 !important; /* Changed to dark gray */
-            }
-            .react-calendar__tile--active:enabled:hover {
-              background-color: #3b82f6 !important;
-            }
           `}
         </style>
+
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 transition-colors text-xl"
@@ -196,23 +187,20 @@ const ReservationDrawer = ({ onClose, storeId }) => {
             tileDisabled={({ date }) => isDateDisabled(date)}
             formatDay={(locale, date) => `${date.getDate()}`}
             className="rounded-lg shadow-none border-none w-full max-w-lg"
-            tileClassName={({ date, view }) => {
-              let classes =
-                'p-1.5 text-center text-gray-900 w-8 h-8 flex items-center justify-center';
-              if (date.getDay() === 0) classes += ' text-red-500';
-              if (date.getDay() === 6) classes += ' text-red-500';
-              if (selectedDate && selectedDate.toDateString() === date.toDateString()) {
-                classes += ' bg-blue-500 text-white rounded-md';
-              } else if (new Date().toDateString() === date.toDateString()) {
-                classes += ' bg-gray-200 text-black rounded-md';
-              } else if (!isDateDisabled(date)) {
-                classes += ' hover:bg-gray-400 rounded-md';
-              }
-              return classes;
+            tileClassName={({ date }) => {
+              const baseClass = 'p-1.5 text-center w-8 h-8 flex items-center justify-center';
+              const selectedClass = selectedDate && selectedDate.toDateString() === date.toDateString()
+                ? 'bg-blue-500 text-white rounded-md'
+                : '';
+              const currentDayClass = new Date().toDateString() === date.toDateString()
+                ? 'bg-gray-200 text-black rounded-md'
+                : '';
+
+              return `${baseClass} ${selectedClass} ${currentDayClass}`;
             }}
             prevLabel={<span className="text-orange-500">&lt;</span>}
             nextLabel={<span className="text-orange-500">&gt;</span>}
-            navigationLabel={({ date, view }) => (
+            navigationLabel={({ date }) => (
               <span className="text-lg font-bold">{`${date.toLocaleString('default', {
                 month: 'long',
               })} ${date.getFullYear()}`}</span>
@@ -231,12 +219,12 @@ const ReservationDrawer = ({ onClose, storeId }) => {
                   key={time}
                   onClick={() => handleTimeSelect(time)}
                   disabled={isTimeUnavailable(time)}
-                  className={`py-2 px-4 text-sm font-semibold rounded-full transition-colors duration-200 ${
+                  className={`py-2 px-4 text-sm font-semibold rounded-full transition-all duration-200 border ${
                     selectedTime === time
-                      ? 'bg-blue-600 text-white shadow-lg'
+                      ? 'bg-blue-600 text-white shadow-lg border-blue-600'
                       : isTimeUnavailable(time)
-                      ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
-                      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed border-gray-300'
+                      : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-100 hover:border-gray-400'
                   }`}
                 >
                   {time}
@@ -253,12 +241,12 @@ const ReservationDrawer = ({ onClose, storeId }) => {
                   key={time}
                   onClick={() => handleTimeSelect(time)}
                   disabled={isTimeUnavailable(time)}
-                  className={`py-2 px-4 text-sm font-semibold rounded-full transition-colors duration-200 ${
+                  className={`py-2 px-4 text-sm font-semibold rounded-full transition-all duration-200 border ${
                     selectedTime === time
-                      ? 'bg-blue-600 text-white shadow-lg'
+                      ? 'bg-blue-600 text-white shadow-lg border-blue-600'
                       : isTimeUnavailable(time)
-                      ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
-                      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed border-gray-300'
+                      : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-100 hover:border-gray-400'
                   }`}
                 >
                   {time}
