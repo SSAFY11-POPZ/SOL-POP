@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import InfoTab from './components/InfoTab';
 import ReservationTab from './components/ReservationTab';
 import LocationTab from './components/LocationTab';
-import ReservationDrawer from './components/ReservationModal'; // Import the drawer
+import ReservationDrawer from './components/ReservationModal';
 import axios from 'axios';
 
 const DetailPage = () => {
@@ -12,7 +12,7 @@ const DetailPage = () => {
   const [detailData, setDetailData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('info');
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // State to manage drawer visibility
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
     const fetchDetailData = async () => {
@@ -128,7 +128,6 @@ const DetailPage = () => {
         </div>
       </div>
 
-      {/* Add ReservationDrawer component */}
       {isDrawerOpen && (
         <ReservationDrawer 
           onClose={handleCloseDrawer}

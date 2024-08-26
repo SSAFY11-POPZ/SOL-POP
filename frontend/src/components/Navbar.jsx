@@ -1,8 +1,14 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import './Navbar.css';
 
 const Navbar = () => {
+  const location = useLocation();
+
+  if (location.pathname.includes('/detail')) {
+    return null;
+  }
+
   return (
     <nav className="bottom-navbar">
       <NavLink
