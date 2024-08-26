@@ -181,11 +181,50 @@ public class AuthService {
         webClient = WebClient.create("https://finopenapi.ssafy.io/ssafy/api/v1");
     }
 
-    public Map createSSAFYUser(Map<String, Object> ssafyUserRequest) {
+    public Map createSSAFYUser(Map<String, Object> ssafyUserCreateRequest) {
         try {
             return webClient.post()
                     .uri("/member")
-                    .bodyValue(ssafyUserRequest)
+                    .bodyValue(ssafyUserCreateRequest)
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public Map checkSSAFYUser(Map<String, Object> ssafyUserCheckRequest) {
+        try {
+            return webClient.post()
+                    .uri("/member/search")
+                    .bodyValue(ssafyUserCheckRequest)
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public Map createSSAFYAccount(Map<String, Object> ssafyCreateAccountRequest) {
+        try {
+            return webClient.post()
+                    .uri("/edu/demandDeposit/createDemandDepositAccount")
+                    .bodyValue(ssafyCreateAccountRequest)
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public Map depositSSAFYAccount(Map<String, Object> ssafyDepositAccountRequest) {
+        try {
+            return webClient.post()
+                    .uri("/edu/demandDeposit/createDemandDepositAccount")
+                    .bodyValue(ssafyDepositAccountRequest)
                     .retrieve()
                     .bodyToMono(Map.class)
                     .block();
