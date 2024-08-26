@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import './CalendarPage.css';
 import CalendarCarousel from './components/CalendarCarousel';
 import EventList from './components/EventList';
-import EventDetails from './components/EventDetails';
-import { format, addDays, subDays } from 'date-fns';
+import { addDays, subDays, startOfWeek } from 'date-fns';
 
 const CalendarPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [events, setEvents] = useState([]);
   const [error, setError] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEventIndex, setSelectedEventIndex] = useState(null);
+
+  const navbarHeight = 70; // 네브바의 높이를 픽셀 단위로 설정
 
   const fetchEvents = async (date) => {
     const dateString = date.toISOString().split('T')[0];
@@ -20,7 +20,7 @@ const CalendarPage = () => {
         throw new Error('Failed to fetch events');
       }
       const data = await response.json();
-      setEvents(data.events);
+      setEvents(data.events || []);
       setError(false);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -33,7 +33,7 @@ const CalendarPage = () => {
     const newDate = subDays(currentDate, 7);
     setCurrentDate(newDate);
     if (isSameWeek(selectedDate, newDate)) {
-      setSelectedDate(newDate);  // 현재 선택된 날짜가 같은 주에 있으면 업데이트
+      setSelectedDate(newDate);
     }
   };
 
@@ -41,22 +41,18 @@ const CalendarPage = () => {
     const newDate = addDays(currentDate, 7);
     setCurrentDate(newDate);
     if (isSameWeek(selectedDate, newDate)) {
-      setSelectedDate(newDate);  // 현재 선택된 날짜가 같은 주에 있으면 업데이트
+      setSelectedDate(newDate);
     }
   };
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
     fetchEvents(date);
-    setSelectedEvent(null); // 날짜 클릭 시 이벤트 선택 해제
+    setSelectedEventIndex(null);
   };
 
-  const handleEventClick = (event) => {
-    if (selectedEvent && selectedEvent.title === event.title) {
-      setSelectedEvent(null); // 같은 이벤트를 클릭하면 해제
-    } else {
-      setSelectedEvent(event); // 새로운 이벤트를 클릭하면 선택
-    }
+  const handleEventClick = (index) => {
+    setSelectedEventIndex(prevIndex => (prevIndex === index ? null : index));
   };
 
   useEffect(() => {
@@ -64,30 +60,43 @@ const CalendarPage = () => {
   }, [selectedDate]);
 
   return (
-    <div className="calendar">
-      <CalendarCarousel
-        currentDate={currentDate}
-        selectedDate={selectedDate}
-        onDateClick={handleDateClick}
-        onPrevWeek={handlePrevWeek}
-        onNextWeek={handleNextWeek}
-      />
-      <EventList 
-        events={events} 
-        error={error} 
-        onEventClick={handleEventClick} 
-        selectedDate={selectedDate}
-      />
-      {selectedEvent && <EventDetails event={selectedEvent} />} {/* 이벤트가 선택된 경우에만 표시 */}
+    <div 
+      className="calendar-container"
+      style={{ 
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        paddingBottom: `${navbarHeight}px`, // 네브바 높이만큼 아래 패딩 추가
+        minHeight: `calc(100vh - ${navbarHeight}px)`, // 네브바를 뺀 전체 높이
+        overflowY: 'auto' // 스크롤 가능하게 설정
+      }}
+    >
+      <div style={{ width: '100%', maxWidth: '600px', padding: '0 10px' }}>
+        <CalendarCarousel
+          currentDate={currentDate}
+          selectedDate={selectedDate}
+          onDateClick={handleDateClick}
+          onPrevWeek={handlePrevWeek}
+          onNextWeek={handleNextWeek}
+        />
+        <div style={{ marginTop: '20px' }}>
+          <EventList 
+            events={events} 
+            error={error} 
+            onEventClick={handleEventClick} 
+            selectedDate={selectedDate}
+            selectedEventIndex={selectedEventIndex}
+          />
+        </div>
+      </div>
     </div>
   );
 };
 
-// Helper function to check if two dates are in the same week
 const isSameWeek = (date1, date2) => {
   const startOfWeekDate1 = startOfWeek(date1);
   const startOfWeekDate2 = startOfWeek(date2);
   return startOfWeekDate1.getTime() === startOfWeekDate2.getTime();
 };
 
-export default CalendarPage;
+export default React.memo(CalendarPage);
