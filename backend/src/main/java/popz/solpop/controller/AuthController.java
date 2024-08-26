@@ -176,9 +176,10 @@ public class AuthController {
         mailService.mailSend(findPwResponse);
     }
 
-    @PostMapping("/webClient")
-    public SSAFYUserResponse postWebClient(
-            @RequestBody SSAFYUserRequest ssafyUserRequest)  {
+    // 싸피 계정 생성
+    @PostMapping("/createSSAFYUser")
+    public Map<String, Object> postCreateSSAFYUser(
+            @RequestBody Map<String,Object> ssafyUserRequest)  {
         return authService.createSSAFYUser(ssafyUserRequest);
     }
 
