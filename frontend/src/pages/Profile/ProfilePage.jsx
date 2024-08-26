@@ -24,7 +24,7 @@ const ProfilePage = () => {
       method: "post",
       url: "https://finopenapi.ssafy.io/ssafy/api/v1/member", // 프록시를 사용하는 경우
       data: {
-        apiKey: adminSecretKey,
+        apiKey: "5e0624380b9f477b8e4ceec356a3eccc",
         userId: "testtestttest@naver.com",
       }
     })
