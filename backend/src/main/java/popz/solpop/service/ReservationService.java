@@ -66,6 +66,10 @@ public class ReservationService {
     reservationRepository.save(reservation);
   }
 
+  public void deleteReservation(Integer reserveId) {
+    reservationRepository.deleteById(reserveId);
+  }
+
   public List<Reservation.MyReservation> getMyReservations(Integer memId) {
     return reservationRepository.findMyReservation(memId);
   }

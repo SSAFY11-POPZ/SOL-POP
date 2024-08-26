@@ -24,6 +24,7 @@
     import java.time.LocalDateTime;
     import java.time.LocalTime;
     import java.util.List;
+    import java.util.Map;
 
     @Slf4j
     @RestController
@@ -97,16 +98,21 @@
 
         @PostMapping("/heart")
         public ResponseEntity<?> addHeart(
-                @RequestBody StoreIdDTO storeIdDTO,
+                @RequestBody Map<String, Integer> storeIdMap,
                 @RequestHeader("Authorization") String token
         ) {
 
             String userName = tokenProvider.getUserName(token.substring(7));
             Member member = memberService.getMemberByUserName(userName);
-            Store store = storeService.getStoreByStoreId(storeIdDTO.getStoreId());
+            Store store = storeService.getStoreByStoreId(storeIdMap.get("storeId"));
 
             if (member == null || store == null) {
                 return ResponseEntity.badRequest().build();
+            }
+            boolean isHearted = heartService.isHearted(member, store);
+            if (isHearted) {
+                heartService.deleteHeart(member, store);
+                return ResponseEntity.ok("하트취소");
             }
 
             Heart heart = new Heart();
@@ -163,5 +169,7 @@
             reservationService.saveReservation(storeId, member, reserveDate, reserveTime);
             return ResponseEntity.ok().build();
         }
+
+
 
     }
