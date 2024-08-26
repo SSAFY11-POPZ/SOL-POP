@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -178,28 +178,28 @@ public class AuthController {
 
     // 싸피 사용자 계정 생성
     @PostMapping("/createSSAFYUser")
-    public Map<String, Object> postCreateSSAFYUser(
+    public ResponseEntity<Map> postCreateSSAFYUser(
             @RequestBody Map<String,Object> ssafyUserCreateRequest)  {
         return authService.createSSAFYUser(ssafyUserCreateRequest);
     }
 
     // 싸피 사용자 계정 조회
     @PostMapping("/checkSSAFYUser")
-    public Map<String, Object> postCheckSSAFYUser(
+    public ResponseEntity<Map> postCheckSSAFYUser(
             @RequestBody Map<String,Object> ssafyUserCheckRequest)  {
         return authService.checkSSAFYUser(ssafyUserCheckRequest);
     }
 
     // 싸피 계좌 생성
     @PostMapping("/createSSAFYAccount")
-    public Map<String, Object> postCreateSSAFYAccount(
+    public ResponseEntity<Map> postCreateSSAFYAccount(
             @RequestBody Map<String,Object> ssafyCreateAccountRequest)  {
         return authService.createSSAFYAccount(ssafyCreateAccountRequest);
     }
 
     // 싸피 계좌 입금
     @PostMapping("/depositSSAFYAccount")
-    public Map<String, Object> postDepositSSAFYAccount(
+    public ResponseEntity<Map> postDepositSSAFYAccount(
             @RequestBody Map<String,Object> ssafyDepositAccountRequest)  {
         return authService.depositSSAFYAccount(ssafyDepositAccountRequest);
     }
