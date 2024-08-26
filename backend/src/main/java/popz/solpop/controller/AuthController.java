@@ -2,6 +2,8 @@ package popz.solpop.controller;
 
 
 import popz.solpop.dto.*;
+import popz.solpop.entity.Account;
+import popz.solpop.repository.AccountRepository;
 import popz.solpop.security.TokenProvider;
 import popz.solpop.repository.MemberRepository;
 import popz.solpop.service.AuthService;
@@ -19,7 +21,7 @@ import popz.solpop.service.MemberService;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @RestController
@@ -31,6 +33,8 @@ public class AuthController {
     MemberRepository memberRepository;
     @Autowired
     TokenProvider tokenProvider;
+    @Autowired
+    AccountRepository accountRepository;
     @Autowired
     private MemberService memberService;
     @Autowired
@@ -80,6 +84,18 @@ public class AuthController {
             return Response.setFailed("엑세스토큰이 유효하지 않습니다.");
         }
 
+        String userId = (String) tokenData.get("userId");
+        Member member = memberRepository.findMemberByUserId(userId);
+
+        if (member == null) {
+            return Response.setFailed("유효하지 않은 사용자입니다.");
+        }
+
+        Account account = accountRepository.findByMember(member);
+        if (account == null) {
+            return Response.setFailed("사용자의 계좌 정보를 찾을 수 없습니다.");
+        }
+
         Date issuedAt = (Date) tokenData.get("issuedAt");
         long elapsedSeconds = (new Date().getTime() - issuedAt.getTime()) / 1000;
         int accessTokenDuration = 3600;
@@ -88,7 +104,20 @@ public class AuthController {
             return Response.setFailed("엑세스토큰이 만료되었습니다.");
         }
 
-        return Response.setSuccess("엑세스토큰이 유효합니다. 경과 시간: " + elapsedSeconds + "초");
+        Map<String, Object> responseData = Map.of(
+                "userId", member.getUserId(),
+                "userKey", member.getUserKey(),
+                "Name", member.getName(),
+                "accountNo", account.getAccountNo()
+        );
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonResponse = objectMapper.writeValueAsString(responseData);
+            return Response.setSuccess(jsonResponse);
+        } catch (Exception e) {
+            return Response.setFailed("응답 데이터를 처리하는 중 오류가 발생했습니다.");
+        }
     }
 
     @PostMapping("/refresh-token")
