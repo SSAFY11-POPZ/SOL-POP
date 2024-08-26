@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import popz.solpop.dto.SSAFYUserRequest;
 import popz.solpop.dto.SSAFYUserResponse;
@@ -23,7 +24,7 @@ public class AccountController {
     AccountService accountService;
 
     @PostMapping("/checkAccountNo")
-    public Map<String, Object> postCheckAccountNo(
+    public ResponseEntity<Map> postCheckAccountNo(
             @RequestBody Map<String, Object> requestBody) {
         try {
             return accountService.checkAccountNo(requestBody);
@@ -34,7 +35,7 @@ public class AccountController {
     }
 
     @PostMapping("/withdrawal")
-    public Map<String, Object> postWithdrawal(
+    public ResponseEntity<Map> postWithdrawal(
             @RequestBody Map<String, Object> requestBody) {
         try {
             return accountService.withdrawal(requestBody);
