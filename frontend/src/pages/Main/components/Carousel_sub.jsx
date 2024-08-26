@@ -87,8 +87,8 @@ const Carousel_sub = () => {
   const [images, setImages] = useState(defaultImages);
   const [activeSlide, setActiveSlide] = useState('전체');
 
-  const baseURL = 'https://asdfwrg'; // 기본 URL을 설정합니다.
-
+  const baseURL = 'https://solpop.xyz'; // 기본 URL을 설정합니다.
+  
   const fetchImages = async (tag) => {
     const fetchUrl = `${baseURL}/api/v1/store/main/slide?keyword=${tag}`;
     try {

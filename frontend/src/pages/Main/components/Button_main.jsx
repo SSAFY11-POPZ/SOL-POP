@@ -1,11 +1,12 @@
 import React from 'react';
 
-const baseURL = 'https://solpop.xyz'; // 기본 URL을 설정합니다.
+// const baseURL= 'https://solpop.xyz'; // 기본 URL을 설정합니다.
+const baseURL = 'http://localhost:5173'; // 슬래시 제거
 
 const buttonsData = [
   {
     imagePath: 'src/pages/Main/img/like.png',
-    linkUrl: `${baseURL}/rank`,
+    linkUrl: `${baseURL}/rank`, // 템플릿 문자열로 설정
     altText: 'Example Image 1',
     label: '인기',
     width: '40px',
@@ -13,7 +14,7 @@ const buttonsData = [
   },
   {
     imagePath: 'src/pages/Main/img/calendar.png',
-    linkUrl: `${baseURL}/calendar`,
+    linkUrl: `${baseURL}/calendar`, // 2번 버튼 URL 확인
     altText: 'Example Image 2',
     label: '일정',
     width: '40px',
@@ -21,7 +22,7 @@ const buttonsData = [
   },
   {
     imagePath: 'src/pages/Main/img/raffle.png',
-    linkUrl: `${baseURL}/raffle`,
+    linkUrl: `${baseURL}/raffle`, // 3번 버튼 URL 확인
     altText: 'Example Image 3',
     label: '래플',
     width: '40px',
@@ -41,13 +42,15 @@ const Buttons_main = () => {
     if (/iPhone|iPod|iPad|Android|BlackBerry/i.test(navigator.userAgent)) {
       window.location.href = linkUrl;
 
-      setTimeout(() => {
-        if (!document.hidden) {
-          window.location.href = fallbackUrl;
-        }
-      }, 1000);
+      if (fallbackUrl) {
+        setTimeout(() => {
+          if (!document.hidden) {
+            window.location.href = fallbackUrl;
+          }
+        }, 1000);
+      }
     } else {
-      window.location.href = fallbackUrl;
+      window.location.href = fallbackUrl || linkUrl; // fallbackUrl이 없으면 linkUrl로 이동
     }
   };
 
