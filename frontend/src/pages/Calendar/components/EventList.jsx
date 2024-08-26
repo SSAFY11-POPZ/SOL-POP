@@ -5,30 +5,51 @@ import { subDays, addDays, format } from 'date-fns';
 // 더미 데이터를 생성하는 함수
 const getDummyEvents = (date) => [
   {
-    date: `${format(subDays(date, 1), 'yyyy년 MM월 dd일')} ~ ${format(addDays(date, 1), 'yyyy년 MM월 dd일')}`,
-    title: '삼성강남x허쉬 이벤트 1',
-    image: 'src/pages/Calendar/img/1.JPG',
-    description: '허쉬 페비닐로 액세서리로 만들어 보는 리사이클링 체험을 할 수 있다. 경품 증정 SNS 이벤트 1...',
+    storeId: 1,
+    storeName: '더미 슈즈 스토어 1',
+    storeStartDate: format(subDays(date, 1), 'yyyy-MM-dd'),
+    storeEndDate: format(addDays(date, 1), 'yyyy-MM-dd'),
+    storePlace: '서울',
+    storeDetail: '더미 이벤트 1 상세 설명입니다. 에이비애 마나 다가재해댜재래 재래패댁래 재배내애퍼뱌 거힙갸갸민ㅁ앟;ㅣㅑㅓㅁㄴㄹ.',
+    storeKeyword: 'shoes',
+    storeRsvPriority: true,
+    storeCapacity: 100,
+    storeThumbnailUrl: 'src/pages/Calendar/img/1.JPG',
+    storePrice: 1000,
+    hashtag: '#cool',
   },
   {
-    date: `${format(subDays(date, 2), 'yyyy년 MM월 dd일')} ~ ${format(addDays(date, 2), 'yyyy년 MM월 dd일')}`,
-    title: '삼성강남x허쉬 이벤트 2',
-    image: 'src/pages/Calendar/img/1.JPG',
-    description: '허쉬 페비닐로 액세서리로 만들어 보는 리사이클링 체험을 할 수 있다. 경품 증정 SNS 이벤트 2...',
+    storeId: 2,
+    storeName: '더미 의류 스토어 2',
+    storeStartDate: format(subDays(date, 2), 'yyyy-MM-dd'),
+    storeEndDate: format(addDays(date, 2), 'yyyy-MM-dd'),
+    storePlace: '부산',
+    storeDetail: '더미 이벤트 2 상세 설명입니다. 우영이가 집을 안보내준다 빨리 가서 자고 내일 지각하고 싶다',
+    storeKeyword: 'clothes',
+    storeRsvPriority: false,
+    storeCapacity: 150,
+    storeThumbnailUrl: 'src/pages/Calendar/img/1.JPG',
+    storePrice: 1500,
+    hashtag: '#trendy',
   },
   {
-    date: `${format(subDays(date, 3), 'yyyy년 MM월 dd일')} ~ ${format(addDays(date, 3), 'yyyy년 MM월 dd일')}`,
-    title: '삼성강남x허쉬 이벤트 3',
-    image: 'src/pages/Calendar/img/1.JPG',
-    description: '허쉬 페비닐로 액세서리로 만들어 보는 리사이클링 체험을 할 수 있다. 경품 증정 SNS 이벤트 3...',
+    storeId: 3,
+    storeName: '더미 가방 스토어 3',
+    storeStartDate: format(subDays(date, 3), 'yyyy-MM-dd'),
+    storeEndDate: format(addDays(date, 3), 'yyyy-MM-dd'),
+    storePlace: '대구',
+    storeDetail: '더미 이벤트 3 상세 설명입니다. 혼자 빨리 끝내고 꿀빨아야지~~~ 금요일에 고기 ㅈㄴ먹어야지',
+    storeKeyword: 'bags',
+    storeRsvPriority: true,
+    storeCapacity: 200,
+    storeThumbnailUrl: 'src/pages/Calendar/img/1.JPG',
+    storePrice: 2000,
+    hashtag: '#luxury',
   },
 ];
 
-const EventList = ({ events, error, onEventClick, selectedDate, selectedEventIndex }) => {
+const EventList = ({ events, error, selectedDate }) => {
   const [openEvents, setOpenEvents] = useState([]);
-
-  // 데이터가 없을 때 더미 데이터를 사용합니다.
-  const displayedEvents = error || events.length === 0 ? getDummyEvents(selectedDate) : events;
 
   const handleEventClick = (index) => {
     if (openEvents.includes(index)) {
@@ -36,8 +57,10 @@ const EventList = ({ events, error, onEventClick, selectedDate, selectedEventInd
     } else {
       setOpenEvents([...openEvents, index]); // 새로운 이벤트를 클릭하면 열기
     }
-    onEventClick(index); // 부모 컴포넌트에도 클릭 이벤트 전파
   };
+
+  // 데이터가 없을 때 더미 데이터를 사용합니다.
+  const displayedEvents = error || events.length === 0 ? getDummyEvents(selectedDate) : events;
 
   return (
     <div className="events space-y-4">
@@ -45,7 +68,7 @@ const EventList = ({ events, error, onEventClick, selectedDate, selectedEventInd
         <p className="text-red-500">데이터를 불러올 수 없습니다. 더미 데이터를 표시합니다.</p>
       )}
       {displayedEvents.map((event, index) => (
-        <React.Fragment key={index}>
+        <React.Fragment key={event.storeId}>
           <div
             className={`event-item flex items-center space-x-4 p-4 bg-white shadow-md rounded-lg cursor-pointer hover:bg-gray-100 transition ${
               openEvents.includes(index) ? 'border border-blue-500' : ''
@@ -53,17 +76,29 @@ const EventList = ({ events, error, onEventClick, selectedDate, selectedEventInd
             onClick={() => handleEventClick(index)} // 클릭 이벤트 처리
           >
             <img
-              src={event.image}
-              alt={event.title}
+              src={event.storeThumbnailUrl}
+              alt={event.storeName}
               className="event-image w-24 h-24 object-cover rounded-lg"
             />
             <div className="event-summary">
-              <h4 className="text-lg font-semibold text-gray-800">{event.title}</h4>
-              <p className="text-sm text-gray-600">{event.date}</p>
+              <h4 className="text-lg font-semibold text-gray-800">{event.storeName}</h4>
+              <p className="text-sm text-gray-600">
+                {`${new Date(event.storeStartDate).toLocaleDateString()} ~ ${new Date(event.storeEndDate).toLocaleDateString()}`}
+              </p>
+              <p className="text-sm text-gray-600">위치: {event.storePlace}</p>
+              <p className="text-sm text-gray-600">
+                {event.storeDetail.length > 25 
+                  ? `${event.storeDetail.slice(0, 25)}...`
+                  : event.storeDetail}
+              </p>
+              <p className="text-sm text-gray-600">입장료: {event.storePrice}원</p>
+              <p className="text-sm text-blue-500 mt-2">{event.hashtag}</p>
             </div>
           </div>
           {openEvents.includes(index) && (
-            <EventDetails event={event} /> // 클릭된 이벤트의 세부 정보만 표시
+            <div className="pl-10">
+              <EventDetails event={event} /> {/* 클릭된 이벤트의 세부 정보만 표시 */}
+            </div>
           )}
         </React.Fragment>
       ))}
@@ -71,4 +106,4 @@ const EventList = ({ events, error, onEventClick, selectedDate, selectedEventInd
   );
 };
 
-export default EventList;
+export default React.memo(EventList);
