@@ -1,7 +1,7 @@
 import React from 'react';
 
-// const baseURL= 'https://solpop.xyz'; // 기본 URL을 설정합니다.
-const baseURL = 'http://localhost:5173'; // 슬래시 제거
+const baseURL= 'https://solpop.xyz'; // 기본 URL을 설정합니다.
+//const baseURL = 'http://localhost:5173'; // 슬래시 제거
 
 const buttonsData = [
   {
