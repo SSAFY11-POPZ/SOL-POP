@@ -13,8 +13,8 @@ import ReservationPage from './pages/Profile/ReservationPage'
 // import WishlistPage from "./pages/Profile/WishListPage";
 import Navbar from './components/Navbar';
 import ReserveDetailPage from "./pages/Profile/ReserveDetailPage";
-import LoginPage from './components/Login';
-import RegisterPage from './components/Register';
+import LoginPage from './pages/Auth/LoginPage'
+import RegisterPage from './pages/Auth/RegisterPage'
 import './index.css';
 
 function App() {
@@ -48,7 +48,7 @@ function App() {
               {/* 내 예약 상세 페이지*/}
               <Route path="/profile/reservation/:reserveId" element={<ReserveDetailPage />} />
               {/* 로그인 페이지 */}
-              <Route path="/login" element={<LoginPage />} />
+              <Route path="/login" element={<LoginPage/>} />
               {/* 회원가입 페이지 */}
               <Route path="/register" element={<RegisterPage />} />
               
