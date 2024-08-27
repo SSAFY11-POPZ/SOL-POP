@@ -4,27 +4,12 @@ import 'swiper/swiper-bundle.css';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import axios from 'axios';
 
-// 이미지 import
-
-import img1 from 'src/Main/img/1.JPG';
-import img2 from 'src/Main/img/2.JPG';
-import img3 from 'src/Main/img/3.JPG';
-import img4 from 'src/Main/img/4.JPG';
-
-
 const Carousel_main = ({ spaceBetween = 10, slidesPerView = 1 }) => {
   const [slides, setSlides] = useState([]);
   const [error, setError] = useState(false);
   const baseURL = 'https://solpop.xyz';
 
   const fetchUrl = `${baseURL}/api/v1/store/main/carousel`;
-
-  const defaultSlides = [
-    { storeThumbnailUrl: img1, storeName: 'Default Store 1', storeId: 1 },
-    { storeThumbnailUrl: img2, storeName: 'Default Store 2', storeId: 2 },
-    { storeThumbnailUrl: img3, storeName: 'Default Store 3', storeId: 3 },
-    { storeThumbnailUrl: img4, storeName: 'Default Store 4', storeId: 4 },
-  ];
 
   const storeNameStyle = {
     position: 'absolute',
@@ -54,7 +39,6 @@ const Carousel_main = ({ spaceBetween = 10, slidesPerView = 1 }) => {
         }
       } catch (error) {
         console.error('Error fetching data: 실패main_Carousel', error);
-        setSlides(defaultSlides);
         setError(true);
       }
     };
