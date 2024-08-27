@@ -54,6 +54,9 @@
         public List<Store.StoreCard> getStoresByKeyword(
                 @RequestParam String keyword
         ) {
+            if (keyword.equals("전체")) {
+                return storeService.getRecentStores(5);
+            }
             return storeService.getStoresByKeyword(keyword);
         }
 
