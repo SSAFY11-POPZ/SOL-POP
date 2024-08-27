@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import popz.solpop.entity.EnterRaffle;
 import popz.solpop.entity.Heart;
+import popz.solpop.entity.Member;
+import popz.solpop.entity.Raffle;
 import popz.solpop.repository.EnterRaffleRepository;
 
 
@@ -14,6 +16,10 @@ public class EnterRaffleService {
 
   @Autowired
   private EnterRaffleRepository enterRaffleRepository;
+
+  public boolean existsByRaffleAndMember(Raffle raffle, Member member) {
+    return enterRaffleRepository.existsByRaffleAndMember(raffle, member);
+  }
 
   public EnterRaffle saveEnterRaffle(EnterRaffle enterRaffle) {
     return enterRaffleRepository.save(enterRaffle);
