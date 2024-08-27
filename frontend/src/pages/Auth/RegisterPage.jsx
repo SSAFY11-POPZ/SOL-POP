@@ -69,7 +69,7 @@ const RegisterPage = () => {
    * - 이메일형식이 유효하지 않으면 오류문구 표시 및 관리 */
   const handleEmailCheck = async () => {
     if (!validateEmail(email)) {
-      setEmailError('이메일 형식이 유효하지 않습니다. 30자 이내로 작성해주세요.');
+      setEmailError('이메일 형식이 유효하지 않습니다.');
       setIsEmailValid(false);
       return;
     }
