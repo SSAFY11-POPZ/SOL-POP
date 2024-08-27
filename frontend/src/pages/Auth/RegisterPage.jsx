@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { formatDateAndTime } from '../../utils/utils.js'
+// import RegisterIcon from "../../assets/AuthImg/RegisterIcon.gif"
 
 const RegisterPage = () => {
   const navigate = useNavigate()
@@ -71,6 +72,9 @@ const RegisterPage = () => {
       console.log(res)
       setEmailError('중복된 이메일이 존재합니다.');
       setIsEmailValid(false);
+      console.log("진행중!")
+
+
     }).catch((err) => { // error 발생 = email과 동일한 계정 없다.
       console.log(err)
       setEmailError('사용가능한 이메일입니다.');
@@ -177,29 +181,53 @@ const RegisterPage = () => {
       "accountNo" : localStorage.getItem("accountNo")
     }).then((res) => {
       console.log(res)
-      Swal.fire({
-        icon:"success",
-        title:`환영합니다, ${name} 님!`,
-        text:"회원가입이 완료되었습니다!",
-        confirmButton:"로그인하기"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          localStorage.removeItem("userKey")
-          localStorage.removeItem("accountNo")
-          navigate("/login")
-        }
-      })
     }).catch((err) => {
       console.log("BE 유저 생성중 오류\n", err)
+      return
     })
+
+    // 4. 계좌에 10000원 충전
+    localStorage.getItem("accountNo") && await axios.post("https://solpop.xyz/api/v1/auth/depositSSAFYAccount",{
+      "Header":{
+          "apiName":"updateDemandDepositAccountDeposit",
+          "transmissionDate":transmissionDate,
+          "transmissionTime":transmissionTime,
+          "institutionCode":"00100",
+          "fintechAppNo":"001",
+          "apiServiceCode":"updateDemandDepositAccountDeposit",
+          "institutionTransactionUniqueNo":transmissionCode,
+          "apiKey": import.meta.env.VITE_ADMIN_SECRET_KEY,
+          "userKey" : localStorage.getItem("userKey")
+      },
+      "accountNo":localStorage.getItem("accountNo"),
+      "transactionBalance":"10000", // 입금할 금액
+      "transactionSummary":"(수시입출금) : 입금"
+    }).then((res) => {
+       console.log(res)
+        Swal.fire({
+          icon:"success",
+          title:`환영합니다, ${name} 님!`,
+          html:`이벤트로 제공된 10000원으로<br> 다양한 콘텐츠를 즐겨보세요!`,
+          confirmButtonText:"로그인하기"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            localStorage.removeItem("userKey")
+            localStorage.removeItem("accountNo")
+            navigate("/login")
+          }
+        })
+     }).catch((err) => {
+       console.log("계좌 입금중 오류발생\n", err)
+       return
+     })
   };
 
 
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 px-5">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-        <h2 className="text-2xl font-semibold text-center mb-4">회원가입</h2>
+    <div className="flex items-center justify-center min-h-screen px-5 bg-gray-100">
+      <div className="relative w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+        <h2 className="mb-4 text-xl font-semibold text-center">회원가입</h2>
         <div className="relative z-0 w-full mb-6 group">
           <input
             type="text"
@@ -237,7 +265,7 @@ const RegisterPage = () => {
             </div>
             <button
               onClick={() => handleEmailCheck()}
-              className="mt-2 bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600"
+              className="px-4 py-1 mt-2 text-white bg-blue-500 rounded hover:bg-blue-600"
               >
               중복확인
             </button>
@@ -293,10 +321,13 @@ const RegisterPage = () => {
         </div>
         <button
           onClick={() => handleSignUp()}
-          className="w-full bg-blue-500 font-bold text-white py-2 px-4 rounded hover:bg-blue-600"
+          className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600"
         >
           회원가입하기
         </button>
+      {/* <div className="absolute inset-0 z-20 flex justify-center bg-white rounded-lg bg-opacity-70">
+        <img src={RegisterIcon} className="w-[300px] aspect-[1/1]"></img>
+      </div> */}
       </div>
     </div>
   );
