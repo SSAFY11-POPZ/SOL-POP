@@ -3,7 +3,9 @@
 
     import jakarta.transaction.Transactional;
     import org.springframework.data.jpa.repository.JpaRepository;
+    import org.springframework.data.jpa.repository.Modifying;
     import org.springframework.data.jpa.repository.Query;
+    import org.springframework.data.repository.query.Param;
     import org.springframework.stereotype.Repository;
     import popz.solpop.dto.CheckReservation;
     import popz.solpop.dto.ReservationCount;
@@ -34,5 +36,10 @@
                 + "WHERE r.member.memId = :memId AND r.store.storeEndDate >= NOW()"
                 + "ORDER BY r.reserveDate DESC, r.reserveTime DESC")
         List<Reservation.MyReservation> findMyReservation(Integer memId);
+
+        @Modifying
+        @Transactional
+        @Query("UPDATE Reservation r SET r.isVisited = :isVisited WHERE r.store.storeId = :storeId AND r.member.memId = :memId")
+        int updateIsVisited(@Param("isVisited") boolean isVisited, @Param("storeId") Integer storeId, @Param("memId") Integer memId);
 
     }

@@ -112,9 +112,7 @@ public class AuthController {
         );
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String jsonResponse = objectMapper.writeValueAsString(responseData);
-            return Response.setSuccess(jsonResponse);
+            return Response.setSuccessData("엑세스토큰이 유효합니다",responseData);
         } catch (Exception e) {
             return Response.setFailed("응답 데이터를 처리하는 중 오류가 발생했습니다.");
         }

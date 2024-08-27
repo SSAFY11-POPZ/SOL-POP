@@ -1,5 +1,6 @@
 package popz.solpop.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,4 +74,12 @@ public class ReservationService {
   public List<Reservation.MyReservation> getMyReservations(Integer memId) {
     return reservationRepository.findMyReservation(memId);
   }
+
+  public void updateIsVisited(Integer storeId, Integer memId, boolean isVisited) {
+    int updatedRows = reservationRepository.updateIsVisited(isVisited, storeId, memId);
+    if (updatedRows == 0) {
+      throw new EntityNotFoundException("Reservation not found");
+    }
+  }
+
 }
