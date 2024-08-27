@@ -5,10 +5,10 @@ import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import axios from 'axios';
 
 // 이미지 import
-import img1 from '../img/1.JPG';
-import img2 from '../img/2.JPG';
-import img3 from '../img/3.JPG';
-import img4 from '../img/4.JPG';
+import img1 from 'src/Main/img/1.jpg';
+import img2 from 'src/Main/img/2.jpg';
+import img3 from 'src/Main/img/3.jpg';
+import img4 from 'src/Main/img/4.jpg';
 
 const Carousel_main = ({ spaceBetween = 10, slidesPerView = 1 }) => {
   const [slides, setSlides] = useState([]);
