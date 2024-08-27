@@ -6,19 +6,18 @@ import { addDays, subDays, startOfWeek, format } from 'date-fns';
 const CalendarPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [middleDay, setMiddleDay] = useState(addDays(startOfWeek(new Date(), { weekStartsOn: 0 }), 3)); // 현재 주간의 수요일
   const [events, setEvents] = useState([]);
   const [error, setError] = useState(false);
   const [selectedEventIndex, setSelectedEventIndex] = useState(null);
   
-  const baseURL = 'https://solpop.xyz'
-  //const baseURL = 'http://localhost:5173'; // baseURL을 별도의 변수로 관리
-  const navbarHeight = 70; // 네브바의 높이를 픽셀 단위로 설정
+  const baseURL = 'https://solpop.xyz';
+  const navbarHeight = 70;
 
-  // 서버에서 이벤트를 가져오는 함수
   const fetchEvents = async (date) => {
-    const dateString = format(date, 'yyyy-MM-dd'); // 날짜를 'YYYY-MM-DD' 형식으로 변환
+    const dateString = format(date, 'yyyy-MM-dd');
     try {
-      const response = await fetch(`${baseURL}/api/v1/store/calendar?date=${dateString}`); // API 요청
+      const response = await fetch(`${baseURL}/api/v1/store/calendar?date=${dateString}`);
       if (!response.ok) {
         throw new Error('Failed to fetch events');
       }
@@ -35,21 +34,18 @@ const CalendarPage = () => {
   const handlePrevWeek = () => {
     const newDate = subDays(currentDate, 7);
     setCurrentDate(newDate);
-    if (isSameWeek(selectedDate, newDate)) {
-      setSelectedDate(newDate);
-    }
+    setMiddleDay(addDays(startOfWeek(newDate, { weekStartsOn: 0 }), 3)); // 주간 이동 시 middleDay 업데이트
   };
 
   const handleNextWeek = () => {
     const newDate = addDays(currentDate, 7);
     setCurrentDate(newDate);
-    if (isSameWeek(selectedDate, newDate)) {
-      setSelectedDate(newDate);
-    }
+    setMiddleDay(addDays(startOfWeek(newDate, { weekStartsOn: 0 }), 3)); // 주간 이동 시 middleDay 업데이트
   };
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
+    setMiddleDay(date); // 클릭한 날짜로 middleDay 설정
     fetchEvents(date); // 요일 클릭 시 서버에 GET 요청
     setSelectedEventIndex(null);
   };
@@ -58,7 +54,6 @@ const CalendarPage = () => {
     setSelectedEventIndex(prevIndex => (prevIndex === index ? null : index));
   };
 
-  // 페이지 입장 시 오늘 날짜로 서버에 GET 요청
   useEffect(() => {
     fetchEvents(selectedDate);
   }, [selectedDate]);
@@ -79,9 +74,10 @@ const CalendarPage = () => {
         <CalendarCarousel
           currentDate={currentDate}
           selectedDate={selectedDate}
-          onDateClick={handleDateClick} // 요일 클릭 시 서버에 GET 요청
+          onDateClick={handleDateClick}
           onPrevWeek={handlePrevWeek}
           onNextWeek={handleNextWeek}
+          middleDay={middleDay} // middleDay 전달
         />
         <div style={{ marginTop: '20px' }}>
           <EventList 
@@ -95,12 +91,6 @@ const CalendarPage = () => {
       </div>
     </div>
   );
-};
-
-const isSameWeek = (date1, date2) => {
-  const startOfWeekDate1 = startOfWeek(date1);
-  const startOfWeekDate2 = startOfWeek(date2);
-  return startOfWeekDate1.getTime() === startOfWeekDate2.getTime();
 };
 
 export default React.memo(CalendarPage);
