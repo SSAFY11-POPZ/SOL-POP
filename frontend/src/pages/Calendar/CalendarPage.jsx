@@ -6,10 +6,10 @@ import { addDays, subDays, startOfWeek, format } from 'date-fns';
 const CalendarPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [middleDay, setMiddleDay] = useState(addDays(startOfWeek(new Date(), { weekStartsOn: 0 }), 3)); // 현재 주간의 수요일
+  const [middleDay, setMiddleDay] = useState(addDays(startOfWeek(new Date(), { weekStartsOn: 0 }), 3));
   const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [error, setError] = useState(false);
-  const [selectedEventIndex, setSelectedEventIndex] = useState(null);
   
   const baseURL = 'https://solpop.xyz';
   const navbarHeight = 70;
@@ -22,41 +22,46 @@ const CalendarPage = () => {
         throw new Error('Failed to fetch events');
       }
       const data = await response.json();
-      setEvents(data.events || []);
+      setEvents(data || []);
       setError(false);
+      if (data && data.length > 0) {
+        setSelectedEvent(data[0]); // 첫 번째 이벤트를 기본 선택으로 설정
+      } else {
+        setSelectedEvent(null);
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
       setEvents([]);
       setError(true);
+      setSelectedEvent(null);
     }
   };
 
   const handlePrevWeek = () => {
     const newDate = subDays(currentDate, 7);
     setCurrentDate(newDate);
-    setMiddleDay(addDays(startOfWeek(newDate, { weekStartsOn: 0 }), 3)); // 주간 이동 시 middleDay 업데이트
+    setMiddleDay(addDays(startOfWeek(newDate, { weekStartsOn: 0 }), 3));
   };
 
   const handleNextWeek = () => {
     const newDate = addDays(currentDate, 7);
     setCurrentDate(newDate);
-    setMiddleDay(addDays(startOfWeek(newDate, { weekStartsOn: 0 }), 3)); // 주간 이동 시 middleDay 업데이트
+    setMiddleDay(addDays(startOfWeek(newDate, { weekStartsOn: 0 }), 3));
   };
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
-    setMiddleDay(date); // 클릭한 날짜로 middleDay 설정
-    fetchEvents(date); // 요일 클릭 시 서버에 GET 요청
-    setSelectedEventIndex(null);
+    setMiddleDay(date);
+    fetchEvents(date); // 클릭한 날짜의 이벤트를 로드
   };
 
-  const handleEventClick = (index) => {
-    setSelectedEventIndex(prevIndex => (prevIndex === index ? null : index));
+  const handleEventClick = (event) => {
+    setSelectedEvent(event); // 클릭된 이벤트를 선택
   };
 
   useEffect(() => {
-    fetchEvents(selectedDate);
-  }, [selectedDate]);
+    fetchEvents(selectedDate); // 컴포넌트 로드 시 현재 날짜의 이벤트를 로드
+  }, []);
 
   return (
     <div 
@@ -65,9 +70,9 @@ const CalendarPage = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        paddingBottom: `${navbarHeight}px`, // 네브바 높이만큼 아래 패딩 추가
-        minHeight: `calc(100vh - ${navbarHeight}px)`, // 네브바를 뺀 전체 높이
-        overflowY: 'auto' // 스크롤 가능하게 설정
+        paddingBottom: `${navbarHeight}px`, 
+        minHeight: `calc(100vh - ${navbarHeight}px)`,
+        overflowY: 'auto' 
       }}
     >
       <div style={{ width: '100%', maxWidth: '600px', padding: '0 10px' }}>
@@ -77,7 +82,7 @@ const CalendarPage = () => {
           onDateClick={handleDateClick}
           onPrevWeek={handlePrevWeek}
           onNextWeek={handleNextWeek}
-          middleDay={middleDay} // middleDay 전달
+          middleDay={middleDay} 
         />
         <div style={{ marginTop: '20px' }}>
           <EventList 
@@ -85,7 +90,7 @@ const CalendarPage = () => {
             error={error} 
             onEventClick={handleEventClick} 
             selectedDate={selectedDate}
-            selectedEventIndex={selectedEventIndex}
+            selectedEvent={selectedEvent}
           />
         </div>
       </div>

@@ -1,8 +1,8 @@
 import React from 'react';
 
 const EventDetails = ({ event }) => {
-  //const baseURL = 'http://localhost:5173'; // baseURL을 설정합니다.
-  const baseURL = 'https://solpop.xyz'
+  const baseURL = 'https://solpop.xyz';
+  
   const handleDetailClick = () => {
     window.location.href = `${baseURL}/detail/${event.storeId}`;
   };
