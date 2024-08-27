@@ -47,5 +47,5 @@ export default defineConfig({
   server: {
     open: true,
   },
-  assetsInclude: ['**/*.JPG', '**/*.jpg', '**/*.png', '**/*.jpeg', '**/*.svg'],  // 이미지 확장자 추가
+
 });
