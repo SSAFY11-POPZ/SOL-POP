@@ -18,10 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Service
 public class AuthService {
@@ -180,17 +186,58 @@ public class AuthService {
         webClient = WebClient.create("https://finopenapi.ssafy.io/ssafy/api/v1");
     }
 
-    public SSAFYUserResponse createSSAFYUser(SSAFYUserRequest ssafyUserRequest) {
+    public ResponseEntity<Map> createSSAFYUser(Map<String, Object> ssafyUserCreateRequest) {
         try {
             return webClient.post()
                     .uri("/member")
-                    .bodyValue(ssafyUserRequest)
-                    .retrieve()
-                    .bodyToMono(SSAFYUserResponse.class)
+                    .bodyValue(ssafyUserCreateRequest)
+                    .exchangeToMono(this::handleResponse)
                     .block();
         } catch (Exception e) {
-            throw e;
+            throw new RuntimeException("Failed to create SSAFY user", e);
         }
     }
+
+    public ResponseEntity<Map> checkSSAFYUser(Map<String, Object> ssafyUserCheckRequest) {
+        try {
+            return webClient.post()
+                    .uri("/member/search")
+                    .bodyValue(ssafyUserCheckRequest)
+                    .exchangeToMono(this::handleResponse)
+                    .block();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to check SSAFY user", e);
+        }
+    }
+
+    public ResponseEntity<Map> createSSAFYAccount(Map<String, Object> ssafyCreateAccountRequest) {
+        try {
+            return webClient.post()
+                    .uri("/edu/demandDeposit/createDemandDepositAccount")
+                    .bodyValue(ssafyCreateAccountRequest)
+                    .exchangeToMono(this::handleResponse)
+                    .block();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create SSAFY account", e);
+        }
+    }
+
+    public ResponseEntity<Map> depositSSAFYAccount(Map<String, Object> ssafyDepositAccountRequest) {
+        try {
+            return webClient.post()
+                    .uri("/edu/demandDeposit/updateDemandDepositAccountDeposit")
+                    .bodyValue(ssafyDepositAccountRequest)
+                    .exchangeToMono(this::handleResponse)
+                    .block();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to deposit SSAFY account", e);
+        }
+    }
+
+    private Mono<ResponseEntity<Map>> handleResponse(ClientResponse response) {
+        return response.bodyToMono(Map.class)
+                .map(body -> ResponseEntity.status(response.statusCode()).body(body));
+    }
+
 
 }

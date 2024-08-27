@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import popz.solpop.dto.MemberId;
 import popz.solpop.entity.Heart;
@@ -18,6 +19,7 @@ import popz.solpop.service.PointService;
 import popz.solpop.service.ReservationService;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -74,6 +76,15 @@ public class MemberController {
         Member member = memberService.getMemberByUserName(userName);
 
         return pointService.getMyPointUsageHistory(member.getMemId());
+    }
+
+    @DeleteMapping("/cancelReservation")
+    public ResponseEntity<?> cancelReservation(
+            @RequestBody Map<String, Integer> reserveIdMap
+    ) {
+
+        reservationService.deleteReservation(reserveIdMap.get("reserveId"));
+        return ResponseEntity.ok().build();
     }
 
 

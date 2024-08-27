@@ -26,6 +26,11 @@ jobs:
       working-directory: ./backend
       run: ./gradlew clean build
 
+    - name: Create .env file for frontend
+      run: |
+        echo "VITE_KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}" > ./frontend/.env
+        echo "VITE_ADMIN_SECRET_KEY=${{ secrets.ADMIN_SECRET_KEY }}" >> ./frontend/.env
+
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
