@@ -5,12 +5,7 @@ import { Autoplay, Navigation } from 'swiper/modules';
 import axios from 'axios';
 
 // 이미지 import (경로를 컴포넌트 위치에 맞춰 수정)
-import menuImage from 'src/Main/img/menu.png';   // 상대 경로로 이미지 import
-import subc2 from 'src/Main/img/subc2.JPG';
-import subc1 from 'src/Main/img/subc1.JPG';
-import subc3 from 'src/Main/img/subc3.JPG';
-import subc4 from 'src/Main/img/subc4.JPG';
-import subc5 from 'src/Main/img/subc5.JPG';
+import menuImage from '../img/menu.png';   // 상대 경로로 이미지 import
 
 const slideData = [
   { label: '전체', imagePath: menuImage },
@@ -20,14 +15,6 @@ const slideData = [
   { label: '성수' },
   { label: '광주' },
   { label: '동명동' }
-];
-
-const defaultImages = [
-  { storeThumbnailUrl: subc1, storeName: 'Default Store 1', storeId: 1 },
-  { storeThumbnailUrl: subc2, storeName: 'Default Store 2', storeId: 2 },
-  { storeThumbnailUrl: subc3, storeName: 'Default Store 3', storeId: 3 },
-  { storeThumbnailUrl: subc4, storeName: 'Default Store 4', storeId: 4 },
-  { storeThumbnailUrl: subc5, storeName: 'Default Store 5', storeId: 5 },
 ];
 
 const styles = {
@@ -92,7 +79,7 @@ const styles = {
 };
 
 const Carousel_sub = () => {
-  const [images, setImages] = useState(defaultImages);
+  const [images, setImages] = useState([]);
   const [activeSlide, setActiveSlide] = useState('전체');
 
   const baseURL = 'https://solpop.xyz'; // 기본 URL을 설정합니다.
@@ -102,10 +89,10 @@ const Carousel_sub = () => {
     try {
       const response = await axios.get(fetchUrl);
       const data = response.data;
-      setImages(data.length ? data : defaultImages);
+      setImages(data.length ? data : []);
     } catch (error) {
       console.error(`Error fetching data: 실패 sub_Carousel ${tag}`, error);
-      setImages(defaultImages);
+      setImages([]); // 에러 발생 시 빈 배열로 설정
     }
   };
 
