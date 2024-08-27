@@ -1,10 +1,11 @@
 import React from 'react';
 
 // 이미지 import
-import likeImg from '../img/like.png';
-import calendarImg from '../img/calendar.png';
-import raffleImg from '../img/raffle.png';
-import b4Img from '../img/b4.jpg';
+
+import likeImg from 'src/Main/img/like.png';
+import calendarImg from 'src/Main/img/calendar.png';
+import raffleImg from 'src/Main/img/raffle.png';
+import b4Img from 'src/Main/img/b4.jpg';
 
 const baseURL= 'https://solpop.xyz';
 
