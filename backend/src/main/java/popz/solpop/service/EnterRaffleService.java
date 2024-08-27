@@ -3,11 +3,10 @@ package popz.solpop.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import popz.solpop.entity.EnterRaffle;
-import popz.solpop.entity.Heart;
-import popz.solpop.entity.Member;
-import popz.solpop.entity.Raffle;
+import popz.solpop.entity.*;
 import popz.solpop.repository.EnterRaffleRepository;
+
+import java.util.List;
 
 
 @Service
@@ -24,5 +23,10 @@ public class EnterRaffleService {
   public EnterRaffle saveEnterRaffle(EnterRaffle enterRaffle) {
     return enterRaffleRepository.save(enterRaffle);
   }
+
+  public List<EnterRaffle.MyRaffle> getMyRaffles(Integer memId) {
+    return enterRaffleRepository.findMyRaffle(memId);
+  }
+
 
 }

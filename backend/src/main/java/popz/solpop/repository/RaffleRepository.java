@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import popz.solpop.entity.Member;
 import popz.solpop.entity.Raffle;
+import popz.solpop.entity.Reservation;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +21,7 @@ public interface RaffleRepository extends JpaRepository<Raffle, Integer> {
     List<Raffle.RaffleCard> findAllByDateTime(LocalDateTime dateTime);
 
     Optional<Raffle> findRaffleByRaffleId(Integer raffleId);
+
 
 
 }

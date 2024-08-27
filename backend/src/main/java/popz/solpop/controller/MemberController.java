@@ -8,15 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import popz.solpop.dto.MemberId;
-import popz.solpop.entity.Heart;
-import popz.solpop.entity.Member;
-import popz.solpop.entity.Point;
-import popz.solpop.entity.Reservation;
+import popz.solpop.entity.*;
 import popz.solpop.security.TokenProvider;
-import popz.solpop.service.HeartService;
-import popz.solpop.service.MemberService;
-import popz.solpop.service.PointService;
-import popz.solpop.service.ReservationService;
+import popz.solpop.service.*;
 
 import java.util.List;
 import java.util.Map;
@@ -38,6 +32,8 @@ public class MemberController {
     private MemberService memberService;
     @Autowired
     private PointService pointService;
+    @Autowired
+    private EnterRaffleService enterRaffleService;
 
     @GetMapping("/reservation")
     public List<Reservation.MyReservation> getMyReservation(
@@ -57,6 +53,18 @@ public class MemberController {
         Member member = memberService.getMemberByUserName(userName);
         return heartService.getMyHeart(member.getMemId());
     }
+
+
+    @GetMapping("/enterRaffle")
+    public List<EnterRaffle.MyRaffle> getMyRaffle(
+            @RequestHeader("Authorization") String token
+    ) {
+
+        String userName = tokenProvider.getUserName(token.substring(7));
+        Member member = memberService.getMemberByUserName(userName);
+        return enterRaffleService.getMyRaffles(member.getMemId());
+    }
+
     @GetMapping("/point/balance")
     public Integer getMyPointBalance(
             @RequestHeader("Authorization") String token
