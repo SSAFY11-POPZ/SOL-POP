@@ -4,22 +4,30 @@ import 'swiper/swiper-bundle.css';
 import { Autoplay, Navigation } from 'swiper/modules';
 import axios from 'axios';
 
+// 이미지 import (경로를 컴포넌트 위치에 맞춰 수정)
+import menuImage from '../img/menu.png';   // 상대 경로로 이미지 import
+import subc1 from '../img/subc1.jpg';
+import subc2 from '../img/subc2.jpg';
+import subc3 from '../img/subc3.jpg';
+import subc4 from '../img/subc4.jpg';
+import subc5 from '../img/subc5.jpg';
+
 const slideData = [
-  { label: '전체', imagePath: 'src/pages/Main/img/menu.svg' },
+  { label: '전체', imagePath: menuImage },
   { label: 'SOL' },
   { label: '코스메틱' },
-  { label: '더 현대' },
+  { label: '더현대' },
   { label: '성수' },
   { label: '광주' },
   { label: '동명동' }
 ];
 
 const defaultImages = [
-  { storeThumbnailUrl: 'src/pages/Main/img/subc1.jpg', storeName: 'Default Store 1', storeId: 1 },
-  { storeThumbnailUrl: 'src/pages/Main/img/subc2.jpg', storeName: 'Default Store 2', storeId: 2 },
-  { storeThumbnailUrl: 'src/pages/Main/img/subc3.jpg', storeName: 'Default Store 3', storeId: 3 },
-  { storeThumbnailUrl: 'src/pages/Main/img/subc4.jpg', storeName: 'Default Store 4', storeId: 4 },
-  { storeThumbnailUrl: 'src/pages/Main/img/subc5.jpg', storeName: 'Default Store 5', storeId: 5 },
+  { storeThumbnailUrl: subc1, storeName: 'Default Store 1', storeId: 1 },
+  { storeThumbnailUrl: subc2, storeName: 'Default Store 2', storeId: 2 },
+  { storeThumbnailUrl: subc3, storeName: 'Default Store 3', storeId: 3 },
+  { storeThumbnailUrl: subc4, storeName: 'Default Store 4', storeId: 4 },
+  { storeThumbnailUrl: subc5, storeName: 'Default Store 5', storeId: 5 },
 ];
 
 const styles = {

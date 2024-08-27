@@ -4,6 +4,12 @@ import 'swiper/swiper-bundle.css';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import axios from 'axios';
 
+// 이미지 import
+import img1 from '../img/1.JPG';
+import img2 from '../img/2.JPG';
+import img3 from '../img/3.JPG';
+import img4 from '../img/4.JPG';
+
 const Carousel_main = ({ spaceBetween = 10, slidesPerView = 1 }) => {
   const [slides, setSlides] = useState([]);
   const [error, setError] = useState(false);
@@ -12,10 +18,10 @@ const Carousel_main = ({ spaceBetween = 10, slidesPerView = 1 }) => {
   const fetchUrl = `${baseURL}/api/v1/store/main/carousel`;
 
   const defaultSlides = [
-    { storeThumbnailUrl: 'src/pages/Main/img/1.JPG', storeName: 'Default Store 1', storeId: 1 },
-    { storeThumbnailUrl: 'src/pages/Main/img/2.JPG', storeName: 'Default Store 2', storeId: 2 },
-    { storeThumbnailUrl: 'src/pages/Main/img/3.JPG', storeName: 'Default Store 3', storeId: 3 },
-    { storeThumbnailUrl: 'src/pages/Main/img/4.JPG', storeName: 'Default Store 4', storeId: 4 },
+    { storeThumbnailUrl: img1, storeName: 'Default Store 1', storeId: 1 },
+    { storeThumbnailUrl: img2, storeName: 'Default Store 2', storeId: 2 },
+    { storeThumbnailUrl: img3, storeName: 'Default Store 3', storeId: 3 },
+    { storeThumbnailUrl: img4, storeName: 'Default Store 4', storeId: 4 },
   ];
 
   const storeNameStyle = {
