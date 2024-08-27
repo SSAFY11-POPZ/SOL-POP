@@ -5,7 +5,7 @@ import React from 'react';
 import likeImg from 'src/Main/img/like.png';
 import calendarImg from 'src/Main/img/calendar.png';
 import raffleImg from 'src/Main/img/raffle.png';
-import b4Img from 'src/Main/img/b4.jpg';
+import b4Img from 'src/Main/img/b4.JPG';
 
 const baseURL= 'https://solpop.xyz';
 

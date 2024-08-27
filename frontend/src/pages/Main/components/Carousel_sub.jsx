@@ -6,11 +6,11 @@ import axios from 'axios';
 
 // 이미지 import (경로를 컴포넌트 위치에 맞춰 수정)
 import menuImage from 'src/Main/img/menu.png';   // 상대 경로로 이미지 import
-import subc2 from 'src/Main/img/subc2.jpg';
-import subc1 from 'src/Main/img/subc1.jpg';
-import subc3 from 'src/Main/img/subc3.jpg';
-import subc4 from 'src/Main/img/subc4.jpg';
-import subc5 from 'src/Main/img/subc5.jpg';
+import subc2 from 'src/Main/img/subc2.JPG';
+import subc1 from 'src/Main/img/subc1.JPG';
+import subc3 from 'src/Main/img/subc3.JPG';
+import subc4 from 'src/Main/img/subc4.JPG';
+import subc5 from 'src/Main/img/subc5.JPG';
 
 const slideData = [
   { label: '전체', imagePath: menuImage },
