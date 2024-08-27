@@ -136,7 +136,7 @@
             heart.setStore(store);
             Heart createdHeart = heartService.saveHeart(heart);
 
-            return ResponseEntity.ok(createdHeart);
+            return ResponseEntity.ok("하트");
         }
 
 
