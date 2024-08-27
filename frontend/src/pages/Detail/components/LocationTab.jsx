@@ -57,7 +57,7 @@ function KakaoMap({ address }) {
 
     const loadKakaoMapScript = () => {
       const script = document.createElement('script');
-      const apiKey = import.meta.env.VITE_KAKAO_API_KEY; // Get the API key from environment variables
+      const apiKey = import.meta.env.VITE_KAKAO_API_KEY;
       script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false&libraries=services`;
       script.async = true;
 

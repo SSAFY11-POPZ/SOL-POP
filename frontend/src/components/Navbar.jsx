@@ -1,11 +1,16 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, matchPath } from 'react-router-dom';
 import './Navbar.css';
 
 const Navbar = () => {
   const location = useLocation();
 
-  if (location.pathname.includes('/detail')) {
+  const isDetailOrRafflePage = 
+    location.pathname.includes('/detail') 
+    // ||
+    // matchPath('/raffle/:raffleId', location.pathname);
+
+  if (isDetailOrRafflePage) {
     return null;
   }
 

@@ -13,6 +13,7 @@ const DetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('info');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isHearted, setIsHearted] = useState(false); // 하트 상태를 추적하는 상태
 
   useEffect(() => {
     const fetchDetailData = async () => {
@@ -21,6 +22,7 @@ const DetailPage = () => {
         const data = response.data;
         setDetailData(data);
         setLoading(false);
+        setIsHearted(data.isHearted); // 서버에서 하트 상태를 받아서 설정
       } catch (error) {
         console.error("Error fetching detail data", error);
         setLoading(false);
@@ -32,18 +34,26 @@ const DetailPage = () => {
 
   const handleHeartClick = async () => {
     try {
-      const response = await axios.post(`https://solpop.xyz/api/v1/store/heart`, {
-        storeId: id
-      });
+      const response = await axios.post(
+        `https://solpop.xyz/api/v1/store/heart`,
+        { storeId: id },
+        {
+          headers: {
+            Authorization: `Bearer ${accesstoken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (response.status === 200) {
-        // 서버로부터 반영된 heartCount를 받아와서 detailData 상태를 업데이트
+        // 하트 상태를 토글하고 heartCount를 업데이트
+        setIsHearted(!isHearted);
         setDetailData((prevData) => ({
           ...prevData,
-          heartCount: prevData.heartCount + 1, // Assuming the server automatically increments the count
+          heartCount: isHearted ? prevData.heartCount - 1 : prevData.heartCount + 1,
         }));
       } else {
-        alert('하트를 추가할 수 없습니다.');
+        alert('하트 상태를 변경할 수 없습니다.');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -125,7 +135,7 @@ const DetailPage = () => {
             className="text-2xl cursor-pointer" 
             onClick={handleHeartClick}
           >
-            🔖
+            {isHearted ? '💖' : '🤍'}
           </span>
           <span className="ml-2 text-lg">{detailData.heartCount}</span>
         </div>

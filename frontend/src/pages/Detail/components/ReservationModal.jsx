@@ -95,18 +95,23 @@ const ReservationDrawer = ({ onClose, storeId }) => {
     }
   
     const formattedDate = selectedDate.toLocaleDateString('en-CA');
-    const datetime = `${formattedDate}${selectedTime}`;
+    const datetime = `${formattedDate}T${selectedTime}`;
   
     try {
+      console.log('Submitting reservation with datetime:', datetime);
+  
       const response = await axios.post(
-        `https://solpop.xyz/api/v1/store/${storeId}/reserve/request?datetime={${datetime}}`,
+        `https://solpop.xyz/api/v1/store/${storeId}/reserve/request?datetime=${datetime}`,
         {},
         {
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${accesstoken}`,
           },
         }
       );
+  
+      console.log('Response:', response.data);
   
       if (response.status === 200) {
         alert('예약이 완료되었습니다.');
@@ -115,11 +120,14 @@ const ReservationDrawer = ({ onClose, storeId }) => {
         alert('예약이 실패했습니다.');
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('에러가 발생했습니다.');
+      if (error.response && error.response.status === 409) {
+        alert('이미 예약된 팝업입니다.');
+      } else {
+        console.error('Error during reservation:', error);
+        alert('에러가 발생했습니다. 서버 관리자에게 문의하세요.');
+      }
     }
   };
-  
 
   const isTimeUnavailable = (time) => {
     return unavailableTimes.includes(time);
