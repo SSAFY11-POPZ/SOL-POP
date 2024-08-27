@@ -23,7 +23,7 @@ const LoginPage = () => {
     setPassword(e.target.value)
   }
   const handleLoginClick = async () => {
-    if (email.length == 0 && password.length == 0) {
+    if (email.length == 0 || password.length == 0) {
       Swal.fire({
         icon:"warning",
         text:"아이디 또는 비밀번호를 입력해주세요."
