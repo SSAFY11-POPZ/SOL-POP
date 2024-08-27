@@ -10,7 +10,7 @@ const getDummyEvents = (date) => [
     storeStartDate: format(subDays(date, 1), 'yyyy-MM-dd'),
     storeEndDate: format(addDays(date, 1), 'yyyy-MM-dd'),
     storePlace: '서울',
-    storeDetail: '더미 이벤트 1 상세 설명입니다. 에이비애 마나 다가재해댜재래 재래패댁래 재배내애퍼뱌 거힙갸갸민ㅁ앟;ㅣㅑㅓㅁㄴㄹ.',
+    storeDetail: '더미 이벤트 1 상세 설명입니다.',
     storeKeyword: 'shoes',
     storeRsvPriority: true,
     storeCapacity: 100,
@@ -24,7 +24,7 @@ const getDummyEvents = (date) => [
     storeStartDate: format(subDays(date, 2), 'yyyy-MM-dd'),
     storeEndDate: format(addDays(date, 2), 'yyyy-MM-dd'),
     storePlace: '부산',
-    storeDetail: '더미 이벤트 2 상세 설명입니다. 우영이가 집을 안보내준다 빨리 가서 자고 내일 지각하고 싶다',
+    storeDetail: '더미 이벤트 2 상세 설명입니다.',
     storeKeyword: 'clothes',
     storeRsvPriority: false,
     storeCapacity: 150,
@@ -38,7 +38,7 @@ const getDummyEvents = (date) => [
     storeStartDate: format(subDays(date, 3), 'yyyy-MM-dd'),
     storeEndDate: format(addDays(date, 3), 'yyyy-MM-dd'),
     storePlace: '대구',
-    storeDetail: '더미 이벤트 3 상세 설명입니다. 혼자 빨리 끝내고 꿀빨아야지~~~ 금요일에 고기 ㅈㄴ먹어야지',
+    storeDetail: '더미 이벤트 3 상세 설명입니다.',
     storeKeyword: 'bags',
     storeRsvPriority: true,
     storeCapacity: 200,
@@ -48,15 +48,16 @@ const getDummyEvents = (date) => [
   },
 ];
 
-const EventList = ({ events, error, selectedDate }) => {
+const EventList = ({ events, error, selectedDate, onEventClick }) => {
   const [openEvents, setOpenEvents] = useState([]);
 
-  const handleEventClick = (index) => {
+  const handleEventClick = (event, index) => {
     if (openEvents.includes(index)) {
       setOpenEvents(openEvents.filter((i) => i !== index)); // 이미 열린 이벤트를 클릭하면 닫기
     } else {
       setOpenEvents([...openEvents, index]); // 새로운 이벤트를 클릭하면 열기
     }
+    onEventClick(event); // 클릭된 이벤트를 부모 컴포넌트로 전달
   };
 
   // 데이터가 없을 때 더미 데이터를 사용합니다.
@@ -73,7 +74,7 @@ const EventList = ({ events, error, selectedDate }) => {
             className={`event-item flex items-center space-x-4 p-4 bg-white shadow-md rounded-lg cursor-pointer hover:bg-gray-100 transition ${
               openEvents.includes(index) ? 'border border-blue-500' : ''
             }`}
-            onClick={() => handleEventClick(index)} // 클릭 이벤트 처리
+            onClick={() => handleEventClick(event, index)} // 클릭 이벤트 처리
           >
             <img
               src={event.storeThumbnailUrl}
