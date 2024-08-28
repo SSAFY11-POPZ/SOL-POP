@@ -11,13 +11,6 @@ const Carousel_main = ({ spaceBetween = 10, slidesPerView = 1 }) => {
 
   const fetchUrl = `${baseURL}/api/v1/store/main/carousel`;
 
-  const defaultSlides = [
-    { storeThumbnailUrl: 'src/pages/Main/img/1.JPG', storeName: 'Default Store 1', storeId: 1 },
-    { storeThumbnailUrl: 'src/pages/Main/img/2.JPG', storeName: 'Default Store 2', storeId: 2 },
-    { storeThumbnailUrl: 'src/pages/Main/img/3.JPG', storeName: 'Default Store 3', storeId: 3 },
-    { storeThumbnailUrl: 'src/pages/Main/img/4.JPG', storeName: 'Default Store 4', storeId: 4 },
-  ];
-
   const storeNameStyle = {
     position: 'absolute',
     bottom: '45px',
@@ -46,7 +39,6 @@ const Carousel_main = ({ spaceBetween = 10, slidesPerView = 1 }) => {
         }
       } catch (error) {
         console.error('Error fetching data: 실패main_Carousel', error);
-        setSlides(defaultSlides);
         setError(true);
       }
     };

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import axios from 'axios';
+import api from '../../../utils/axios';
+import { useNavigate } from 'react-router-dom';
 
 const ReservationDrawer = ({ onClose, storeId }) => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -12,41 +13,50 @@ const ReservationDrawer = ({ onClose, storeId }) => {
   const [storeStartDate, setStoreStartDate] = useState(null);
   const [storeEndDate, setStoreEndDate] = useState(null);
   const drawerRef = useRef(null);
+  const navigate = useNavigate();
+
+  const accesstoken = localStorage.getItem('accessToken'); // Access token 가져오기
 
   useEffect(() => {
+    if (!accesstoken) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+      return;
+    }
+    
     setIsVisible(true);
-
+  
     const handleClickOutside = (event) => {
       if (drawerRef.current && !drawerRef.current.contains(event.target)) {
         onClose();
       }
     };
-
+  
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [onClose]);
+  }, [onClose, accesstoken, navigate]);
+  
 
   useEffect(() => {
     const fetchStoreData = async () => {
       try {
-        const response = await axios.get(`https://solpop.xyz/api/v1/store/${storeId}`);
+        const response = await api.get(`/api/v1/store/${storeId}`);
         const storeData = response.data.store;
-
         setStoreStartDate(new Date(storeData.storeStartDate));
         setStoreEndDate(new Date(storeData.storeEndDate));
       } catch (error) {
-        console.error('Error fetching store data:', error);
+        console.error('Error fetching store data:', error.response ? error.response.data : error.message);
       }
     };
-
+    
     fetchStoreData();
   }, [storeId]);
 
   const fetchReserveData = async (date) => {
     try {
-      const response = await axios.get(`https://solpop.xyz/api/v1/store/${storeId}/reserve?date=${date}`);
+      const response = await api.get(`/api/v1/store/${storeId}/reserve?date=${date}`);
       console.log('API Response:', response.data);
 
       const data = response.data;
@@ -93,15 +103,15 @@ const ReservationDrawer = ({ onClose, storeId }) => {
       alert('날짜와 시간을 둘 다 선택해주세요.');
       return;
     }
-  
+
     const formattedDate = selectedDate.toLocaleDateString('en-CA');
     const datetime = `${formattedDate}T${selectedTime}`;
-  
+
     try {
       console.log('Submitting reservation with datetime:', datetime);
-  
-      const response = await axios.post(
-        `https://solpop.xyz/api/v1/store/${storeId}/reserve/request?datetime=${datetime}`,
+
+      const response = await api.post(
+        `/api/v1/store/${storeId}/reserve/request?datetime=${datetime}`,
         {},
         {
           headers: {
@@ -110,9 +120,9 @@ const ReservationDrawer = ({ onClose, storeId }) => {
           },
         }
       );
-  
+
       console.log('Response:', response.data);
-  
+
       if (response.status === 200) {
         alert('예약이 완료되었습니다.');
         onClose();

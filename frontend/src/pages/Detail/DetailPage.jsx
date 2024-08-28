@@ -4,7 +4,7 @@ import InfoTab from './components/InfoTab';
 import ReservationTab from './components/ReservationTab';
 import LocationTab from './components/LocationTab';
 import ReservationDrawer from './components/ReservationModal';
-import axios from 'axios';
+import api from '../../utils/axios';
 
 const DetailPage = () => {
   const { id } = useParams();
@@ -13,53 +13,115 @@ const DetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('info');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isHearted, setIsHearted] = useState(false); // 하트 상태를 추적하는 상태
+  const [isHearted, setIsHearted] = useState(false);
 
   useEffect(() => {
-    const fetchDetailData = async () => {
+    const checkAuthAndFetchData = async () => {
+      const accessToken = localStorage.getItem('accessToken');
+
       try {
-        const response = await axios.get(`https://solpop.xyz/api/v1/store/${id}`);
-        const data = response.data;
-        setDetailData(data);
-        setLoading(false);
-        setIsHearted(data.isHearted); // 서버에서 하트 상태를 받아서 설정
+        const response = await fetchDetailData(accessToken);
+
+        if (response.status === 401) {
+          const newAccessToken = await refreshAccessToken();
+          if (newAccessToken) {
+            await fetchDetailData(newAccessToken);
+          } else {
+            navigate('/login');
+          }
+        } else {
+          setLoading(false);
+        }
       } catch (error) {
-        console.error("Error fetching detail data", error);
+        console.error('Failed to fetch data:', error);
         setLoading(false);
       }
     };
 
-    fetchDetailData();
-  }, [id]);
+    checkAuthAndFetchData();
+  }, [id, navigate]);
+
+  const fetchDetailData = async (token) => {
+    try {
+      const response = await api.get(`/api/v1/store/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setDetailData(response.data);
+      setIsHearted(response.data.hearted);
+      return response;
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        return error.response;
+      } else {
+        console.error('Error fetching detail data', error);
+        setLoading(false);
+        return { status: 500 };
+      }
+    }
+  };
+
+  const refreshAccessToken = async () => {
+    try {
+      const response = await api.post('/api/v1/auth/refresh-token');
+      localStorage.setItem('accessToken', response.data.data.accessToken);
+      return response.data.data.accessToken;
+    } catch (error) {
+      console.error('Failed to refresh access token', error);
+      localStorage.removeItem('accessToken');
+      return null;
+    }
+  };
 
   const handleHeartClick = async () => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      alert('로그인이 필요한 기능입니다.');
+      navigate(`/login?redirectTo=${encodeURIComponent(location.pathname)}`);
+      return;
+    }
+
     try {
-      const response = await axios.post(
-        `https://solpop.xyz/api/v1/store/heart`,
+      const response = await api.post(
+        `/api/v1/store/heart`,
         { storeId: id },
         {
           headers: {
-            Authorization: `Bearer ${accesstoken}`,
+            Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
         }
       );
 
       if (response.status === 200) {
-        // 하트 상태를 토글하고 heartCount를 업데이트
-        setIsHearted(!isHearted);
-        setDetailData((prevData) => ({
-          ...prevData,
-          heartCount: isHearted ? prevData.heartCount - 1 : prevData.heartCount + 1,
-        }));
+        const updatedData = await fetchDetailData(accessToken);
+        setIsHearted(updatedData.data.hearted);
       } else {
-        alert('하트 상태를 변경할 수 없습니다.');
+        alert('Unable to change heart status.');
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('에러가 발생했습니다.');
+      console.error('Error handling heart click', error);
+      alert('An error occurred. Please try again.');
     }
   };
+
+  const handleLogout = () => {
+    alert('로그아웃 되었습니다.');
+    localStorage.removeItem('accessToken');
+    navigate(`/detail/${id}`);
+  };
+
+  const handleHeartIconClick = () => {
+    if (isLoggedIn) {
+      handleHeartClick();
+    } else {
+      alert('로그인이 필요한 기능입니다.');
+      navigate('/login');
+    }
+  };
+
+  const isLoggedIn = !!localStorage.getItem('accessToken');
 
   if (loading) {
     return <div className="text-center mt-10">Loading...</div>;
@@ -101,11 +163,29 @@ const DetailPage = () => {
 
   return (
     <div className="max-w-lg mx-auto p-4">
+      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
+        {isLoggedIn ? (
+          <button 
+            onClick={handleLogout} 
+            style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}
+          >
+            로그아웃
+          </button>
+        ) : (
+          <button 
+            onClick={() => navigate('/login')}
+            style={{ color: 'blue', border: 'none', background: 'none', cursor: 'pointer' }}
+          >
+            로그인
+          </button>
+        )}
+      </div>
+
       <div className="relative">
         <img
           src={detailData.store.storeThumbnailUrl}
           alt={`Thumbnail for ${detailData.store.storeName}`}
-          className="w-full h-[300px] object-cover rounded-md"
+          className="w-full h-full aspect-square object-cover rounded-md"
         />
         <button 
           onClick={handleGoBack}
@@ -128,12 +208,13 @@ const DetailPage = () => {
           &lt;
         </button>
       </div>
+
       <div className="mt-4">
         <h2 className="text-xl font-bold">{detailData.store.storeName}</h2>
         <div className="flex items-center mt-2">
           <span 
-            className="text-2xl cursor-pointer" 
-            onClick={handleHeartClick}
+            className={`text-2xl ${isLoggedIn ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`} 
+            onClick={handleHeartIconClick}
           >
             {isHearted ? '💖' : '🤍'}
           </span>

@@ -10,7 +10,7 @@ import RafflePage from "./pages/Raffle/RafflePage";
 import RaffleDetailPage from './pages/Raffle/RaffleDetailPage';
 import ProfilePage from "./pages/Profile/ProfilePage";
 import ReservationPage from './pages/Profile/ReservationPage'
-// import WishlistPage from "./pages/Profile/WishListPage";
+import WishlistPage from "./pages/Profile/WishListPage";
 import Navbar from './components/Navbar';
 import ReserveDetailPage from "./pages/Profile/ReserveDetailPage";
 import LoginPage from './pages/Auth/LoginPage'
@@ -42,7 +42,7 @@ function App() {
               {/* 마이페이지 */}
               <Route path="/profile" element={<ProfilePage />} />
                {/* 내 찜목록 확인 페이지 */}
-              {/* <Route path="/wishlist" element={<WishlistPage />} /> */}
+              <Route path="/wishlist" element={<WishlistPage />} />
               {/* 내 전체 예약목록 페이지*/}
               <Route path="/profile/reservation" element={<ReservationPage />} />
               {/* 내 예약 상세 페이지*/}
