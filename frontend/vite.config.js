@@ -10,9 +10,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
       manifest: {
-  "name": "My Vite PWA App",
-  "short_name": "VitePWA",
-  "description": "A PWA built with Vite and React",
+  "name": "쏠쏠한 팝업",
+  "short_name": "SOL POP",
+  "description": "쏠쏠한 팝업스토어 플랫폼을 즐겨보세요.",
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
   "display": "standalone",

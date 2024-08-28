@@ -1,9 +1,8 @@
-import {useState} from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { formatDateAndTime } from '../../utils/utils.js'
-// import RegisterIcon from "../../assets/AuthImg/RegisterIcon.gif"
 
 const RegisterPage = () => {
   const navigate = useNavigate()
@@ -13,8 +12,6 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('');
   
   // 생성과정에서 사용하는 변수들 => userKey와 accountNo 위치 고민해보기!
-  const [accountNo, setAccountNo] = useState(null);
-
   const [isEmailValid, setIsEmailValid] = useState(null);
   const [emailError, setEmailError] = useState('');
   const [nameError, setNameError] = useState('');
@@ -23,6 +20,19 @@ const RegisterPage = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [isEmailChecked, setIsEmailChecked] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
+
+  // 저장중일때에 멈추기
+  const [isSaving, setIsSaving] = useState(false)  
+
+
+  // 초기 렌더링
+  useEffect(() => {
+    // accessToken이 존재한다면, 메인페이지로 이동
+    if (localStorage.getItem("accessToken")) {
+      navigate("/")
+      return
+    }
+  },[])
 
   // 이름 변경 함수 / 한글을 제외한 문자 or 글자 수 제한 위반시 
   const validateName = (name) => {
@@ -34,9 +44,9 @@ const RegisterPage = () => {
   // 이름 변경사항 적용 함수
   const handleNameChange = (e) => {
     setName(e.target.value);
-    if (!validateName(e.target.value)) {
+    if (e.target.value.length != 0 && !validateName(e.target.value)) {
       setNameError('이름은 한글로 1자 이상 5자 이하로 입력해주세요.');
-    } else {
+    } else  {
       setNameError('');
     }
   };
@@ -59,7 +69,7 @@ const RegisterPage = () => {
    * - 이메일형식이 유효하지 않으면 오류문구 표시 및 관리 */
   const handleEmailCheck = async () => {
     if (!validateEmail(email)) {
-      setEmailError('이메일 형식이 유효하지 않습니다. 30자 이내로 작성해주세요.');
+      setEmailError('이메일 형식이 유효하지 않습니다.');
       setIsEmailValid(false);
       return;
     }
@@ -68,44 +78,47 @@ const RegisterPage = () => {
     await axios.post("https://solpop.xyz/api/v1/auth/checkSSAFYUser",{
       apiKey:import.meta.env.VITE_ADMIN_SECRET_KEY,
       userId:email
-    }).then((res) => {
-      console.log(res)
+    }).then(() => {
       setEmailError('중복된 이메일이 존재합니다.');
       setIsEmailValid(false);
-      console.log("진행중!")
 
 
-    }).catch((err) => { // error 발생 = email과 동일한 계정 없다.
-      console.log(err)
-      setEmailError('사용가능한 이메일입니다.');
+    }).catch(() => { // error 발생 = email과 동일한 계정 없다.
+      setEmailError('사용 가능한 이메일입니다.');
       setIsEmailValid(true);
       setIsEmailChecked(true);
     })
   }
 
   // 이메일 변경 적용 / 변경시 중복 체크 여부 false
-  const handleInputChange = (e) => {
-    setEmail(e.target.value);
+  const handleEmailChange = (e) => {
+    if (e.target.value.length < 30) {
+      setEmail(e.target.value);
+      setEmailError('');
+    } else {
+      setEmailError('이메일은 30자 이하로 입력해야합니다.')
+    }
     setIsEmailChecked(false);
-    setEmailError('');
   };
 
   // Password 변경 로직 / 공백 제외 5자 이상 
   const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
     // 공백을 제외한 password
-    const filteredPassword = e.target.value.replace(/\s+/g, '')
-    if (filteredPassword < 5 || filteredPassword > 30) {
-      setPasswordError('공백 제외 5자 이상 입력해야합니다.');
+    if ( e.target.value != "" && e.target.value.length < 5 ) {
+      setPassword(e.target.value);
+      setPasswordError('비밀번호는 5자 이상 입력해야합니다.');
+    } else if (e.target.value.length > 30) {
+      setPasswordError('비밀번호는 30자 이하로 입력해야합니다.');
     } else {
-      setPasswordError('');
+      setPassword(e.target.value);
+      setPasswordError('')
     }
   };
 
   // 비밀번호 확인 / confirmPassword와 일치하는지 확인
   const handleConfirmPasswordChange = (e) => {
     setConfirmPassword(e.target.value);
-    if (e.target.value !== password) {
+    if (e.target.value != "" && e.target.value !== password) {
       setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
     } else {
       setConfirmPasswordError('');
@@ -132,17 +145,16 @@ const RegisterPage = () => {
     }
 
     // 다 통과하고나면 axios 요청하기
-    // try {
 
-    // 2. SSAFY 계정 생성하기
+    // 1. SSAFY 계정 생성하기
     !localStorage.getItem("userKey") && await axios.post("https://solpop.xyz/api/v1/auth/createSSAFYUser",{
       "apiKey":import.meta.env.VITE_ADMIN_SECRET_KEY,
        "userId":email
      }).then((res) => {
       // local에 userKey 가지고 있기! => 중간에 오류 발생 가능성 염두에 두고
        localStorage.setItem("userKey",res.data.userKey)
-     }).catch((err) => {
-       console.log("계정생성중 오류발생\n",err)
+     }).catch(() => {
+      Swal.fire('ERROR', '오류가 발생했습니다.', 'warning')
        return
      })
 
@@ -163,12 +175,11 @@ const RegisterPage = () => {
       },
       "accountTypeUniqueNo":"088-1-2fe8b9c9733b41"
     }).then((res) => {
-       console.log(res)
        // 성공시 계좌번호 저장
        localStorage.setItem("accountNo",res.data.REC.accountNo)
       //  setAccountNo(res.data.REC.accountNo)
-     }).catch((err) => {
-       console.log("계좌 생성중 오류발생\n", err)
+     }).catch(() => {
+      Swal.fire('ERROR', '오류가 발생했습니다.', 'warning')
        return
      })
 
@@ -179,10 +190,9 @@ const RegisterPage = () => {
       "name" : name, 
       "userKey" : localStorage.getItem("userKey"), 
       "accountNo" : localStorage.getItem("accountNo")
-    }).then((res) => {
-      console.log(res)
-    }).catch((err) => {
-      console.log("BE 유저 생성중 오류\n", err)
+    }).then(() => {
+    }).catch(() => {
+      Swal.fire('ERROR', '오류가 발생했습니다.', 'warning')
       return
     })
 
@@ -202,8 +212,7 @@ const RegisterPage = () => {
       "accountNo":localStorage.getItem("accountNo"),
       "transactionBalance":"10000", // 입금할 금액
       "transactionSummary":"(수시입출금) : 입금"
-    }).then((res) => {
-       console.log(res)
+    }).then(() => {
         Swal.fire({
           icon:"success",
           title:`환영합니다, ${name} 님!`,
@@ -216,8 +225,8 @@ const RegisterPage = () => {
             navigate("/login")
           }
         })
-     }).catch((err) => {
-       console.log("계좌 입금중 오류발생\n", err)
+     }).catch(() => {
+      Swal.fire('ERROR', '오류가 발생했습니다.', 'warning')
        return
      })
   };
@@ -254,7 +263,7 @@ const RegisterPage = () => {
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 value={email}
-                onChange={(e) => handleInputChange(e)}
+                onChange={(e) => handleEmailChange(e)}
                 />
               <label
                 htmlFor="email"
@@ -325,9 +334,11 @@ const RegisterPage = () => {
         >
           회원가입하기
         </button>
-      {/* <div className="absolute inset-0 z-20 flex justify-center bg-white rounded-lg bg-opacity-70">
-        <img src={RegisterIcon} className="w-[300px] aspect-[1/1]"></img>
-      </div> */}
+          {isSaving &&
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-white bg-opacity-80">
+            <div className="w-8 h-8 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+          </div>
+        }
       </div>
     </div>
   );
