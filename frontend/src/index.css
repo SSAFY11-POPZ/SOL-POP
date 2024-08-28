@@ -1,34 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@100..900&display=swap');
+
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-  }
-  
-  .app {
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+.noto-sans-kr {
+    font-family: "Noto Sans KR", sans-serif;
+}
+
+.app {
     display: flex;
     flex-direction: column;
     height: 100vh;
-  }
-  
-  .home {
+}
+
+.home {
     flex: 1;
     overflow-y: auto;
     padding: 10px;
-  }
-  
-  .grid {
+}
+
+.grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-  }
-  
-  .grid-item img {
+}
+
+.grid-item img {
     width: 100%;
     height: auto;
     border-radius: 8px;
     object-fit: cover;
-  }
-  
-  .bottom-nav {
+}
+
+.bottom-nav {
     display: flex;
     justify-content: space-around;
     background-color: #fff;
@@ -37,20 +43,20 @@ body {
     position: fixed;
     bottom: 0;
     width: 100%;
-  }
-  
-  .bottom-nav a {
+}
+
+.bottom-nav a {
     text-decoration: none;
     color: #000;
     font-weight: bold;
     flex-grow: 1;
     text-align: center;
-  }
-  
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
-  
-  * {
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
     box-sizing: border-box;
-  }
+}

@@ -66,7 +66,7 @@ const Carousel_main = ({ spaceBetween = 10, slidesPerView = 1 }) => {
           }}
           speed={500}
           pagination={{ clickable: true }}
-          navigation={true}
+          // navigation={true}
           className="relative w-full h-auto"
         >
           {slides.map((slide, index) => (

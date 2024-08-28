@@ -68,14 +68,24 @@ const WishlistPage = () => {
     }
   };
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   if (loading) {
     return <div className="text-center mt-10">Loading...</div>;
   }
 
   if (!isLoggedIn) {
     return (
-      <div className="text-center mt-10">
-        <div className="text-red-500 mb-4">로그인이 필요한 기능입니다.</div>
+      <div
+        className="text-center mt-10 flex flex-col items-center justify-center h-screen bg-cover bg-center"
+        style={{ backgroundImage: `url('/SearchImg/heart.svg')` }}
+      >
+        <div className="text-black-500 mb-4">로그인이 필요한 기능입니다.</div>
         <button
           className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300"
           onClick={() => navigate('/login')}
@@ -91,7 +101,7 @@ const WishlistPage = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-4 pb-20">
+    <div className="max-w-7xl mx-auto p-4 pb-20 h-screen overflow-hidden">
       <h1 className="text-1xl font-bold mb-6">찜한 팝업스토어 정보를 알려드릴게요</h1>
       
       <div className="grid grid-cols-2 gap-4">
