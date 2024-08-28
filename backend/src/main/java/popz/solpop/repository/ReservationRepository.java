@@ -42,4 +42,6 @@
         @Query("UPDATE Reservation r SET r.isVisited = :isVisited WHERE r.store.storeId = :storeId AND r.member.memId = :memId")
         int updateIsVisited(@Param("isVisited") boolean isVisited, @Param("storeId") Integer storeId, @Param("memId") Integer memId);
 
+
+        Reservation findByStoreAndMember(Store store, Member member);
     }

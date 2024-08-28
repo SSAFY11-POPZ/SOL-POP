@@ -12,6 +12,7 @@ import popz.solpop.dto.EnterRaffleRequest;
 import popz.solpop.entity.EnterRaffle;
 import popz.solpop.entity.Member;
 import popz.solpop.entity.Raffle;
+import popz.solpop.entity.Reservation;
 import popz.solpop.security.TokenProvider;
 import popz.solpop.service.EnterRaffleService;
 import popz.solpop.service.MemberService;
@@ -90,6 +91,8 @@ public class RaffleController {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("raffleCrtNo does not match");
         }
 
+        Reservation reservation = reservationService.findReservationByStoreAndMember(raffle.getStore(), member);
+        reservation.setIsEnter(true);
 
         EnterRaffle enterRaffle = new EnterRaffle();
         enterRaffle.setMember(member);

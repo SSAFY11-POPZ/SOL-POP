@@ -42,7 +42,7 @@ public class Reservation {
   @Column(name = "is_enter", nullable = false)
   private Boolean isEnter;
 
-  @Column(name = "is_visited", nullable = false)
+  @Column(name = "is_visited", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
   private Boolean isVisited;
 
   //columnDefinition = "BOOLEAN DEFAULT false" 보다 PrePersist 사용 권장

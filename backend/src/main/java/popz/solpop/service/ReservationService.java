@@ -64,6 +64,7 @@ public class ReservationService {
     reservation.setMember(member);
     reservation.setReserveDate(reserveDate);
     reservation.setReserveTime(reserveTime);
+    reservation.setIsVisited(false);
     reservationRepository.save(reservation);
   }
 
@@ -80,6 +81,9 @@ public class ReservationService {
     if (updatedRows == 0) {
       throw new EntityNotFoundException("Reservation not found");
     }
+  }
+  public Reservation findReservationByStoreAndMember(Store store, Member member) {
+    return reservationRepository.findByStoreAndMember(store, member);
   }
 
 }
