@@ -69,11 +69,15 @@ const WishlistPage = () => {
   };
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    if (!isLoggedIn) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, []);
+  }, [isLoggedIn]);
 
   if (loading) {
     return <div className="text-center mt-10">Loading...</div>;
@@ -101,7 +105,17 @@ const WishlistPage = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-4 pb-20 h-screen overflow-hidden">
+    <div
+      className="max-w-7xl mx-auto p-4 pb-20 h-screen overflow-auto"
+      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }} // For Firefox and IE/Edge
+    >
+      <style>
+        {`
+          .max-w-7xl::-webkit-scrollbar {
+            display: none; /* For Chrome, Safari, and Opera */
+          }
+        `}
+      </style>
       <h1 className="text-1xl font-bold mb-6">찜한 팝업스토어 정보를 알려드릴게요</h1>
       
       <div className="grid grid-cols-2 gap-4">

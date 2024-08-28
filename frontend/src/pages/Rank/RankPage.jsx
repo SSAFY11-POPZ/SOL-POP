@@ -34,7 +34,7 @@ const RankPage = () => {
           AD
         </div>
         <img
-          src="/public/SearchImg/파묘.jpg"
+          src="/SearchImg/파묘.jpg"
           alt="파묘"
           className="store-image w-60 h-24 object-cover rounded-lg"
         />
