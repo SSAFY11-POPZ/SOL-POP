@@ -7,14 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import popz.solpop.dto.CheckReservation;
 import popz.solpop.dto.EnterRaffleRequest;
 import popz.solpop.entity.EnterRaffle;
 import popz.solpop.entity.Member;
 import popz.solpop.entity.Raffle;
+import popz.solpop.entity.Reservation;
 import popz.solpop.security.TokenProvider;
 import popz.solpop.service.EnterRaffleService;
 import popz.solpop.service.MemberService;
 import popz.solpop.service.RaffleService;
+import popz.solpop.service.ReservationService;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +38,8 @@ public class RaffleController {
     private MemberService memberService;
     @Autowired
     private TokenProvider tokenProvider;
+    @Autowired
+    private ReservationService reservationService;
 
 
     @GetMapping("")
@@ -62,14 +67,32 @@ public class RaffleController {
         }
         Member member = memberService.getMemberByUserName(userName);
         Raffle raffle = raffleService.getRaffleByRaffleId(enterRaffleRequest.getRaffleId());
+
         if (member == null || raffle == null) {
             return ResponseEntity.badRequest().body("Invalid member or raffle");
         }
+
+
+        boolean alreadyEntered = enterRaffleService.existsByRaffleAndMember(raffle, member);
+        if (alreadyEntered) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("이미 응모한 래플");
+        }
+
+        boolean reserved = reservationService.existsByStoreIdAndMemId(raffle.getStore().getStoreId(), member);
+        if (!reserved) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("예약하지 않은 팝업 래플");
+        }
+
+
 
         if (!raffle.getRaffleCrtNo().equals(enterRaffleRequest.getRaffleCrtNo())) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("raffleCrtNo does not match");
         }
 
+        Reservation reservation = reservationService.findReservationByStoreAndMember(raffle.getStore(), member);
+        reservation.setIsEnter(true);
 
         EnterRaffle enterRaffle = new EnterRaffle();
         enterRaffle.setMember(member);

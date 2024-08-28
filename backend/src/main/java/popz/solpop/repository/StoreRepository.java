@@ -19,11 +19,16 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
 
     @Query("SELECT store FROM Store store JOIN store.heartList heartList "
             + "WHERE store.storeEndDate >= NOW() "
-            + "GROUP BY store order by COUNT(heartList) DESC")
+            + "GROUP BY store order by COUNT(heartList) DESC LIMIT :limit")
     List<Store.StoreCard> findTopStoresByHeartCount(int limit);
 
 
-    //    @Query("SELECT store FROM Store store WHERE store.storeKeyword LIKE %:keyword%")
+    @Query("SELECT store FROM Store store "
+            + "WHERE store.storeEndDate >= NOW() "
+            + "ORDER BY store.storeId DESC LIMIT :limit")
+    List<Store.StoreCard> findRecentStores(int limit);
+
+    //    @Query("SELECT s FROM Store s WHERE s.storeKeyword LIKE %:keyword%")
     List<Store.StoreCard> findStoresByStoreKeywordContains(String keyword);
 
 

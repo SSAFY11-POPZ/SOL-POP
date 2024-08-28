@@ -7,10 +7,12 @@ import popz.solpop.entity.Store;
 public class StoreDetailResponse {
     private Store store;
     private int heartCount;
+    private boolean isHearted;
 
-    public StoreDetailResponse(Store store, int heartCount) {
+    public StoreDetailResponse(Store store, int heartCount, boolean isHearted) {
         this.store = store;
         this.heartCount = heartCount;
+        this.isHearted = isHearted;
     }
 
     // Getters and setters

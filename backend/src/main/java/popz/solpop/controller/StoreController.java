@@ -54,6 +54,9 @@
         public List<Store.StoreCard> getStoresByKeyword(
                 @RequestParam String keyword
         ) {
+            if (keyword.equals("전체")) {
+                return storeService.getRecentStores(5);
+            }
             return storeService.getStoresByKeyword(keyword);
         }
 
@@ -78,15 +81,28 @@
 
         @GetMapping("/{storeId}")
         public ResponseEntity<?> getDetailByStoreId(
-                @PathVariable Integer storeId
+                @PathVariable Integer storeId,
+                @RequestHeader("Authorization") String token
+
         ) {
             Store store = storeService.getStoreByStoreId(storeId);
+            int heartCount = storeService.getHeartCountByStoreId(storeId);
             if (store == null) {
                 return ResponseEntity.notFound().build();
             }
-            int heartCount = storeService.getHeartCountByStoreId(storeId);
+            if (token == null || token.equals("")) {
+                return ResponseEntity.ok(new StoreDetailResponse(store, heartCount, false));
+            } else {
+                String userName = tokenProvider.getUserName(token.substring(7));
+                Member member = memberService.getMemberByUserName(userName);
+                boolean isHearted = heartService.isHearted(member, store);
+                return ResponseEntity.ok(new StoreDetailResponse(store, heartCount, isHearted));
+            }
 
-            return ResponseEntity.ok(new StoreDetailResponse(store, heartCount));
+
+
+
+
         }
 
         @GetMapping("/search")
@@ -120,7 +136,7 @@
             heart.setStore(store);
             Heart createdHeart = heartService.saveHeart(heart);
 
-            return ResponseEntity.ok(createdHeart);
+            return ResponseEntity.ok("하트");
         }
 
 

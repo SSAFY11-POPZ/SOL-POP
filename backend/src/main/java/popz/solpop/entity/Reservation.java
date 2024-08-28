@@ -42,6 +42,9 @@ public class Reservation {
   @Column(name = "is_enter", nullable = false)
   private Boolean isEnter;
 
+  @Column(name = "is_visited", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+  private Boolean isVisited;
+
   //columnDefinition = "BOOLEAN DEFAULT false" 보다 PrePersist 사용 권장
   @PrePersist
   public void prePersist() {
@@ -54,7 +57,7 @@ public class Reservation {
     LocalDate getReserveDate();
     LocalTime getReserveTime();
     Boolean getIsEnter();
-
+    Boolean getIsVisited();
     interface StoreInfo {
       Integer getStoreId();
       String getStoreName();

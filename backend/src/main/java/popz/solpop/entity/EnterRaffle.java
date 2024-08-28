@@ -32,5 +32,16 @@ public class EnterRaffle {
   @JsonManagedReference
   private Raffle raffle;
 
+  public interface MyRaffle {
+    Integer getEnterId();
 
+    RaffleInfo getRaffle();
+
+    interface RaffleInfo {
+      Integer getRaffleId();
+      String getRaffleName();
+      String getRaffleThumbnailUrl();
+    }
+
+  }
 }
