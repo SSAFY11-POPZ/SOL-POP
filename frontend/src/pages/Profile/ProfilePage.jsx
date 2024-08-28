@@ -20,7 +20,7 @@ const ProfilePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false) // 모달 오픈 여부
   const [warning, setWarning] = useState('');
 
-  // 초기 렌더링시에 실행되는 함수
+  // 1. 초기 렌더링시에 실행되는 함수
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -63,12 +63,14 @@ const ProfilePage = () => {
       } catch (error) {
         console.error("Error fetching data:", error);
         Swal.fire('ERROR', '오류가 발생했습니다.', 'warning');
+        navigate("/login")
       }
     };
   
     fetchData();
   }, []);
 
+  // 2. 포인트 충전하기
   // 포인트 충전하기 모달 열기
   const openModal = () => {
     setIsModalOpen(true);
@@ -84,17 +86,23 @@ const ProfilePage = () => {
   // 금액 변경 처리
   const handleAmount = (e) => {
     const value = e.target.value;
-  
-    // 입력된 값이 빈 문자열이면 경고를 표시하지 않고 금액을 0으로 설정
+
+    // 입력된 값이 빈 문자열이면 경고를 표시하지 않고 금액을 빈 문자열로 설정
     if (value === '') {
       setAmount('');
       setWarning('');
       return;
     }
-  
+
     // 입력한 값이 숫자인지 확인
     const numericValue = parseFloat(value);
-  
+
+    // 입력한 값이 숫자가 아니면 경고 메시지 설정
+    if (isNaN(numericValue)) {
+      setWarning('숫자만 입력할 수 있습니다.');
+      return;
+    }
+
     // 입력한 금액이 계좌 잔액보다 크면 계좌 잔액으로 설정
     if (numericValue > balance) {
       setAmount(balance);
@@ -112,7 +120,7 @@ const ProfilePage = () => {
     }
   };
 
-
+  // 포인트 충전하기
   const chargePoint = async () => {
     try {
       // 계좌 출금 신청
@@ -148,8 +156,32 @@ const ProfilePage = () => {
       })
     } catch {
       Swal.fire('ERROR', '오류가 발생했습니다.', 'warning');
+
     }
 
+  }
+  
+  // 3. 내 계좌 잔액
+  const showBalance = () => {
+    Swal.fire({
+      icon:"info",
+      html:`계좌 번호 : ${user.accountNo} <br><br>현재 잔액은 <strong>${balance}원</strong>입니다.`
+    })
+  }
+
+  // 4. 내 찜한 목록
+  const showWishlist = () => {
+    navigate("/profile/wishlist")
+  }
+
+  // 5. 내 예약 목록
+  const goToReservation = () => {
+    navigate("/profile/reservation")
+  }
+
+  // 6. 내 래플 목록
+  const goToRaffle = () => {
+    navigate("/profile/raffle")
   }
 
   return (
@@ -159,10 +191,10 @@ const ProfilePage = () => {
           <div className="w-16 aspect-[1/1]">
             <img src={ProfileSeeding} alt="Profile Seeding" />
           </div>
-          <div>
-            <span className="text-white text-xl font-bold font-['Noto Sans']">{user.Name}</span>
-            <span className="text-white text-base font-bold font-['Noto Sans']">
-              님,<br />오늘도 쏠쏠한 혜택을 누리세요!
+          <div className="flex-row justify-end align-bottom">
+            <span className="block text-white text-lg font-bold font-['Noto Sans']">{user.Name} 님,</span>
+            <span className="block text-white text-sm font-bold font-['Noto Sans']">
+              오늘도 쏠쏠한 혜택을 누리세요!
             </span>
           </div>
         </div>
@@ -182,14 +214,10 @@ const ProfilePage = () => {
       <div className="bg-white py-3 px-4 rounded-t-[20px] h-full w-full flex flex-col gap-y-2">
         <div className="flex flex-col gap-y-3">
           <p className="p-1 text-slate-500">조회</p>
-          <p className={`text-base ${hoverCss} p-1`} onClick={() => navigate("/profile/reservation")}>내 예약목록</p>
-          <p className={`text-base ${hoverCss} p-1`}>내 계좌 잔액</p>
-          <p className={`text-base ${hoverCss} p-1`}>내 래플 목록</p>
-        </div>
-        <div className="flex flex-col gap-y-3">
-          <p className="p-1 font-normal text-slate-500">관리</p>
-          <p className={`text-base ${hoverCss} p-1`}>개인정보 변경</p>
-          <p className={`text-base ${hoverCss} p-1`}>회원탈퇴</p>
+          <p className={`text-base ${hoverCss} p-1`} onClick={() => showBalance()}>내 계좌 잔액</p>
+          <p className={`text-base ${hoverCss} p-1`} onClick={() => showWishlist()}>내 찜한 목록</p>
+          <p className={`text-base ${hoverCss} p-1`} onClick={() => goToReservation()}>내 예약목록</p>
+          <p className={`text-base ${hoverCss} p-1`} onClick={() => goToRaffle()}>내 래플 목록</p>
         </div>
       </div>
 
