@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import api from '../../utils/axios'
 import Swal from 'sweetalert2';
 import RaffleTest from '../../assets/RaffleImg/RaffleTest.png'
 import UpperBar from '../../components/UpperBar';
@@ -12,21 +13,15 @@ const ReservationDetail = () => {
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   useEffect(() => {
-    // // reserveId를 통해 예약 정보 가져오기
-    // axios.get(`/api/reservations/${reserveId}`)
-    //   .then((response) => {
-    //     setReservation(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error fetching reservation:', error);
-    //   });
-    setReservation({
-  id: 1,
-  name: "LMC x BE@RBRICK 100% & 400%",
-  location: "서울특별시 성수동 성수대로 32 팝업스토어",
-  time: "2023. 8. 13(일) 오후 2:00",
-  thumbnail: RaffleTest
-})
+    // reserveId를 통해 예약 정보 가져오기
+    api.get(`/api/v1/store/${reserveId}`)
+      .then((response) => {
+        console.log(response)
+        setReservation(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching reservation:', error);
+      });
   }, []);
 
   const handleConfirm = () => {
@@ -56,26 +51,26 @@ const ReservationDetail = () => {
   }
 
   return (
-    <div className="max-w-lg mx-auto p-4 bg-gray-50 rounded-lg shadow-md h-dvh">
+    <div className="max-w-lg p-4 mx-auto rounded-lg shadow-md bg-gray-50 h-dvh">
       <UpperBar />
-      <div className="bg-blue-600 rounded-lg p-4 my-2">
-        <div className="bg-white p-3 rounded-lg">
-          <img src={reservation.thumbnail} alt={reservation.name} className="w-full h-64 object-cover rounded-lg" />
-          <div className="m-2 flex flex-col gap-y-2 gap-x-1 w-full">
+      <div className="p-4 my-2 bg-blue-600 rounded-lg">
+        <div className="p-3 bg-white rounded-lg">
+          <img src={reservation.thumbnail} alt={reservation.name} className="object-cover w-full h-64 rounded-lg" />
+          <div className="flex flex-col w-full m-2 gap-y-2 gap-x-1">
             <h1 className="text-base font-bold">{reservation.name}</h1>
             <div className="flex w-full">
-              <p className="text-gray-600 text-sm w-1/8">장소 :</p>
-              <p className="text-gray-600 text-sm w-5/6 px-1 overflow-hidden">{reservation.location}/{reservation.location}</p>
+              <p className="text-sm text-gray-600 w-1/8">장소 :</p>
+              <p className="w-5/6 px-1 overflow-hidden text-sm text-gray-600">{reservation.location}/{reservation.location}</p>
             </div>
-            <div className="flex gap-x-2 w-full">
-              <p className="text-gray-600 text-sm w-1/8">일정 :</p>
-              <p className="text-gray-600 text-sm w-5/6">{reservation.time}</p>
+            <div className="flex w-full gap-x-2">
+              <p className="text-sm text-gray-600 w-1/8">일정 :</p>
+              <p className="w-5/6 text-sm text-gray-600">{reservation.time}</p>
             </div>
           </div>
           <div className="relative my-5">
             <div className="absolute top-[-25px] left-[-25px] bg-blue-600 w-[25px] h-[50px] rounded-r-full"></div>
             <div className="absolute top-[-25px] right-[-25px] bg-blue-600 w-[25px] h-[50px] rounded-l-full"></div>
-            <div className="border-t-2 border-dashed mx-4"></div>
+            <div className="mx-4 border-t-2 border-dashed"></div>
           </div>
           <div className="text-center">
             <button
@@ -85,7 +80,7 @@ const ReservationDetail = () => {
             >
               직원 확인
             </button>
-            <p className="text-gray-500 mt-4 text-sm">직원 확인 후에는 취소 및 재입장이 불가능합니다.</p>
+            <p className="mt-4 text-sm text-gray-500">직원 확인 후에는 취소 및 재입장이 불가능합니다.</p>
           </div>
         </div>
       </div>
