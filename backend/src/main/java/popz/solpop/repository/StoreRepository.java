@@ -22,6 +22,11 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
             + "GROUP BY store order by COUNT(heartList) DESC LIMIT :limit")
     List<Store.StoreCard> findTopStoresByHeartCount(int limit);
 
+    @Query("SELECT store FROM Store store JOIN store.reservationList reservationList "
+            + "WHERE store.storeEndDate >= NOW() "
+            + "GROUP BY store order by COUNT(reservationList) DESC LIMIT :limit")
+    List<Store.StoreCard> findTopStoresByReservationCount(int limit);
+
 
     @Query("SELECT store FROM Store store "
             + "WHERE store.storeEndDate >= NOW() "

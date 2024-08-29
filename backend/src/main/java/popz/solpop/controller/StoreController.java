@@ -62,7 +62,7 @@
 
         @GetMapping("/top10")
         public List<Store.StoreCard> getTop10Stores() {
-            return storeService.getTopStoresByHeartCount(10);
+            return storeService.getTopStoresByReservationCount(10);
         }
 
 

@@ -22,6 +22,12 @@ public class StoreService {
 
     return storeRepository.findTopStoresByHeartCount(limit);
   }
+
+  public List<Store.StoreCard> getTopStoresByReservationCount(int limit) {
+
+    return storeRepository.findTopStoresByReservationCount(limit);
+  }
+
   public List<Store.StoreCard> getRecentStores(int limit) {
 
     return storeRepository.findRecentStores(limit);
