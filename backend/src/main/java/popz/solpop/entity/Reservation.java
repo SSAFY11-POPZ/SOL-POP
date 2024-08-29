@@ -62,6 +62,10 @@ public class Reservation {
       Integer getStoreId();
       String getStoreName();
       String getStorePlace();
+      RaffleInfo getRaffle();
+      interface RaffleInfo {
+        Integer getRaffleId();
+      }
     }
   }
 }
