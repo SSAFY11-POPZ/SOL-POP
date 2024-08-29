@@ -15,6 +15,7 @@ import Navbar from './components/Navbar';
 import ReserveDetailPage from "./pages/Profile/ReserveDetailPage";
 import LoginPage from './pages/Auth/LoginPage'
 import RegisterPage from './pages/Auth/RegisterPage'
+import CompanyPage from './pages/Company/CompanyPage'
 import './index.css';
 
 function App() {
@@ -51,6 +52,8 @@ function App() {
               <Route path="/login" element={<LoginPage/>} />
               {/* 회원가입 페이지 */}
               <Route path="/register" element={<RegisterPage />} />
+              {/* 기업 페이지 */}
+              <Route path="/company" element={<CompanyPage />} />
               
             </Routes>
           </div>
