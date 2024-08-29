@@ -13,6 +13,7 @@ import popz.solpop.entity.EnterRaffle;
 import popz.solpop.entity.Member;
 import popz.solpop.entity.Raffle;
 import popz.solpop.entity.Reservation;
+import popz.solpop.security.CouponNumber;
 import popz.solpop.security.TokenProvider;
 import popz.solpop.service.EnterRaffleService;
 import popz.solpop.service.MemberService;
@@ -21,6 +22,7 @@ import popz.solpop.service.ReservationService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.CRC32;
 
 @Slf4j
 @RestController
@@ -42,6 +44,7 @@ public class RaffleController {
     private ReservationService reservationService;
 
 
+
     @GetMapping("")
     public List<Raffle.RaffleCard> getAllRaffles() {
         return raffleService.getAllRaffles();
@@ -55,12 +58,11 @@ public class RaffleController {
     }
 
 
-
     @PostMapping("/request")
     public ResponseEntity<?> enterRaffle(
             @RequestHeader("Authorization") String token,
             @RequestBody EnterRaffleRequest enterRaffleRequest
-        ) {
+    ) {
         String userName = tokenProvider.getUserName(token.substring(7));
         if (userName == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
@@ -85,9 +87,11 @@ public class RaffleController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("예약하지 않은 팝업 래플");
         }
 
-
-
-        if (!raffle.getRaffleCrtNo().equals(enterRaffleRequest.getRaffleCrtNo())) {
+        // CRC32
+        CouponNumber generator = new CouponNumber();
+        String crtNo = generator.generateCoupon(userName + enterRaffleRequest.getRaffleId());
+        String inputCrtNo = enterRaffleRequest.getRaffleCrtNo().replace("-", "").substring(1, 9);
+        if (!crtNo.equals(inputCrtNo)) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("raffleCrtNo does not match");
         }
 
