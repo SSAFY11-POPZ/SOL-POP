@@ -4,7 +4,6 @@ import api from '../../utils/axios';
 
 const RankPage = () => {
   const [stores, setStores] = useState([]);
-  const [adStore, setAdStore] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -19,69 +18,32 @@ const RankPage = () => {
       }
     };
 
-    const fetchAdStore = async () => {
-      try {
-        const response = await api.get('/api/v1/store/ad');
-        setAdStore(response.data);
-      } catch (error) {
-        console.error('Error fetching ad data:', error);
-        setError('광고 데이터를 불러올 수 없습니다.');
-      }
-    };
-
     fetchStores();
-    fetchAdStore();
   }, []);
 
-  const handleGoBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-    } else {
-      navigate('/');
-    }
-  };
-
   return (
-    <div className="stores space-y-4 pb-20 pt-2">
-      <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', paddingBottom: '10px' }}>
-        <button 
-          onClick={handleGoBack}
-          className="text-black text-2xl rounded-lg flex items-center justify-center"
-          style={{
-            zIndex: 10,
-            backgroundColor: 'transparent',
-            width: '40px',
-            height: '40px',
-          }}
-        >
-          &lt;
-        </button>
-      </div>
-
+    <div className="stores space-y-4 pb-20 pt-10">
       {error && (
         <p className="text-red-500">{error}</p>
       )}
 
-      {adStore && (
-        <div
-          className="store-item flex items-center space-x-4 p-4 bg-white shadow-md rounded-lg cursor-pointer hover:bg-gray-100 transition border border-blue-500 relative"
-          onClick={() => navigate(`/detail/${adStore.storeId}`)}
-        >
-          <div className="absolute top-2 left-2 bg-white border border-gray-300 text-gray-500 text-xs px-2 py-1 rounded-full">
-            AD
-          </div>
-          <img
-            src={adStore.storeThumbnailUrl}
-            alt={adStore.storeName}
-            className="store-image w-60 h-24 object-cover rounded-lg"
-          />
-          <div className="store-summary">
-            <h4 className="text-sm font-semibold text-gray-800 truncate max-w-xs">
-              {adStore.storeName}
-            </h4>
-          </div>
+      <div
+        className="store-item flex items-center space-x-4 p-4 bg-white shadow-md rounded-lg cursor-pointer hover:bg-gray-100 transition border border-blue-500 relative"
+      >
+        <div className="absolute top-2 left-2 bg-white border border-gray-300 text-gray-500 text-xs px-2 py-1 rounded-full">
+          AD
         </div>
-      )}
+        <img
+          src="/SearchImg/파묘.jpg"
+          alt="파묘"
+          className="store-image w-60 h-24 object-cover rounded-lg"
+        />
+        <div className="store-summary">
+          <h4 className="text-sm font-semibold text-gray-800 truncate max-w-xs">
+            파묘 팝업스토어
+          </h4>
+        </div>
+      </div>
 
       {stores.map((store, index) => (
         <div
