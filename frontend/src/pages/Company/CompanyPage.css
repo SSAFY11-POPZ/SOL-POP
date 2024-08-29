@@ -1,0 +1,125 @@
+/* CSS for CompanyPage component */
+
+.form-container {
+  max-width: 600px;
+  margin: 0 auto; /* 상단 여백 제거 */
+  padding: 20px;
+  padding-bottom: 100px; /* 네브바에 의해 가려지지 않도록 추가적인 하단 여백 */
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #555555;
+  margin-bottom: 5px;
+}
+
+.required {
+  color: red;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.form-textarea {
+  height: 100px;
+}
+
+.form-checkbox-group {
+  display: flex;
+  align-items: center;
+}
+
+.form-checkbox {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.form-label-checkbox {
+  font-size: 16px;
+  font-weight: 600;
+  color: #555555;
+}
+
+.form-button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.form-submit-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.form-submit-button:hover {
+  background-color: #0056b3;
+}
+
+.dropzone {
+  border: 2px dashed #007bff;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  color: #007bff;
+  margin-bottom: 10px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.dropzone:hover {
+  background-color: #f0f8ff;
+  border-color: #0056b3;
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.form-image {
+  max-width: 100px;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+}
