@@ -28,7 +28,7 @@ const RankPage = () => {
       )}
 
       <div
-        className="store-item relative flex items-center space-x-4 p-4 bg-gradient-to-r from-yellow-200 via-red-200 to-pink-200 shadow-lg rounded-lg cursor-pointer hover:bg-gradient-to-l hover:from-yellow-300 hover:via-red-300 hover:to-pink-300 transition"
+        className="store-item flex items-center space-x-4 p-4 bg-white shadow-md rounded-lg cursor-pointer hover:bg-gray-100 transition border border-blue-500 relative"
       >
         <div className="absolute top-2 left-2 bg-white border border-gray-300 text-gray-500 text-xs px-2 py-1 rounded-full">
           AD
@@ -48,9 +48,11 @@ const RankPage = () => {
       {stores.map((store, index) => (
         <div
           key={store.storeId}
-          className={`store-item flex items-center space-x-4 p-4 bg-white shadow-md rounded-lg cursor-pointer hover:bg-gray-100 transition ${
-            index < 3 ? 'border border-blue-500' : ''
-          }`}
+          className={`store-item relative flex items-center space-x-4 p-4 ${
+            index < 3
+              ? 'bg-gradient-to-r from-yellow-200 via-red-200 to-pink-200 shadow-lg hover:bg-gradient-to-l hover:from-yellow-300 hover:via-red-300 hover:to-pink-300'
+              : 'bg-white shadow-md hover:bg-gray-100'
+          } rounded-lg cursor-pointer transition`}
           onClick={() => navigate(`/detail/${store.storeId}`)}
         >
           <div className="store-rank text-xs font-bold text-gray-800">

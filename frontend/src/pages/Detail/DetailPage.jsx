@@ -123,6 +123,14 @@ const DetailPage = () => {
 
   const isLoggedIn = !!localStorage.getItem('accessToken');
 
+  const handleGoBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/');  // 대체 경로를 지정합니다. 여기서는 홈 경로('/')로 이동합니다.
+    }
+  };
+
   if (loading) {
     return <div className="text-center mt-10">Loading...</div>;
   }
@@ -153,17 +161,27 @@ const DetailPage = () => {
     }
   };
 
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
   };
 
   return (
     <div className="max-w-lg mx-auto p-4">
-      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px' }}>
+        <button 
+          onClick={handleGoBack}
+          className="text-black text-2xl rounded-lg flex items-center justify-center"
+          style={{
+            zIndex: 10,
+            backgroundColor: 'transparent',
+            width: '50px',
+            height: '50px',
+            marginLeft: '-10px', // Move the button to the left edge
+          }}
+        >
+          &lt;
+        </button>
+        
         {isLoggedIn ? (
           <button 
             onClick={handleLogout} 
@@ -187,26 +205,6 @@ const DetailPage = () => {
           alt={`Thumbnail for ${detailData.store.storeName}`}
           className="w-full h-full aspect-square object-cover rounded-md"
         />
-        <button 
-          onClick={handleGoBack}
-          className="absolute top-4 left-4 text-black text-2xl rounded-lg transition-all duration-300 flex items-center justify-center"
-          style={{
-            zIndex: 10,
-            backgroundColor: 'transparent',
-            width: '50px',
-            height: '50px',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-            e.currentTarget.style.color = 'lightblue';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-            e.currentTarget.style.color = 'black';
-          }}
-        >
-          &lt;
-        </button>
       </div>
 
       <div className="mt-4">
