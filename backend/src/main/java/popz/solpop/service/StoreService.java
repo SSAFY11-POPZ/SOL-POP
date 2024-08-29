@@ -8,6 +8,7 @@ import popz.solpop.repository.StoreRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -36,6 +37,9 @@ public class StoreService {
   public List<Store.StoreCard> getStoresByKeyword(String keyword) {
 
     return storeRepository.findStoresByStoreKeywordContains(keyword);
+  }
+  public Store.StoreCard get1ByKeyword(String keyword) {
+    return storeRepository.findStoresByStoreKeywordContains(keyword).get(0);
   }
 
   public List<Store> getStoresByDateTime(LocalDateTime dateTime) {

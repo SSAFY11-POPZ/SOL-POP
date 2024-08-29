@@ -23,6 +23,7 @@
     import java.time.LocalDate;
     import java.time.LocalDateTime;
     import java.time.LocalTime;
+    import java.util.HashMap;
     import java.util.List;
     import java.util.Map;
 
@@ -60,6 +61,10 @@
             return storeService.getStoresByKeyword(keyword);
         }
 
+        @GetMapping("/ad")
+        public Store.StoreCard getAdStore() {
+            return storeService.get1ByKeyword("ad");
+        }
         @GetMapping("/top10")
         public List<Store.StoreCard> getTop10Stores() {
             return storeService.getTopStoresByReservationCount(10);

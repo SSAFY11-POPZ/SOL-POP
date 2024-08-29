@@ -75,6 +75,8 @@ public class Store {
 
 
   public interface StoreCard {
+
+
     Integer getStoreId();
     String getStoreName();
     String getStoreThumbnailUrl();
