@@ -12,10 +12,19 @@ const InfoTab = ({ detailData }) => {
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('ko-KR', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }).replace('오전 ', '').replace('오후 ', '');
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    // 만약 시간이 7시 또는 8시일 경우 12를 더해 19시 또는 20시로 변경
+    if (hours === 7 || hours === 8) {
+      hours += 12;
+    }
+
+    // 시간을 2자리 형식으로 포맷팅
+    const formattedHours = String(hours).padStart(2, '0');
+    const formattedMinutes = String(minutes).padStart(2, '0');
+
+    return `${formattedHours}:${formattedMinutes}`;
   };
 
   const renderStoreDetail = (detail) => {

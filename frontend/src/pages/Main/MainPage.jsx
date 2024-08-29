@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Carousel_main from './components/Carousel_main';
 import Buttons_main from './components/Button_main';
@@ -15,19 +15,19 @@ function MainPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto p-4 space-y-4">
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '10px', width: '100%' }}>
+    <div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto p-6 space-y-6 bg-white rounded-lg">
+      <div className="flex justify-end w-full p-4">
         {isLoggedIn ? (
           <button 
             onClick={handleLogout} 
-            style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}
+            className="text-red-600 font-semibold hover:text-red-800 transition duration-300"
           >
             로그아웃
           </button>
         ) : (
           <button 
             onClick={() => navigate('/login')}
-            style={{ color: 'blue', border: 'none', background: 'none', cursor: 'pointer' }}
+            className="text-blue-600 font-semibold hover:text-blue-800 transition duration-300"
           >
             로그인
           </button>
@@ -38,13 +38,18 @@ function MainPage() {
         <Carousel_main 
           spaceBetween={30}
           slidesPerView={1.2}
+          className="rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300"
         />
       </div>
-      <div className="w-full flex justify-center" style={{ marginBottom: '-5px' }}>
-        <Buttons_main />
+
+      <div className="w-full flex justify-center mb-6">
+        <Buttons_main className="flex justify-around w-full max-w-md space-x-4" />
       </div>
+
       <div className="w-full">
-        <Carousel_sub />
+        <Carousel_sub 
+          className="rounded-lg shadow-md transition-transform transform hover:scale-105 duration-300"
+        />
       </div>
     </div>
   );

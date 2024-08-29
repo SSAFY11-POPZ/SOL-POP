@@ -153,7 +153,7 @@ const Carousel_sub = () => {
               <div style={styles.imageWrapper}>
                 <img src={image.storeThumbnailUrl} alt={`Slide ${index + 1}`} style={styles.image} />
               </div>
-              <div style={styles.storeNameOverlay}>{image.storeName}</div>
+              {/* <div style={styles.storeNameOverlay}>{image.storeName}</div> */}
             </div>
           </SwiperSlide>
         ))}

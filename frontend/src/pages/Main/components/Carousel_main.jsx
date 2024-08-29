@@ -81,11 +81,11 @@ const Carousel_main = ({ spaceBetween = 10, slidesPerView = 1 }) => {
                 className="w-[350px] h-[400px] object-cover rounded-lg shadow-md"
                 style={{ width: '350px', height: '400px' }}
               />
-              {slide.storeName && (
+              {/* {slide.storeName && (
                 <div style={storeNameStyle}>
                   {slide.storeName}
                 </div>
-              )}
+              )} */}
             </SwiperSlide>
           ))}
         </Swiper>
