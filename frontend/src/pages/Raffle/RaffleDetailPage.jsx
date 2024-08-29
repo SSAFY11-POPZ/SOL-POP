@@ -1,54 +1,130 @@
-import {useState, useEffect} from 'react'
-import {useParams} from 'react-router-dom'
+import {useState, useEffect, useRef} from 'react'
+import {useParams, useNavigate} from 'react-router-dom'
+import api, {checkTokenValidity, refreshAccessToken} from '../../utils/axios'
+import Swal from 'sweetalert2'
+
 import RaffleCard from './components/RaffleCard';
 import UpperBar from '../../components/UpperBar';
-import RaffleTest from '../../assets/RaffleImg/RaffleTest.png'
 
 const RaffleDetailPage = () => {
-  const dummyData = {
-    "raffleId": 1,
-    "raffleName": "Gadget Raffle",
-    "raffleStartDate": "2024-01-01T00:00:00",
-    "raffleEndDate": "2024-12-31T23:59:59",
-    "raffleQual": "Must be a member",
-    "raffleDetail": "Win a new gadget!",
-    "raffleThumbnailUrl": "http://example.com/raffle1.jpg",
-    "rafflePrice": 500,
-    "raffleCrtNo": "Raffle001",
-    "raffleNumWinners": 5,
-    "store": {
-        "storeId": 1,
-        "storeName": "Shoe Store 1",
-        "storeStartDate": "2024-01-01T00:00:00",
-        "storeEndDate": "2024-12-31T23:59:59",
-        "storePlace": "NYC",
-        "storeDetail": "Awesome store 1", // 팝업스토어에 대한 상세정보
-        "storeKeyword": "shoes", // 팝업스토어 내의 키워드 
-        "storeRsvPriority": true,
-        "storeCapacity": 100,
-        "storeThumbnailUrl": RaffleTest,
-        "storePrice": 1000, // 팝업스토어의 입장료
-        "hashtag": "#cool" // 해시태그
-    }
-}
+  const navigate = useNavigate();
+  const mainRef = useRef(null)
+  const [user, setUser] = useState({})
   const {raffleId} = useParams();
-  const [raffle, setRaffle] = useState(dummyData);
+  const [raffle, setRaffle] = useState({});
   const [ticketNumber, setTicketNumber] = useState("")
 
   useEffect(() => {
+    const ScrollToDiv = () => {
+      // 참조된 div가 있으면 그 위치로 스크롤 이동
+      if (mainRef.current) {
+        mainRef.current.scrollIntoView();
+      }
+    };
+    const fetchData = async () => {
+      // 래플 상세정보 가져오기
+      await api.get(`/api/v1/raffle/${raffleId}`
+      ).then((response) => {
+        setRaffle(response.data)
+      }).catch(() => {
+        Swal.fire('ERROR', '오류가 발생했습니다.', 'warning');
+        navigate("/login")
+      })
+    }
+    ScrollToDiv();
+    fetchData();
   },[])
   
   const handleChange = (e) => {
     setTicketNumber(e.target.value)
   }
 
+  // 래플응모페이지
+  const handleRaffle = async () => {
+    try {
+      if (!localStorage.getItem("accessToken")) {
+        navigate("/login")
+        return
+      }
+      // 토큰이 유효한지 검증
+      const response = await checkTokenValidity();
+      if (!response) {
+        navigate("/login");
+        return;
+      }
+
+      // 토큰이 유효하다면 반환된 데이터를 user에 할당
+      setUser(response.data.data);
+      // 응모 여부 확인
+      const result = await Swal.fire({
+        icon: "info",
+        html: "응모시 포인트가 차감됩니다. <br>응모하시겠습니까?",
+        showCancelButton: true, // 응모 여부 선택을 위해 취소 버튼 추가
+        confirmButtonText: "응모",
+        cancelButtonText: "취소",
+      });
+
+
+      // 포인트에서 차감하기
+      if (result.isConfirmed) {
+        try {
+          const amount = raffle.rafflePrice; // 차감할 포인트 금액, 실제 로직에 맞게 수정 필요
+          await api.post("/api/v1/point/request", {
+            amount: amount,
+            pointPlace: `${raffle.raffleName} - 응모`
+          });
+            
+          // 래플 요청 보내기
+          try {
+            await api.post("/api/v1/raffle/request", {
+              raffleId: raffleId,
+              raffleCrtNo: ticketNumber,
+            });
+
+            // 응모 완료 알림
+            await Swal.fire("응모완료!", "응모가 완료되었습니다.", "success");
+          } catch (raffleError) {
+
+            // 래플 응모에 실패한 경우 포인트 복구
+            console.error('Failed to send raffle request', raffleError);
+            await rechargePoints(amount); // 포인트 복구 함수 호출
+            Swal.fire("ERROR", "래플 요청에 실패하여 포인트가 복구되었습니다. 다시 시도해주세요.", "warning");
+          }
+          } catch (deductionError) {
+            // 포인트 차감에 실패한 경우
+            console.error('Failed to deduct points', deductionError);
+            Swal.fire("ERROR", "포인트 차감에 실패했습니다. 고객센터로 문의해주세요.", "warning");
+          }
+        }
+      } catch (err) {
+      // 에러 핸들링
+      if (err.response?.status === 409) {
+        Swal.fire("ERROR", "예약 및 래플 응모내역을 확인해주세요.", "warning");
+      } else if (err.response?.status === 422) {
+        Swal.fire("ERROR", "응모번호가 올바르지 않습니다.", "warning");
+      } else {
+        Swal.fire("ERROR", "오류가 발생하였습니다.", "warning");
+      }
+    }
+  };
+  
+  // 포인트 충전 함수
+  const rechargePoints = async (amount) => {
+    try {
+      await api.put(`/api/v1/point/charge?amount=${amount}`)
+    } catch (error) {
+      console.error('Failed to recharge points', error);
+      Swal.fire("ERROR", "포인트 충전에 실패했습니다. 고객센터로 문의해주세요.", "warning");
+    }
+  };
+
   return (
-    <div >
+    <div ref={mainRef}>
       <UpperBar />
       <RaffleCard
         raffle={raffle}
       />
-      <div className="self-stretch justify-start items-start inline-flex">
+      <div className="inline-flex items-start self-stretch justify-start">
       <div className="w-2/5 px-2.5 flex-col justify-start items-start gap-2.5 inline-flex">
       <p >래플 응모 마감 기간</p>
       <p >당첨자 발표일</p>
@@ -64,11 +140,12 @@ const RaffleDetailPage = () => {
         </div>
       </div>
       <div className="w-full mx-auto my-3">
-        <input placeholder="현장에서 수령한 응모번호를 입력하세요." className="border border-black rounded-lg py-2 px-3 w-full text-center" onChange={(e) => handleChange(e)} value={ticketNumber}/>
+        <input placeholder="현장에서 수령한 응모번호를 입력하세요." className="w-full px-3 py-2 text-center border border-black rounded-lg" onChange={(e) => handleChange(e)} value={ticketNumber}/>
       </div>
-      <div className="bg-blue-700 mx-auto w-1/2  text-center rounded-full ">
-        <div className="text-white text-sm font-bold py-2 px-3">응모하기</div>
+      <div className="w-1/2 mx-auto text-center bg-blue-700 rounded-full ">
+        <div className="px-3 py-2 text-sm font-bold text-white" disabled={user == {}} onClick={() => handleRaffle()}>응모하기</div>
       </div>
+      <div className="w-full h-24"></div>
     </div>
   );
 };
