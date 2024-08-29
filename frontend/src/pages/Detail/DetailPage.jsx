@@ -206,18 +206,6 @@ const DetailPage = () => {
           alt={`Thumbnail for ${detailData.store.storeName}`}
           className="w-full h-full aspect-square object-cover rounded-md"
         />
-        {detailData.store.imageList && detailData.store.imageList.length > 0 && (
-          <div className="mt-4 grid grid-cols-2 gap-4">
-            {detailData.store.imageList.map((image) => (
-              <img
-                key={image.imageId}
-                src={image.imageUrl}
-                alt={`Additional image ${image.imageId}`}
-                className="w-full h-full object-cover rounded-md"
-              />
-            ))}
-          </div>
-        )}
       </div>
 
       <div className="mt-4">
