@@ -75,7 +75,7 @@ const RegisterPage = () => {
     }
 
     // SSAFY 사용자 계정 조회
-    await axios.post("https://solpop.xyz/api/v1/auth/checkSSAFYUser",{
+    await axios.post("http://localhost:8080/api/v1/auth/checkSSAFYUser",{
       apiKey:import.meta.env.VITE_ADMIN_SECRET_KEY,
       userId:email
     }).then(() => {
@@ -147,7 +147,7 @@ const RegisterPage = () => {
     // 다 통과하고나면 axios 요청하기
 
     // 1. SSAFY 계정 생성하기
-    !localStorage.getItem("userKey") && await axios.post("https://solpop.xyz/api/v1/auth/createSSAFYUser",{
+    !localStorage.getItem("userKey") && await axios.post("http://localhost:8080/api/v1/auth/createSSAFYUser",{
       "apiKey":import.meta.env.VITE_ADMIN_SECRET_KEY,
        "userId":email
      }).then((res) => {

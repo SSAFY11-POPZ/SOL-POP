@@ -25,18 +25,19 @@ const ProfilePage = () => {
     const fetchData = async () => {
       try {
         if (!localStorage.getItem("accessToken")) {
-          navigate("/login")
-          return
+          // navigate("/login")
+          return;
         }
         // 토큰이 유효한지 검증
         const response = await checkTokenValidity();
-        if (!response) {
-          navigate("/login");
+        if (!response || response.status !== 200) {
+          // navigate("/login");
+          console.log(response)
           return;
         }
   
         // 토큰이 유효하다면 반환된 데이터를 user에 할당
-        setUser(response.data.data);
+        await setUser(response.data.data);
   
         // 포인트 조회
         const pointResponse = await api.get("/api/v1/user/point/balance");
@@ -192,7 +193,7 @@ const ProfilePage = () => {
             <img src={ProfileSeeding} alt="Profile Seeding" />
           </div>
           <div className="flex-row justify-end align-bottom">
-            <span className="block text-white text-lg font-bold font-['Noto Sans']">{user.Name} 님,</span>
+            <span className="block text-white text-lg font-bold font-['Noto Sans']">{user.name} 님,</span>
             <span className="block text-white text-sm font-bold font-['Noto Sans']">
               오늘도 쏠쏠한 혜택을 누리세요!
             </span>

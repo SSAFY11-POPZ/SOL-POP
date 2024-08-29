@@ -1,6 +1,7 @@
 package popz.solpop.controller;
 
 
+import lombok.extern.slf4j.Slf4j;
 import popz.solpop.dto.*;
 import popz.solpop.entity.Account;
 import popz.solpop.repository.AccountRepository;
@@ -26,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@Slf4j
 public class AuthController {
     @Autowired
     AuthService authService;
@@ -120,6 +122,7 @@ public class AuthController {
 
     @PostMapping("/refresh-token")
     public Response<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        log.info("cookies : {}", request.getCookies());
         String refreshToken = null;
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
