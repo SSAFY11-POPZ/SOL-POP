@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef} from 'react'
 import {useParams, useNavigate} from 'react-router-dom'
-import api, {checkTokenValidity, refreshAccessToken} from '../../utils/axios'
+import api, {checkTokenValidity} from '../../utils/axios'
 import Swal from 'sweetalert2'
 
 import RaffleCard from './components/RaffleCard';
@@ -48,10 +48,10 @@ const RaffleDetailPage = () => {
       }
       // 토큰이 유효한지 검증
       const response = await checkTokenValidity();
-      if (!response) {
-        navigate("/login");
-        return;
-      }
+      // if (!response.result) {
+      //   navigate("/login");
+      //   return;
+      // }
 
       // 토큰이 유효하다면 반환된 데이터를 user에 할당
       setUser(response.data.data);
@@ -83,12 +83,21 @@ const RaffleDetailPage = () => {
 
             // 응모 완료 알림
             await Swal.fire("응모완료!", "응모가 완료되었습니다.", "success");
+            setTicketNumber("")
           } catch (raffleError) {
-
+            const message = raffleError.response.data
             // 래플 응모에 실패한 경우 포인트 복구
-            console.error('Failed to send raffle request', raffleError);
+            console.error(message);
+            if (message == "이미 응모한 래플") {
+              Swal.fire("ERROR", "이미 응모한 래플입니다.", "error");
+            } else if (message == "잘못된 응모쿠폰"){
+              Swal.fire("ERROR", "잘못된 쿠폰 번호입니다. 다시 입력해주세요.", "warning");
+            } else if (message == "예약하지 않은 팝업 래플") {
+              Swal.fire("ERROR", "예약 후에 이용 가능한 서비스입니다.", "warning");
+            } else {
+              Swal.fire("ERROR", "래플 요청에 실패하여 포인트가 복구되었습니다. 다시 시도해주세요.", "warning");
+            }
             await rechargePoints(amount); // 포인트 복구 함수 호출
-            Swal.fire("ERROR", "래플 요청에 실패하여 포인트가 복구되었습니다. 다시 시도해주세요.", "warning");
           }
           } catch (deductionError) {
             // 포인트 차감에 실패한 경우
@@ -124,27 +133,33 @@ const RaffleDetailPage = () => {
       <RaffleCard
         raffle={raffle}
       />
-      <div className="inline-flex items-start self-stretch justify-start">
-      <div className="w-2/5 px-2.5 flex-col justify-start items-start gap-2.5 inline-flex">
-      <p >래플 응모 마감 기간</p>
-      <p >당첨자 발표일</p>
-      <p >팝업 장소</p>
-      <p >안내사항</p>
-      </div>
-      <div className="flex-col w-3/5 justify-start items-start gap-2.5 inline-flex">
-        <p>{new Date(raffle.raffleEndDate).toLocaleDateString()}</p>
-        <p>{new Date(raffle.raffleStartDate).toLocaleDateString()}</p>
-        <p>{raffle.store?.storePlace}</p>
-        <p>{raffle.raffleDetail}</p>
-        <p>이벤트 당첨 여부는 마이페이지에서 확인하실 수 있습니다.</p>
+      <div>
+        <div className="flex flex-row w-full px-3 my-1 gap-x-2">
+          <p className="w-2/5">래플 응모 마감 기간</p>
+          <p className="w-3/5">{new Date(raffle.raffleEndDate).toLocaleDateString()}</p>
+        </div>
+        <div className="flex w-full px-3 my-1 gap-x-2">
+          <p className="w-2/5">당첨자 발표일</p>
+          <p className="w-3/5">{new Date(raffle.raffleStartDate).toLocaleDateString()}</p>
+        </div>
+        <div className="flex w-full px-3 my-1 gap-x-2">
+          <p className="w-2/5">팝업 장소</p>
+          <p className="w-3/5">{raffle.store?.storePlace}</p>
+        </div>
+        <div className="flex w-full px-3 my-1 gap-x-2">
+          <p className="w-2/5">안내사항</p>
+          <div className="w-3/5">
+            <p>이벤트 당첨 여부는 마이페이지에서 확인하실 수 있습니다.</p>
+          </div>
         </div>
       </div>
-      <div className="w-full mx-auto my-3">
+      <div className="w-4/5 mx-auto my-3">
         <input placeholder="현장에서 수령한 응모번호를 입력하세요." className="w-full px-3 py-2 text-center border border-black rounded-lg" onChange={(e) => handleChange(e)} value={ticketNumber}/>
       </div>
       <div className="w-1/2 mx-auto text-center bg-blue-700 rounded-full ">
         <div className="px-3 py-2 text-sm font-bold text-white" disabled={user == {}} onClick={() => handleRaffle()}>응모하기</div>
       </div>
+      {/* navbar만큼 띄워준것 */}
       <div className="w-full h-24"></div>
     </div>
   );

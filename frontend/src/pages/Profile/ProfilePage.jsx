@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ProfileSeeding from '../../assets/ProfileImg/ProfileSeeding.png'
 import ProfileMoney from '../../assets/ProfileImg/ProfileMoney.png'
+import Card from '../../assets/ProfileImg/Card.png'
 import Swal from 'sweetalert2'
 import api, { checkTokenValidity } from "../../utils/axios"
 import axios from 'axios'
@@ -30,10 +31,10 @@ const ProfilePage = () => {
         }
         // 토큰이 유효한지 검증
         const response = await checkTokenValidity();
-        if (!response) {
-          navigate("/login");
-          return;
-        }
+        // if (!response.result) {
+        //   navigate("/login");
+        //   return;
+        // }
   
         // 토큰이 유효하다면 반환된 데이터를 user에 할당
         setUser(response.data.data);
@@ -163,10 +164,15 @@ const ProfilePage = () => {
   
   // 3. 내 계좌 잔액
   const showBalance = () => {
+    const formattedAccountNo = user.accountNo.replace(/(\d{4})(?=\d)/g, '$1-');
+  
     Swal.fire({
-      icon:"info",
-      html:`계좌 번호 : ${user.accountNo} <br><br>현재 잔액은 <strong>${balance}원</strong>입니다.`
-    })
+      imageUrl: Card,
+      imageWidth: 260,
+      imageHeight: 150,
+      imageAlt: "Custom image",
+      html: `<span style="font-size:16px">${formattedAccountNo}</span><br><br>현재 잔액은 <strong>${balance}원</strong>입니다.`
+    });
   }
 
   // 4. 내 찜한 목록
@@ -177,11 +183,6 @@ const ProfilePage = () => {
   // 5. 내 예약 목록
   const goToReservation = () => {
     navigate("/profile/reservation")
-  }
-
-  // 6. 내 래플 목록
-  const goToRaffle = () => {
-    navigate("/profile/raffle")
   }
 
   return (
@@ -217,7 +218,6 @@ const ProfilePage = () => {
           <p className={`text-base ${hoverCss} p-1`} onClick={() => showBalance()}>내 계좌 잔액</p>
           <p className={`text-base ${hoverCss} p-1`} onClick={() => showWishlist()}>내 찜한 목록</p>
           <p className={`text-base ${hoverCss} p-1`} onClick={() => goToReservation()}>내 예약목록</p>
-          <p className={`text-base ${hoverCss} p-1`} onClick={() => goToRaffle()}>내 래플 목록</p>
         </div>
       </div>
 

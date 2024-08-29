@@ -30,19 +30,18 @@ const ReservationPage = () => {
 
         // 토큰이 유효한지 검증
         const response = await checkTokenValidity();
-        if (!response) {
-          navigate("/login");
-          return;
-        }
+        // if (!response.result) {
+        //   navigate("/login");
+        //   return;
+        // }
 
         // 유저 정보 설정
         setUser(response.data.data);
 
         // 예약 목록 가져오기
-      const reservationRes = await api.get("/api/v1/user/reservation");
-      const sortedReservations = sortReservationsByDateAndTime(reservationRes.data);
-      setReservations(sortedReservations);
-      
+        const reservationRes = await api.get("/api/v1/user/reservation");
+        const sortedReservations = sortReservationsByDateAndTime(reservationRes.data);
+        setReservations(sortedReservations);
       } catch(err) {
         console.log(err)
       }
@@ -75,37 +74,64 @@ const ReservationPage = () => {
   };
 
   // 예약 취소
-const cancelReservation = (reserveId) => {
-  api.delete("/api/v1/user/cancelReservation", {
-    data: { reserveId: reserveId } // reserveId를 data 객체로 감싸서 전달
-  })
-  .then(() => {
-    // reservations에서 취소된 예약을 제외한 새로운 배열로 상태 업데이트
-    setReservations(prevReservations => 
-      prevReservations.filter(reservation => reservation.reserveId !== reserveId)
-    );
-    Swal.fire({
-      icon:"success",
-      text:"예약이 취소되었습니다."
+  const cancelReservation = (reserveId) => {
+    api.delete("/api/v1/user/cancelReservation", {
+      data: { reserveId: reserveId } // reserveId를 data 객체로 감싸서 전달
     })
-  })
-  .catch(err => {
-    console.log(err);
-  });
-};
+    .then(() => {
+      // reservations에서 취소된 예약을 제외한 새로운 배열로 상태 업데이트
+      setReservations(prevReservations => 
+        prevReservations.filter(reservation => reservation.reserveId !== reserveId)
+      );
+      Swal.fire({
+        icon:"success",
+        text:"예약이 취소되었습니다."
+      })
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  };
+
+  // 직원 확인 처리 함수
+  const handleConfirmVisit = async (storeId) => {
+    try {
+      const result = await Swal.fire({
+        icon: 'info',
+        title: '직원 확인',
+        text: '확인을 누르시면 다시 사용하실 수 없습니다.',
+      })
+    if (result.isConfirmed) {
+      const response = await api.post(`/api/v1/reserve/${storeId}/confirm-visit`)
+      setReservations(prevReservations => 
+        prevReservations.map(reservation => 
+          reservation.store.storeId === storeId ? { ...reservation, isVisited: true } : reservation
+        )
+      );
+    }
+  } catch {
+    Swal.fire({
+      title:"ERROR",
+      text:"오류가 발생했습니다.",
+      icon:"error"
+    })  
+  }
+
+
+  };
 
   return (
-    <div className="min-h-screen p-4 bg-gray-100">
-      <UpperBar />
-      <div className="flex justify-start p-1 my-4 rounded-lg">
+    <div className="min-h-screen p-4">
+      <UpperBar/>
+      <div className="grid grid-cols-3">
         <button
-          className={`mr-4 px-4 py-2 ${filter === '전체보기' ? 'font-bold text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
+          className={`px-4 py-2 ${filter === '전체보기' ? 'font-bold text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
           onClick={() => setFilter('전체보기')}
         >
           전체보기
         </button>
         <button
-          className={`mr-4 px-4 py-2 ${filter === '방문전' ? 'font-bold text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
+          className={`px-4 py-2 ${filter === '방문전' ? 'font-bold text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
           onClick={() => setFilter('방문전')}
         >
           방문전
@@ -117,13 +143,13 @@ const cancelReservation = (reserveId) => {
           방문완료
         </button>
       </div>
-      <div className="p-4 bg-white border rounded-lg">
-        <p className="mx-4 mt-2 text-sm font-semibold">
+      <div className="h-full p-4">
+        <p className="mx-4 my-2 text-sm font-semibold">
           {`${filter} ${getFilteredReservations().length}건`}
         </p>
         {reservations.length > 0 ? (
           getFilteredReservations().map(reservation => (
-            <div key={reservation.reserveId} className="px-4 py-4 mb-4 bg-white rounded-lg shadow-sm">
+            <div key={reservation.reserveId} className="px-4 py-4 mb-4 border border-gray-100 rounded-lg shadow-sm">
               <div className="flex items-center">
                 <div className="flex-grow">
                   <div className="text-lg font-semibold truncate">{reservation.store.storeName}</div>
@@ -133,20 +159,30 @@ const cancelReservation = (reserveId) => {
                 </div>
               </div>
               <div className="flex justify-around mt-3">
-                <button
-                  className="text-sm"
-                  onClick={() => navigate(`/profile/reservation/${reservation.reserveId}`)}
-                >
-                  상세보기
-                </button>
-                <span>|</span>
-                <button
+                {!reservation.isVisited && <button
                   className={`text-sm ${reservation.isVisited ? 'text-gray-300 cursor-not-allowed' : ''}`}
                   disabled={reservation.isVisited}
                   onClick={() => cancelReservation(reservation.reserveId)}
                 >
                   예약취소
+                </button>}
+                {!reservation.isVisited &&<span>|</span>}
+                <button
+                  className={`text-sm ${reservation.isVisited ? 'text-gray-300 cursor-not-allowed' : ''}`}
+                  disabled={reservation.isVisited}
+                  onClick={() => handleConfirmVisit(reservation.store.storeId)}
+                >
+                  {reservation.isVisited ? '방문완료' : '직원확인'}
                 </button>
+                  {reservation.store.raffle && <span>|</span>}
+                  {reservation.store.raffle &&
+                    <button
+                    className="text-sm"
+                    onClick={() => navigate(`/raffle/${reservation.store.raffle.raffleId}`)}
+                    >
+                  래플 응모하기
+                </button>
+                }
               </div>
             </div>
           ))
