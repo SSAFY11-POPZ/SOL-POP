@@ -1,38 +1,31 @@
 import React from 'react';
 
 // 이미지 import
-
-import likeImg from '../img/like3.png';
-import calendarImg from '../img/calendar2.png';
-import raffleImg from '../img/raffle.png';
+import likeImg from '../img/bestImg.png';
+import calendarImg from '../img/calendarImg.png';
+import raffleImg from '../img/raffleImg.png';
 import b4Img from '../img/sol.png';
 
-const baseURL= 'https://solpop.xyz';
+const baseURL = 'https://solpop.xyz';
 
 const buttonsData = [
   {
     imagePath: likeImg,
-    linkUrl: `${baseURL}/rank`, // 템플릿 문자열로 설정
+    linkUrl: `${baseURL}/rank`,
     altText: 'Example Image 1',
     label: '인기',
-    width: '40px',
-    height: '40px',
   },
   {
     imagePath: calendarImg,
     linkUrl: `${baseURL}/calendar`,
     altText: 'Example Image 2',
     label: '일정',
-    width: '40px',
-    height: '40px',
   },
   {
     imagePath: raffleImg,
     linkUrl: `${baseURL}/raffle`,
     altText: 'Example Image 3',
     label: '래플',
-    width: '40px',
-    height: '40px',
   },
   {
     imagePath: b4Img,
@@ -61,39 +54,20 @@ const Buttons_main = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', width: '450px', margin: '15px' }}>
+    <div className="flex justify-even">
       {buttonsData.map((button, index) => (
         <button
           key={index}
           onClick={() => handleButtonClick(button.linkUrl, button.fallbackUrl)}
-          style={{
-            width: '80px',
-            height: '80px',
-            border: '2px solid #ccc',
-            borderRadius: '10px',
-            background: '#fff',
-            cursor: 'pointer',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 0,
-            margin: '5px',
-            overflow: 'hidden',
-          }}
+          className="relative flex flex-col items-center justify-start w-20 h-20 mx-1 border border-gray-100 cursor-pointer border-1 rounded-xl hover:bg-gray-200"
         >
           <img
             src={button.imagePath}
             alt={button.altText}
-            style={{
-              width: button.fullSize ? '100%' : button.width,
-              height: button.fullSize ? '100%' : button.height,
-              objectFit: button.fullSize ? 'cover' : 'initial',
-              borderRadius: '10px',
-            }}
+            className={`${button.fullSize ? "w-full h-full rounded-xl": "w-[60px] h-[60px]"} `}
           />
           {button.label && (
-            <span style={{ marginTop: '0px', fontSize: '14px', fontWeight: 'bold', color: '#333' }}>
+            <span className="absolute bottom-1 text-[10px] font-bold">
               {button.label}
             </span>
           )}

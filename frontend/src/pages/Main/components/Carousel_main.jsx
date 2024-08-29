@@ -4,21 +4,12 @@ import 'swiper/swiper-bundle.css';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import axios from 'axios';
 
-const Carousel_main = ({ spaceBetween = 10, slidesPerView = 1 }) => {
+const Carousel_main = ({ spaceBetween = 10, slidesPerView = 1.3 }) => {
   const [slides, setSlides] = useState([]);
-  const [error, setError] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0); // 활성 슬라이드의 인덱스를 저장하는 상태
   const baseURL = 'https://solpop.xyz';
 
   const fetchUrl = `${baseURL}/api/v1/store/main/carousel`;
-
-  const storeNameStyle = {
-    position: 'absolute',
-    bottom: '45px',
-    right: '20px',
-    color: 'white',
-    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
-    fontSize: '1.3rem',
-  };
 
   useEffect(() => {
     const fetchSlides = async () => {
@@ -39,7 +30,6 @@ const Carousel_main = ({ spaceBetween = 10, slidesPerView = 1 }) => {
         }
       } catch (error) {
         console.error('Error fetching data: 실패main_Carousel', error);
-        setError(true);
       }
     };
 
@@ -59,33 +49,29 @@ const Carousel_main = ({ spaceBetween = 10, slidesPerView = 1 }) => {
           slidesPerView={slidesPerView}
           centeredSlides={true}
           loop={true}
-          loopFillGroupWithBlank={true} // 빈 슬라이드로 그룹을 채웁니다.
+          loopFillGroupWithBlank={true}
           autoplay={{
             delay: 4500,
             disableOnInteraction: false,
           }}
           speed={500}
           pagination={{ clickable: true }}
-          // navigation={true}
           className="relative w-full h-auto"
+          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)} // 활성 슬라이드 인덱스를 설정
         >
           {slides.map((slide, index) => (
             <SwiperSlide
               key={index}
               onClick={() => handleSlideClick(slide.storeId)}
-              className="relative cursor-pointer main_SwiperSlide"
+              className={`relative cursor-pointer transition-transform duration-300 ease-in-out`}
             >
               <img
                 src={slide.storeThumbnailUrl}
                 alt={`Slide ${index + 1}`}
-                className="w-[350px] h-[400px] object-cover rounded-lg shadow-md"
-                style={{ width: '350px', height: '400px' }}
+                className={`${
+                  index == activeIndex ? 'scale-100' : 'scale-90'
+                } w-[350px] h-[400px] object-cover rounded-lg shadow-md`}
               />
-              {/* {slide.storeName && (
-                <div style={storeNameStyle}>
-                  {slide.storeName}
-                </div>
-              )} */}
             </SwiperSlide>
           ))}
         </Swiper>
