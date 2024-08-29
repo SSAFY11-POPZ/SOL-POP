@@ -160,9 +160,13 @@ const ReservationDrawer = ({ onClose, storeId }) => {
   ];
 
   const isDateDisabled = (date) => {
-    if (!storeStartDate || !storeEndDate) return true;
-    return date < storeStartDate || date > storeEndDate;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 오늘 날짜의 시간을 00:00:00으로 설정
+  
+    // 현재 날짜 이전이거나, 스토어의 시작 날짜와 종료 날짜 범위 밖의 날짜를 비활성화
+    return date < today || date < storeStartDate || date > storeEndDate;
   };
+  
 
   return (
     <div className="fixed inset-0 flex items-end justify-center z-50 bg-black bg-opacity-50">

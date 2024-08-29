@@ -45,7 +45,7 @@ const WishlistPage = () => {
         }
       } catch (error) {
         console.error('Error fetching wishlist data:', error.response ? error.response.data : error.message);
-        setError('Failed to load wishlist. Please try again later.');
+        setError('찜 목록이 비어있어요!');
       } finally {
         setLoading(false);
       }

@@ -15,12 +15,17 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "axios": "^1.7.5",
     "date-fns": "^3.6.0",
+<<<<<<< HEAD
     "jwt-decode": "^4.0.0",
+=======
+    "hangul-js": "^0.2.6",
+>>>>>>> e6d525e3898a2774fd3c42f284fcc144c0cd6d83
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-calendar": "^5.0.0",
     "react-day-picker": "^9.0.8",
     "react-dom": "^18.3.1",
+    "react-dropzone": "^14.2.3",
     "react-router-dom": "^6.26.1",
     "react-slick": "^0.30.2",
     "react-tailwind-datepicker": "^0.0.1",
