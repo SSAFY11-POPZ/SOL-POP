@@ -31,7 +31,7 @@ const ProfilePage = () => {
         }
         // 토큰이 유효한지 검증
         const response = await checkTokenValidity();
-
+        console.log(response);
         if (!response || response.status !== 200) {
           // navigate("/login");
           console.log(response)

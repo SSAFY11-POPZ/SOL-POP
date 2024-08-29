@@ -35,6 +35,7 @@ const LoginPage = () => {
       password: password
   }).then((res) => {
     localStorage.setItem("accessToken",res.data.data.accessToken)
+    console.log("login"+document.cookie);
     navigate("/")
     }).catch((err) => {
       console.log(err)

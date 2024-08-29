@@ -13,6 +13,8 @@ const api2 = axios.create({
 // API 요청 전에 토큰의 유효성을 확인하는 인터셉터
 api.interceptors.request.use(
   async (config) => {
+    console.log("cookie"+document.cookie);
+
     let token = localStorage.getItem('accessToken');
     if (token) {
       const decodedToken = jwtDecode(token);
@@ -67,6 +69,7 @@ api.interceptors.response.use(
 
 async function refreshAccessToken() {
   try {
+    console.log(document.cookie);
     const response = await api2.post('/api/v1/auth/refresh-token');
     // const response = await axios.post('http://localhost:8080/api/v1/auth/refresh-token');
     console.log(response);
@@ -100,9 +103,11 @@ export async function checkTokenValidity() {
     const expDate = new Date(exp * 1000);
     console.log(expDate.toString());
     console.log("here");
-    if (exp < currentTime) {
-      return false; // 토큰이 만료됨
-    }
+    // if (exp < currentTime) {
+    //   return false; // 토큰이 만료됨
+    // }
+
+    console.log('after');
 
     const response = await api.get('/api/v1/auth/check-token', {
       headers: { Authorization: `Bearer ${token}` }
