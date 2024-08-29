@@ -127,7 +127,7 @@ const DetailPage = () => {
     if (window.history.length > 1) {
       navigate(-1);
     } else {
-      navigate('/');  // 대체 경로를 지정합니다. 여기서는 홈 경로('/')로 이동합니다.
+      navigate('/');
     }
   };
 
@@ -167,7 +167,7 @@ const DetailPage = () => {
 
   return (
     <div className="max-w-lg mx-auto p-4">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <button 
           onClick={handleGoBack}
           className="text-black text-2xl rounded-lg flex items-center justify-center"
@@ -176,7 +176,7 @@ const DetailPage = () => {
             backgroundColor: 'transparent',
             width: '50px',
             height: '50px',
-            marginLeft: '-10px', // Move the button to the left edge
+            marginLeft: '-10px',
           }}
         >
           &lt;
@@ -185,19 +185,20 @@ const DetailPage = () => {
         {isLoggedIn ? (
           <button 
             onClick={handleLogout} 
-            style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}
+            style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer', padding: '2px 0' }}
           >
             로그아웃
           </button>
         ) : (
           <button 
             onClick={() => navigate('/login')}
-            style={{ color: 'blue', border: 'none', background: 'none', cursor: 'pointer' }}
+            style={{ color: 'blue', border: 'none', background: 'none', cursor: 'pointer', padding: '2px 0' }}
           >
             로그인
           </button>
         )}
       </div>
+
 
       <div className="relative">
         <img

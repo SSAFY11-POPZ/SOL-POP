@@ -18,16 +18,22 @@ const InfoTab = ({ detailData }) => {
     }).replace('오전 ', '').replace('오후 ', '');
   };
 
+  const renderStoreDetail = (detail) => {
+    return detail.split('<br>').map((line, index) => (
+      <p key={index}>{line}</p>
+    ));
+  };
+
   return (
     <div className="detail-description">
-      <p>{detailData.store.storeDetail}</p>
+      {renderStoreDetail(detailData.store.storeDetail)}
+      <br />
       <ul>
         <li>기간 : {formatDate(detailData.store.storeStartDate)} ~ {formatDate(detailData.store.storeEndDate)}</li>
         <li>시간 : {formatTime(detailData.store.storeStartDate)} ~ {formatTime(detailData.store.storeEndDate)}</li>
         <li>위치 : {detailData.store.storePlace}</li>
-        <li>스토어 키워드 : {detailData.store.storeKeyword}</li>
       </ul>
-      <br></br>
+      <br />
       <p className="detail-hashtags" style={{ color: '#4472EA' }}>
         {detailData.store.hashtag}
       </p>
