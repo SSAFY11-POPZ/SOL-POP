@@ -15,19 +15,19 @@ function MainPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto p-6 space-y-6 bg-white rounded-lg">
-      <div className="flex justify-end w-full p-4">
+    <div className="flex flex-col items-center justify-center w-full max-w-4xl p-5 mx-auto space-y-6 bg-white rounded-lg">
+      <div className="flex justify-end w-full px-4 py-1 text-xs">
         {isLoggedIn ? (
           <button 
             onClick={handleLogout} 
-            className="text-red-600 font-semibold hover:text-red-800 transition duration-300"
+            className="font-semibold transition duration-300 hover:text-red-800"
           >
             로그아웃
           </button>
         ) : (
           <button 
             onClick={() => navigate('/login')}
-            className="text-blue-600 font-semibold hover:text-blue-800 transition duration-300"
+            className="font-semibold transition duration-300 hover:text-blue-800"
           >
             로그인
           </button>
@@ -36,19 +36,17 @@ function MainPage() {
 
       <div className="w-full">
         <Carousel_main 
-          spaceBetween={30}
-          slidesPerView={1.2}
-          className="rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300"
+          className="transition-transform duration-300 transform rounded-lg shadow-lg hover:scale-105"
         />
       </div>
 
-      <div className="w-full flex justify-center mb-6">
+      <div className="flex justify-center w-full mb-6">
         <Buttons_main className="flex justify-around w-full max-w-md space-x-4" />
       </div>
 
       <div className="w-full">
         <Carousel_sub 
-          className="rounded-lg shadow-md transition-transform transform hover:scale-105 duration-300"
+          className="transition-transform duration-300 transform rounded-lg shadow-md hover:scale-105"
         />
       </div>
     </div>

@@ -6,29 +6,31 @@ const EventDetails = ({ event }) => {
   const handleDetailClick = () => {
     window.location.href = `${baseURL}/detail/${event.storeId}`;
   };
+  const renderStoreDetail = (detail) => {
+    return detail.split('<br>').map((line, index) => (
+      <p key={index}>{line}</p>
+    ));
+  };
 
   return (
     <div
-      className="relative bg-cover bg-center p-5 rounded-lg mt-5 text-white max-w-lg"
+      className="max-w-lg mt-5 text-white bg-center bg-cover rounded-lg"
       style={{ backgroundImage: `url(${event.storeThumbnailUrl})` }}
     >
-      <div className="bg-black bg-opacity-60 p-5 rounded-lg">
+      <div className="p-5 bg-black rounded-lg bg-opacity-60">
         <h3 className="mt-0 text-2xl font-semibold">{event.storeName}</h3>
         <p className="mt-2 text-base">
           {`${new Date(event.storeStartDate).toLocaleDateString()} ~ ${new Date(event.storeEndDate).toLocaleDateString()}`}
         </p>
-        <p className="mt-2 text-base">{event.storeDetail}</p>
+        <p className="mt-2 text-base">{renderStoreDetail(event.storeDetail)}</p>
         <p className="mt-2 text-base">위치: {event.storePlace}</p>
-        <p className="mt-2 text-base">키워드: {event.storeKeyword}</p>
-        <p className="mt-2 text-base">입장료: {event.storePrice}원</p>
-        <p className="mt-2 text-base">수용인원: {event.storeCapacity}명</p>
         <p className="mt-2 text-base">
           예약 가능 여부: {event.storeRsvPriority ? '가능' : '불가능'}
         </p>
         <p className="mt-4 text-blue-400">{event.hashtag}</p>
         <button 
           onClick={handleDetailClick} 
-          className="mt-4 text-blue-400 hover:text-blue-600 underline cursor-pointer"
+          className="mt-4 text-blue-400 underline cursor-pointer hover:text-blue-600"
         >
           상세보기
         </button>
@@ -36,5 +38,7 @@ const EventDetails = ({ event }) => {
     </div>
   );
 };
+
+
 
 export default React.memo(EventDetails);
