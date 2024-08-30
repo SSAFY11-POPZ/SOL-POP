@@ -5,13 +5,10 @@ import './Navbar.css';
 const Navbar = () => {
   const location = useLocation();
 
-  // List of paths where the Navbar should be visible
   const visiblePaths = ['/', '/search', '/wishlist', '/profile'];
 
-  // Check if the current path matches any of the visible paths
   const shouldShowNavbar = visiblePaths.includes(location.pathname);
 
-  // If the current path is not in the list, return null to hide the Navbar
   if (!shouldShowNavbar) {
     return null;
   }

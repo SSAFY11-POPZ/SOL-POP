@@ -3,6 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import api from '../../../utils/axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const ReservationDrawer = ({ onClose, storeId }) => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -15,29 +16,32 @@ const ReservationDrawer = ({ onClose, storeId }) => {
   const drawerRef = useRef(null);
   const navigate = useNavigate();
 
-  const accesstoken = localStorage.getItem('accessToken'); // Access token 가져오기
+  const accesstoken = localStorage.getItem('accessToken');
 
   useEffect(() => {
     if (!accesstoken) {
-      alert('로그인이 필요한 기능입니다.');
-      navigate('/login');
+      Swal.fire({
+        icon: 'warning',
+        text: '로그인이 필요한 기능입니다.',
+      }).then(() => {
+        navigate('/login');
+      });
       return;
     }
-    
+
     setIsVisible(true);
-  
+
     const handleClickOutside = (event) => {
       if (drawerRef.current && !drawerRef.current.contains(event.target)) {
         onClose();
       }
     };
-  
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [onClose, accesstoken, navigate]);
-  
 
   useEffect(() => {
     const fetchStoreData = async () => {
@@ -47,16 +51,21 @@ const ReservationDrawer = ({ onClose, storeId }) => {
         setStoreStartDate(new Date(storeData.storeStartDate));
         setStoreEndDate(new Date(storeData.storeEndDate));
       } catch (error) {
-        console.error('Error fetching store data:', error.response ? error.response.data : error.message);
+        console.error(
+          'Error fetching store data:',
+          error.response ? error.response.data : error.message,
+        );
       }
     };
-    
+
     fetchStoreData();
   }, [storeId]);
 
   const fetchReserveData = async (date) => {
     try {
-      const response = await api.get(`/api/v1/store/${storeId}/reserve?date=${date}`);
+      const response = await api.get(
+        `/api/v1/store/${storeId}/reserve?date=${date}`,
+      );
       console.log('API Response:', response.data);
 
       const data = response.data;
@@ -66,7 +75,9 @@ const ReservationDrawer = ({ onClose, storeId }) => {
         setReserveDate(reserveDate);
 
         if (Array.isArray(data.unavailableTime)) {
-          setUnavailableTimes(data.unavailableTime.map((time) => time.slice(0, 5)));
+          setUnavailableTimes(
+            data.unavailableTime.map((time) => time.slice(0, 5)),
+          );
         } else {
           console.warn('unavailableTime is not an array or is undefined');
           setUnavailableTimes([]);
@@ -100,7 +111,10 @@ const ReservationDrawer = ({ onClose, storeId }) => {
 
   const handleReservationSubmit = async () => {
     if (!selectedDate || !selectedTime) {
-      alert('날짜와 시간을 둘 다 선택해주세요.');
+      Swal.fire({
+        icon: 'warning',
+        text: '날짜와 시간을 둘 다 선택해주세요.',
+      });
       return;
     }
 
@@ -118,23 +132,38 @@ const ReservationDrawer = ({ onClose, storeId }) => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${accesstoken}`,
           },
-        }
+        },
       );
 
       console.log('Response:', response.data);
 
       if (response.status === 200) {
-        alert('예약이 완료되었습니다.');
-        onClose();
+        Swal.fire({
+          icon: 'success',
+          title: '예약이 완료되었습니다.',
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(() => {
+          onClose();
+        });
       } else {
-        alert('예약이 실패했습니다.');
+        Swal.fire({
+          icon: 'error',
+          text: '예약이 실패했습니다.',
+        });
       }
     } catch (error) {
       if (error.response && error.response.status === 409) {
-        alert('이미 예약된 팝업입니다.');
+        Swal.fire({
+          icon: 'error',
+          text: '이미 예약된 팝업입니다.',
+        });
       } else {
         console.error('Error during reservation:', error);
-        alert('에러가 발생했습니다. 서버 관리자에게 문의하세요.');
+        Swal.fire({
+          icon: 'error',
+          text: '에러가 발생했습니다. 서버 관리자에게 문의하세요.',
+        });
       }
     }
   };
@@ -161,18 +190,16 @@ const ReservationDrawer = ({ onClose, storeId }) => {
 
   const isDateDisabled = (date) => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // 오늘 날짜의 시간을 00:00:00으로 설정
-  
-    // 현재 날짜 이전이거나, 스토어의 시작 날짜와 종료 날짜 범위 밖의 날짜를 비활성화
+    today.setHours(0, 0, 0, 0);
+
     return date < today || date < storeStartDate || date > storeEndDate;
   };
-  
 
   return (
-    <div className="fixed inset-0 flex items-end justify-center z-50 bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black bg-opacity-50">
       <div
         ref={drawerRef}
-        className={`bg-white p-6 rounded-t-2xl shadow-lg w-full max-w-md h-2/3 transform transition-transform duration-300 ${
+        className={`h-2/3 w-full max-w-md transform rounded-t-2xl bg-white p-6 shadow-lg transition-transform duration-300 ${
           isVisible ? 'translate-y-0' : 'translate-y-full'
         }`}
         style={{
@@ -184,7 +211,6 @@ const ReservationDrawer = ({ onClose, storeId }) => {
       >
         <style>
           {`
-            /* For Chrome, Safari, and Opera */
             ::-webkit-scrollbar {
               display: none;
             }
@@ -193,60 +219,74 @@ const ReservationDrawer = ({ onClose, storeId }) => {
 
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 transition-colors text-xl"
+          className="absolute right-3 top-3 text-xl text-gray-500 transition-colors hover:text-gray-700"
         >
           &times;
         </button>
 
-        <div className="text-center mb-4">
+        <div className="mb-4 text-center">
           <h3 className="text-lg font-extrabold text-gray-900">예약 일정</h3>
         </div>
 
-        <div className="flex justify-center mb-4">
+        <div className="mb-4 flex justify-center">
           <Calendar
             onChange={handleDateChange}
             value={selectedDate}
             tileDisabled={({ date }) => isDateDisabled(date)}
             formatDay={(locale, date) => `${date.getDate()}`}
-            className="rounded-lg shadow-none border-none w-full max-w-lg"
+            className="w-full max-w-lg rounded-lg border-none shadow-none"
             tileClassName={({ date }) => {
-              const baseClass = 'p-1.5 text-center w-8 h-8 flex items-center justify-center';
-              const selectedClass = selectedDate && selectedDate.toDateString() === date.toDateString()
+              const baseClass =
+                'p-1.5 text-center w-8 h-8 flex items-center justify-center';
+
+              const isToday = new Date().toDateString() === date.toDateString();
+              const isSelectedDate =
+                selectedDate &&
+                selectedDate.toDateString() === date.toDateString();
+
+              const selectedClass = isSelectedDate
                 ? 'bg-blue-500 text-white rounded-md'
                 : '';
-              const currentDayClass = new Date().toDateString() === date.toDateString()
-                ? 'bg-gray-200 text-black rounded-md'
-                : '';
+
+              const currentDayClass =
+                isToday && !isSelectedDate
+                  ? 'bg-gray-200 text-black rounded-md'
+                  : '';
 
               return `${baseClass} ${selectedClass} ${currentDayClass}`;
             }}
             prevLabel={<span className="text-orange-500">&lt;</span>}
             nextLabel={<span className="text-orange-500">&gt;</span>}
             navigationLabel={({ date }) => (
-              <span className="text-lg font-bold">{`${date.toLocaleString('default', {
-                month: 'long',
-              })} ${date.getFullYear()}`}</span>
+              <span className="text-lg font-bold">{`${date.toLocaleString(
+                'default',
+                {
+                  month: 'long',
+                },
+              )} ${date.getFullYear()}`}</span>
             )}
             locale="en-US"
           />
         </div>
 
         <div className="mb-4">
-          <h4 className="text-gray-700 font-semibold mb-3 text-base">시간 선택</h4>
+          <h4 className="mb-3 text-base font-semibold text-gray-700">
+            시간 선택
+          </h4>
           <div className="mb-2">
-            <h5 className="text-gray-600 font-medium mb-2">오전</h5>
+            <h5 className="mb-2 font-medium text-gray-600">오전</h5>
             <div className="grid grid-cols-3 gap-2">
               {morningTimes.map((time) => (
                 <button
                   key={time}
                   onClick={() => handleTimeSelect(time)}
                   disabled={isTimeUnavailable(time)}
-                  className={`py-2 px-4 text-sm font-semibold rounded-full transition-all duration-200 border ${
+                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-200 ${
                     selectedTime === time
-                      ? 'bg-blue-600 text-white shadow-lg border-blue-600'
+                      ? 'border-blue-600 bg-blue-600 text-white shadow-lg'
                       : isTimeUnavailable(time)
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed border-gray-300'
-                      : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-100 hover:border-gray-400'
+                        ? 'cursor-not-allowed border-gray-300 bg-gray-200 text-gray-500'
+                        : 'border-gray-300 bg-white text-gray-800 hover:border-gray-400 hover:bg-gray-100'
                   }`}
                 >
                   {time}
@@ -256,19 +296,19 @@ const ReservationDrawer = ({ onClose, storeId }) => {
           </div>
 
           <div className="mb-2">
-            <h5 className="text-gray-600 font-medium mb-2">오후</h5>
+            <h5 className="mb-2 font-medium text-gray-600">오후</h5>
             <div className="grid grid-cols-3 gap-2">
               {afternoonTimes.map((time) => (
                 <button
                   key={time}
                   onClick={() => handleTimeSelect(time)}
                   disabled={isTimeUnavailable(time)}
-                  className={`py-2 px-4 text-sm font-semibold rounded-full transition-all duration-200 border ${
+                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-200 ${
                     selectedTime === time
-                      ? 'bg-blue-600 text-white shadow-lg border-blue-600'
+                      ? 'border-blue-600 bg-blue-600 text-white shadow-lg'
                       : isTimeUnavailable(time)
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed border-gray-300'
-                      : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-100 hover:border-gray-400'
+                        ? 'cursor-not-allowed border-gray-300 bg-gray-200 text-gray-500'
+                        : 'border-gray-300 bg-white text-gray-800 hover:border-gray-400 hover:bg-gray-100'
                   }`}
                 >
                   {time}
@@ -280,7 +320,7 @@ const ReservationDrawer = ({ onClose, storeId }) => {
 
         <button
           onClick={handleReservationSubmit}
-          className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white text-lg font-semibold rounded-xl shadow-md duration-300"
+          className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-blue-700 py-3 text-lg font-semibold text-white shadow-md duration-300"
         >
           예약 신청하기
         </button>

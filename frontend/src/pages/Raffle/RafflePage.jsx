@@ -32,7 +32,7 @@ const RafflePage = () => {
 
   return (
     <div className="my-3 min-h-lvh" ref={mainRef}>
-      <UpperBar />
+      <UpperBar title={'래플 목록'} />
       <img
         src={RaffleBanner}
         alt="래플페이지 배너"

@@ -74,20 +74,25 @@ const RankPage = () => {
 
   return (
     <div className="mx-auto max-w-lg p-4">
-      <div className="flex items-center">
-        <button
-          onClick={handleGoBack}
-          className="flex items-center justify-center rounded-lg text-2xl text-black"
-          style={{
-            zIndex: 10,
-            backgroundColor: 'transparent',
-            width: '50px',
-            height: '50px',
-            marginLeft: '-10px',
-          }}
-        >
-          &lt;
-        </button>
+      <div className="flex items-center justify-between">
+        <div className="inline-flex h-8 items-center justify-start gap-3 rounded-[10px] p-2.5">
+          <svg
+            onClick={handleGoBack}
+            width="8"
+            height="14"
+            viewBox="0 0 8 14"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7 13L1 7L7 1"
+              stroke="black"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
       </div>
 
       <div className="stores space-y-4 pb-20">
