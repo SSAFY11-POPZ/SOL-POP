@@ -29,8 +29,8 @@ public class MyStoreService {
   @Autowired
   private MyStoreRepository myStoreRepository;
 
-  public List<Reservation.ReservationStatic> getReservationsByStoreId(Integer storeId) {
-    Store store = storeRepository.findById(storeId).orElseThrow();
+  public List<Reservation.ReservationStatic> getReservationStaticByStoreId(Integer storeId) {
+    Store store = storeRepository.findById(storeId).orElseThrow(EntityNotFoundException::new);
     return reservationRepository.findReservationsByStore(store);
   }
 
