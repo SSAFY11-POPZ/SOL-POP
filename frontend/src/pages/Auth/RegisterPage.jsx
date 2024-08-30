@@ -74,7 +74,7 @@ const RegisterPage = () => {
 
     // SSAFY 사용자 계정 조회
     await axios
-      .post('http://localhost:8080/api/v1/auth/checkSSAFYUser', {
+      .post('https://solpop.xyz/api/v1/auth/checkSSAFYUser', {
         apiKey: import.meta.env.VITE_ADMIN_SECRET_KEY,
         userId: email,
       })

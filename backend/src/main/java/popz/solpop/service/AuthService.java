@@ -144,8 +144,8 @@ public class AuthService {
 
         // 리프레시토큰 쿠키 설정
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-        refreshTokenCookie.setHttpOnly(true); // JavaScript에서 접근 불가
-        refreshTokenCookie.setSecure(true); // HTTPS를 사용하는 경우에만 적용
+        //refreshTokenCookie.setHttpOnly(true); // JavaScript에서 접근 불가
+        //refreshTokenCookie.setSecure(true); // HTTPS를 사용하는 경우에만 적용
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge(refreshTokenDuration);
         response.addCookie(refreshTokenCookie);
