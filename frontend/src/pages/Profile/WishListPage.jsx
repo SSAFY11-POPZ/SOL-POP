@@ -107,7 +107,7 @@ const WishlistPage = () => {
   return (
     <div
       className="max-w-7xl mx-auto p-4 pb-20 h-screen overflow-auto"
-      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }} // For Firefox and IE/Edge
+      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
     >
       <style>
         {`
@@ -120,7 +120,11 @@ const WishlistPage = () => {
       
       <div className="grid grid-cols-2 gap-4">
         {wishlistItems.map((item) => (
-          <div key={item.storeId} className="border p-2 rounded-lg hover:shadow-lg transition-shadow duration-300 flex flex-col">
+          <div
+            key={item.storeId}
+            className="border p-2 rounded-lg hover:shadow-lg transition-shadow duration-300 flex flex-col cursor-pointer"
+            onClick={() => navigate(`/detail/${item.storeId}`)}
+          >
             <img
               src={item.storeThumbnailUrl}
               alt={item.storeName}
@@ -128,18 +132,13 @@ const WishlistPage = () => {
             />
             <div className="flex justify-between items-center mt-2">
               <h2 className="text-sm font-semibold">{item.storeName}</h2>
-              <button onClick={() => toggleHeart(item.storeId)}>
+              <button onClick={(e) => {
+                e.stopPropagation();
+                toggleHeart(item.storeId);
+              }}>
                 {item.liked ? '💖' : '🤍'}
               </button>
             </div>
-            <p className="text-xs text-gray-500">{item.storePlace}</p>
-            <button
-            className="mt-auto w-full px-4 py-0.5 text-xs bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300"
-            onClick={() => navigate(`/detail/${item.storeId}`)}
-          >
-            예약하러 가기
-          </button>
-
           </div>
         ))}
       </div>

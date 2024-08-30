@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import InfoTab from './components/InfoTab';
 import ReservationTab from './components/ReservationTab';
 import LocationTab from './components/LocationTab';
 import ReservationDrawer from './components/ReservationModal';
 import api from '../../utils/axios';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const DetailPage = () => {
   const { id } = useParams();
@@ -14,6 +17,8 @@ const DetailPage = () => {
   const [activeTab, setActiveTab] = useState('info');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isHearted, setIsHearted] = useState(false);
+
+  const sliderRef = useRef(null);
 
   useEffect(() => {
     const checkAuthAndFetchData = async () => {
@@ -131,6 +136,14 @@ const DetailPage = () => {
     }
   };
 
+  const handleNext = () => {
+    sliderRef.current.slickNext();
+  };
+
+  const handlePrevious = () => {
+    sliderRef.current.slickPrev();
+  };
+
   if (loading) {
     return <div className="text-center mt-10">Loading...</div>;
   }
@@ -165,9 +178,18 @@ const DetailPage = () => {
     setIsDrawerOpen(false);
   };
 
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: false,
+  };
+
   return (
     <div className="max-w-lg mx-auto p-4">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="flex justify-between items-center">
         <button 
           onClick={handleGoBack}
           className="text-black text-2xl rounded-lg flex items-center justify-center"
@@ -185,31 +207,57 @@ const DetailPage = () => {
         {isLoggedIn ? (
           <button 
             onClick={handleLogout} 
-            style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer', padding: '2px 0' }}
+            className="text-red-500 border-none bg-transparent cursor-pointer p-0"
           >
             로그아웃
           </button>
         ) : (
           <button 
             onClick={() => navigate('/login')}
-            style={{ color: 'blue', border: 'none', background: 'none', cursor: 'pointer', padding: '2px 0' }}
+            className="text-blue-500 border-none bg-transparent cursor-pointer p-0"
           >
             로그인
           </button>
         )}
       </div>
 
-
       <div className="relative">
-        <img
-          src={detailData.store.storeThumbnailUrl}
-          alt={`Thumbnail for ${detailData.store.storeName}`}
-          className="w-full h-full aspect-square object-cover rounded-md"
-        />
+        <div className="relative">
+          <Slider ref={sliderRef} {...sliderSettings}>
+            <div>
+              <img
+                src={detailData.store.storeThumbnailUrl}
+                alt={`Thumbnail for ${detailData.store.storeName}`}
+                className="w-full h-full aspect-square object-cover rounded-md"
+              />
+            </div>
+            {detailData.store.imageList?.map((image) => (
+              <div key={image.imageId}>
+                <img
+                  src={image.imageUrl}
+                  alt={`Image ${image.imageId} for ${detailData.store.storeName}`}
+                  className="w-full h-full aspect-square object-cover rounded-md"
+                />
+              </div>
+            ))}
+          </Slider>
+          <div 
+            onClick={handlePrevious}
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 w-12 h-12 z-10 cursor-pointer flex items-center justify-center"
+          >
+            &lt;
+          </div>
+          <div 
+            onClick={handleNext}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 w-12 h-12 z-10 cursor-pointer flex items-center justify-center"
+          >
+            &gt;
+          </div>
+        </div>
       </div>
 
-      <div className="mt-4">
-        <h2 className="text-xl font-bold">{detailData.store.storeName}</h2>
+      <div className="mt-8">
+        <h2 className="text-xl font-bold mt-8">{detailData.store.storeName}</h2>
         <div className="flex items-center mt-2">
           <span 
             className={`text-2xl ${isLoggedIn ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`} 
