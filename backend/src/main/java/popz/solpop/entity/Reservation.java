@@ -70,6 +70,8 @@ public class Reservation {
 
   public interface ReservationStatic {
     Integer getReserveId();
+    LocalDate getReserveDate();
+    LocalTime getReserveTime();
     MemberInfo getMember();
     interface MemberInfo {
       String getMemAge();
