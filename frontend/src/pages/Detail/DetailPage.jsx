@@ -96,7 +96,7 @@ const DetailPage = () => {
             Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -145,11 +145,11 @@ const DetailPage = () => {
   };
 
   if (loading) {
-    return <div className="text-center mt-10">Loading...</div>;
+    return <div className="mt-10 text-center">Loading...</div>;
   }
 
   if (!detailData) {
-    return <div className="text-center mt-10">Item not found</div>;
+    return <div className="mt-10 text-center">Item not found</div>;
   }
 
   const renderContent = () => {
@@ -159,11 +159,11 @@ const DetailPage = () => {
       case 'reservation':
         return (
           <>
-            <ReservationTab 
-              reservationTimes={detailData.store.reservationTimes} 
-              storeId={detailData.store.storeId} 
-              storeName={detailData.store.storeName} 
-              storeThumbnailUrl={detailData.store.storeThumbnailUrl} 
+            <ReservationTab
+              reservationTimes={detailData.store.reservationTimes}
+              storeId={detailData.store.storeId}
+              storeName={detailData.store.storeName}
+              storeThumbnailUrl={detailData.store.storeThumbnailUrl}
             />
           </>
         );
@@ -188,11 +188,11 @@ const DetailPage = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-4">
-      <div className="flex justify-between items-center">
-        <button 
+    <div className="mx-auto max-w-lg p-4">
+      <div className="flex items-center justify-between">
+        <button
           onClick={handleGoBack}
-          className="text-black text-2xl rounded-lg flex items-center justify-center"
+          className="flex items-center justify-center rounded-lg text-2xl text-black"
           style={{
             zIndex: 10,
             backgroundColor: 'transparent',
@@ -203,18 +203,18 @@ const DetailPage = () => {
         >
           &lt;
         </button>
-        
+
         {isLoggedIn ? (
-          <button 
-            onClick={handleLogout} 
-            className="text-red-500 border-none bg-transparent cursor-pointer p-0"
+          <button
+            onClick={handleLogout}
+            className="cursor-pointer border-none bg-transparent p-0 text-red-500"
           >
             로그아웃
           </button>
         ) : (
-          <button 
+          <button
             onClick={() => navigate('/login')}
-            className="text-blue-500 border-none bg-transparent cursor-pointer p-0"
+            className="cursor-pointer border-none bg-transparent p-0 text-blue-500"
           >
             로그인
           </button>
@@ -228,7 +228,7 @@ const DetailPage = () => {
               <img
                 src={detailData.store.storeThumbnailUrl}
                 alt={`Thumbnail for ${detailData.store.storeName}`}
-                className="w-full h-full aspect-square object-cover rounded-md"
+                className="aspect-square h-full w-full rounded-md object-cover"
               />
             </div>
             {detailData.store.imageList?.map((image) => (
@@ -236,20 +236,20 @@ const DetailPage = () => {
                 <img
                   src={image.imageUrl}
                   alt={`Image ${image.imageId} for ${detailData.store.storeName}`}
-                  className="w-full h-full aspect-square object-cover rounded-md"
+                  className="aspect-square h-full w-full rounded-md object-cover"
                 />
               </div>
             ))}
           </Slider>
-          <div 
+          <div
             onClick={handlePrevious}
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 w-12 h-12 z-10 cursor-pointer flex items-center justify-center"
+            className="absolute left-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 transform cursor-pointer items-center justify-center"
           >
             &lt;
           </div>
-          <div 
+          <div
             onClick={handleNext}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 w-12 h-12 z-10 cursor-pointer flex items-center justify-center"
+            className="absolute right-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 transform cursor-pointer items-center justify-center"
           >
             &gt;
           </div>
@@ -257,46 +257,44 @@ const DetailPage = () => {
       </div>
 
       <div className="mt-8">
-        <h2 className="text-xl font-bold mt-8">{detailData.store.storeName}</h2>
-        <div className="flex items-center mt-2">
-          <span 
-            className={`text-2xl ${isLoggedIn ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`} 
+        <h2 className="mt-8 text-xl font-bold">{detailData.store.storeName}</h2>
+        <div className="mt-2 flex items-center">
+          <span
+            className={`text-2xl ${isLoggedIn ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
             onClick={handleHeartIconClick}
           >
             {isHearted ? '💖' : '🤍'}
           </span>
           <span className="ml-2 text-lg">{detailData.heartCount}</span>
         </div>
-        <div className="flex mt-4 space-x-4">
+        <div className="mt-4 flex space-x-4">
           <button
-            className={`flex-grow text-center py-2 border-b-2 ${activeTab === 'info' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500'}`}
+            className={`flex-grow border-b-2 py-2 text-center ${activeTab === 'info' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500'}`}
             onClick={() => setActiveTab('info')}
           >
             정보
           </button>
           <button
-            className={`flex-grow text-center py-2 border-b-2 ${activeTab === 'reservation' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500'}`}
+            className={`flex-grow border-b-2 py-2 text-center ${activeTab === 'reservation' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500'}`}
             onClick={() => setActiveTab('reservation')}
           >
             예약
           </button>
           <button
-            className={`flex-grow text-center py-2 border-b-2 ${activeTab === 'location' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500'}`}
+            className={`flex-grow border-b-2 py-2 text-center ${activeTab === 'location' ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500'}`}
             onClick={() => setActiveTab('location')}
           >
             위치
           </button>
         </div>
-        <div className="mt-4">
-          {renderContent()}
-        </div>
+        <div className="mt-4">{renderContent()}</div>
       </div>
 
       {isDrawerOpen && (
-        <ReservationDrawer 
+        <ReservationDrawer
           onClose={handleCloseDrawer}
           storeId={detailData.store.storeId}
-          storePlace={detailData.store.storePlace} 
+          storePlace={detailData.store.storePlace}
         />
       )}
     </div>
