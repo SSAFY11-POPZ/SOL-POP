@@ -12,15 +12,12 @@ const QRPayPage = () => {
   };
 
   const handleError = (err) => {
-    console.error(err);
+    console.error('QR 스캐너 오류:', err);
   };
 
   const toggleCamera = () => {
     setFacingMode((prevMode) =>
       prevMode === 'environment' ? 'user' : 'environment',
-    );
-    console.log(
-      `카메라 전환됨: ${facingMode === 'environment' ? '전방' : '후방'}`,
     );
   };
 
@@ -48,7 +45,7 @@ const QRPayPage = () => {
           onError={handleError}
           onScan={handleScan}
           constraints={{
-            facingMode: facingMode, // 'user'는 전방 카메라, 'environment'는 후방 카메라를 의미
+            video: { facingMode: facingMode }, // 'user'는 전방 카메라, 'environment'는 후방 카메라를 의미
           }}
         />
         <div className="mt-2 text-xl font-semibold text-gray-800">
