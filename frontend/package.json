@@ -26,10 +26,6 @@
     "react-day-picker": "^9.0.8",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.3",
-<<<<<<< HEAD
-=======
-    "react-qr-scanner": "^1.0.0-alpha.11",
->>>>>>> feat/qrcam
     "react-router-dom": "^6.26.1",
     "react-slick": "^0.30.2",
     "react-tailwind-datepicker": "^0.0.1",
