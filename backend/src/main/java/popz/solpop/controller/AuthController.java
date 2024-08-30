@@ -139,7 +139,7 @@ public class AuthController {
 
         Map<String, Object> tokenData = tokenProvider.validateJwt(refreshToken);
         if (tokenData == null) {
-            return Response.setFailed("리프레시 토큰이 유효하지 않습니다.");
+            return Response.setFailed("리프레시 토큰 검증에 실패했습니다.");
         }
 
         String userName = (String) tokenData.get("userName");
