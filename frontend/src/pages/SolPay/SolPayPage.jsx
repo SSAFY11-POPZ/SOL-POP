@@ -1,9 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { checkTokenValidity } from '../../utils/axios';
+import Swal from 'sweetalert2';
+
+
 import QRCode from 'qrcode';
 
 const SolPayPage = () => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState({}); // 유저정보
   const [amount, setAmount] = useState('');
   const [qrImageUrl, setQrImageUrl] = useState('');
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!localStorage.getItem('accessToken')) {
+          navigate('/login');
+          return;
+        }
+        // 토큰이 유효한지 검증
+        const response = await checkTokenValidity();
+        console.log(response);
+        if (!response || response.status !== 200) {
+          navigate('/login');
+          console.log(response);
+          return;
+        }
+
+        // if (!response.result) {
+        //   navigate("/login");
+        //   return;
+        // }
+
+        // 토큰이 유효하다면 반환된 데이터를 user에 할당
+        console.log(response.data.data);
+        setUser(response.data.data);
+      
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        Swal.fire(
+          'ERROR',
+          '오류가 발생했습니다. 다시 로그인해주세요.',
+          'warning',
+        );
+        navigate('/login');
+      }
+    }
+    fetchData();
+  }, []);
+
 
   const baseUrl = 'https://solpop.xyz';
 
@@ -21,7 +66,7 @@ const SolPayPage = () => {
   const handleGenerateQr = async () => {
     const numericAmount = amount.replace(/,/g, '');
     if (numericAmount) {
-      const url = `${baseUrl}/api/v1/solpay?amount=${numericAmount}`;
+      const url = `${baseUrl}/solpay/${user.userName}-popupStore?amount=${numericAmount}`;
       try {
         const qrCodeDataUrl = await QRCode.toDataURL(url);
         setQrImageUrl(qrCodeDataUrl);
