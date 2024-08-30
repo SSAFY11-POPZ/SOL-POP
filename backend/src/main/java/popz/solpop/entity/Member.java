@@ -58,6 +58,12 @@ public class Member {
   @Column(name = "point_balance, nullable = false")
   private Integer pointBalance;
 
+  @Column(name = "mem_age")
+  private Integer memAge;
+
+  @Column(name = "mem_sex")
+  private String memSex;
+
   @PrePersist
   public void prePersist() {
     this.pointBalance = this.pointBalance != null ? this.pointBalance : 0;

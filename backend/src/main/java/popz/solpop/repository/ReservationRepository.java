@@ -27,6 +27,7 @@
 
         boolean existsByStoreAndMember(Store store, Member member);
 
+        List<Reservation.ReservationStatic> findReservationsByStore(Store store);
 
         @Query("SELECT new popz.solpop.dto.CheckReservation(r.store.storeId, r.member.memId, r.reserveDate, r.reserveTime) " +
                 "FROM Reservation r WHERE r.store.storeId = :storeId AND r.member.memId = :memId")

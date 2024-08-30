@@ -68,4 +68,21 @@ public class Reservation {
       }
     }
   }
+
+  public interface ReservationStatic {
+    Integer getReserveId();
+    StoreInfo getStore();
+    LocalDate getReserveDate();
+    LocalTime getReserveTime();
+    interface StoreInfo {
+      Integer getStoreId();
+      String getStoreName();
+      MemberInfo getMember();
+      interface MemberInfo {
+        Integer getMemId();
+        Integer getMemAge();
+        String getMemSex();
+      }
+    }
+  }
 }
