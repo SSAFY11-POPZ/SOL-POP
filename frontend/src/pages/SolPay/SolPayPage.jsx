@@ -37,8 +37,7 @@ const SolPayPage = () => {
         // 토큰이 유효하다면 반환된 데이터를 user에 할당
         console.log(response.data.data);
         setUser(response.data.data);
-        
-      
+
       } catch (error) {
         console.error('Error fetching data:', error);
         Swal.fire(
@@ -48,7 +47,8 @@ const SolPayPage = () => {
         );
         navigate('/login');
       }
-    }
+    };
+
     fetchData();
   }, []);
 
