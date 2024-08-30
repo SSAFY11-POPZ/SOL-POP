@@ -144,12 +144,13 @@ public class AuthController {
 
         String userId = (String) tokenData.get("userId");
 
-        Member memberEntity = memberRepository.findMemberByUserName(userId);
+
+        Member memberEntity = memberRepository.findMemberByUserId(userId);
         if (memberEntity == null || !memberEntity.getToken().equals(refreshToken)) {
             return Response.setFailed("리프레시 토큰이 유효하지 않습니다.");
         }
 
-        int accessTokenDuration = 3600;
+        int accessTokenDuration = 15;
         String newAccessToken = tokenProvider.createAccessToken(userId, accessTokenDuration);
 
         if (newAccessToken == null) {
