@@ -75,7 +75,7 @@ function App() {
               {/* 기업 페이지 */}
               <Route path="/company" element={<CompanyPage />} />
               {/* Qr 생성 페이지 */}
-              <Route path="/solpay" element={<SolpayPage />} />
+              <Route path="/solpay/:storeId" element={<SolpayPage />} />
               {/* 기업 통계 페이지 */}
               <Route path="/statspage" element={<StatsPage />} />
               {/* Qr 인식 페이지 */}

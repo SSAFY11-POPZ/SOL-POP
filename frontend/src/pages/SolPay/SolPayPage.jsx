@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { checkTokenValidity } from '../../utils/axios';
 import Swal from 'sweetalert2';
 
@@ -7,8 +7,10 @@ import Swal from 'sweetalert2';
 import QRCode from 'qrcode';
 
 const SolPayPage = () => {
+
+  const { storeId } = useParams();
   const navigate = useNavigate();
-  const [user, setUser] = useState({}); // 유저정보
+  // const [user, setUser] = useState({}); // 유저정보
   const [amount, setAmount] = useState('');
   const [qrImageUrl, setQrImageUrl] = useState('');
   useEffect(() => {
@@ -35,6 +37,7 @@ const SolPayPage = () => {
         // 토큰이 유효하다면 반환된 데이터를 user에 할당
         console.log(response.data.data);
         setUser(response.data.data);
+        
       
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -66,21 +69,9 @@ const SolPayPage = () => {
   const handleGenerateQr = async () => {
     const numericAmount = amount.replace(/,/g, '');
     if (numericAmount) {
-      const url = `${baseUrl}/solpay/?amount=${numericAmount}`;
+      const url = `${baseUrl}/payment/${storeId}/${numericAmount}`;
       try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'userId': user.userId,  // userId를 헤더에 추가
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error('네트워크 응답이 실패했습니다');
-        }
-
-        const qrCodeDataUrl = await QRCode.toDataURL(await response.text());
+        const qrCodeDataUrl = await QRCode.toDataURL(url);
         setQrImageUrl(qrCodeDataUrl);
       } catch (error) {
         console.error('Error generating QR code', error);
