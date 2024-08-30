@@ -22,6 +22,7 @@ import LoginPage from './pages/Auth/LoginPage';
 import RegisterPage from './pages/Auth/RegisterPage';
 import CompanyPage from './pages/Company/CompanyPage';
 import SolpayPage from './pages/SolPay/SolPayPage';
+import StatsPage from './pages/Company/StatsPage';
 import './index.css';
 
 function App() {
@@ -68,6 +69,8 @@ function App() {
               <Route path="/company" element={<CompanyPage />} />
               {/* 기업 페이지 */}
               <Route path="/solpay" element={<SolpayPage />} />
+              {/* 기업 통계 페이지 */}
+              <Route path="/statspage" element={<StatsPage />} />
             </Routes>
           </div>
         </div>

@@ -8,6 +8,8 @@ import api from '../../utils/axios';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import Swal from 'sweetalert2';
+import { logout } from '../../utils/axios'; // Import the logout function
 
 const DetailPage = () => {
   const { id } = useParams();
@@ -82,7 +84,10 @@ const DetailPage = () => {
   const handleHeartClick = async () => {
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
-      alert('로그인이 필요한 기능입니다.');
+      Swal.fire({
+        icon: 'warning',
+        text: '로그인이 필요한 기능입니다.',
+      });
       navigate(`/login?redirectTo=${encodeURIComponent(location.pathname)}`);
       return;
     }
@@ -103,25 +108,40 @@ const DetailPage = () => {
         const updatedData = await fetchDetailData(accessToken);
         setIsHearted(updatedData.data.hearted);
       } else {
-        alert('Unable to change heart status.');
+        Swal.fire({
+          icon: 'error',
+          text: 'Unable to change heart status.',
+        });
       }
     } catch (error) {
       console.error('Error handling heart click', error);
-      alert('An error occurred. Please try again.');
+      Swal.fire({
+        icon: 'error',
+        text: 'An error occurred. Please try again.',
+      });
     }
   };
 
-  const handleLogout = () => {
-    alert('로그아웃 되었습니다.');
-    localStorage.removeItem('accessToken');
-    navigate(`/detail/${id}`);
+  const handleLogout = async () => {
+    await logout(); // Call the logout function
+    Swal.fire({
+      icon: 'success',
+      title: '로그아웃 되었습니다.',
+      showConfirmButton: false,
+      timer: 1500,
+    }).then(() => {
+      navigate('/'); // Navigate to the main page
+    });
   };
 
   const handleHeartIconClick = () => {
     if (isLoggedIn) {
       handleHeartClick();
     } else {
-      alert('로그인이 필요한 기능입니다.');
+      Swal.fire({
+        icon: 'warning',
+        text: '로그인이 필요한 기능입니다.',
+      });
       navigate('/login');
     }
   };
@@ -190,19 +210,24 @@ const DetailPage = () => {
   return (
     <div className="mx-auto max-w-lg p-4">
       <div className="flex items-center justify-between">
-        <button
-          onClick={handleGoBack}
-          className="flex items-center justify-center rounded-lg text-2xl text-black"
-          style={{
-            zIndex: 10,
-            backgroundColor: 'transparent',
-            width: '50px',
-            height: '50px',
-            marginLeft: '-10px',
-          }}
-        >
-          &lt;
-        </button>
+        <div className="inline-flex h-8 items-center justify-start gap-3 rounded-[10px] p-2.5">
+          <svg
+            onClick={handleGoBack}
+            width="8"
+            height="14"
+            viewBox="0 0 8 14"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7 13L1 7L7 1"
+              stroke="black"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
 
         {isLoggedIn ? (
           <button

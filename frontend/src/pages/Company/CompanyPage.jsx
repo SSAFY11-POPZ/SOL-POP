@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import Swal from 'sweetalert2';
 import './CompanyPage.css';
 
 const CompanyPage = () => {
@@ -20,12 +21,12 @@ const CompanyPage = () => {
       ...acceptedFiles.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
-        })
+        }),
       ),
     ]);
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: 'image/*',
     multiple: true,
@@ -43,12 +44,21 @@ const CompanyPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!storeName || !storePlace || !storeStartDate || !storeEndDate) {
-      alert('필수 정보를 모두 입력해주세요.');
+      Swal.fire({
+        icon: 'warning',
+        text: '필수 정보를 모두 입력해주세요.',
+      });
       return;
     }
 
-    alert('제출이 완료되었습니다.');
-    window.location.reload(); // 화면을 새로고침하여 초기화
+    Swal.fire({
+      icon: 'success',
+      title: '제출이 완료되었습니다.',
+      showConfirmButton: false,
+      timer: 1500,
+    }).then(() => {
+      window.location.reload(); // 화면을 새로고침하여 초기화
+    });
   };
 
   return (
@@ -56,7 +66,9 @@ const CompanyPage = () => {
       <h2 className="form-title">스토어 정보 등록</h2>
 
       <div className="form-group">
-        <label className="form-label">가게 이름 <span className="required">*</span></label>
+        <label className="form-label">
+          가게 이름 <span className="required">*</span>
+        </label>
         <input
           type="text"
           value={storeName}
@@ -67,7 +79,9 @@ const CompanyPage = () => {
       </div>
 
       <div className="form-group">
-        <label className="form-label">장소 <span className="required">*</span></label>
+        <label className="form-label">
+          장소 <span className="required">*</span>
+        </label>
         <input
           type="text"
           value={storePlace}
@@ -78,7 +92,9 @@ const CompanyPage = () => {
       </div>
 
       <div className="form-group">
-        <label className="form-label">시작 날짜 <span className="required">*</span></label>
+        <label className="form-label">
+          시작 날짜 <span className="required">*</span>
+        </label>
         <input
           type="date"
           value={storeStartDate}
@@ -88,7 +104,9 @@ const CompanyPage = () => {
       </div>
 
       <div className="form-group">
-        <label className="form-label">종료 날짜 <span className="required">*</span></label>
+        <label className="form-label">
+          종료 날짜 <span className="required">*</span>
+        </label>
         <input
           type="date"
           value={storeEndDate}
@@ -147,21 +165,25 @@ const CompanyPage = () => {
         <div {...getRootProps({ className: 'dropzone' })}>
           <input {...getInputProps()} />
           {!imageFiles.length && (
-            <p>이미지를 이곳에 드래그 앤 드롭하거나 클릭하여 파일을 선택하세요.</p>
+            <p>
+              이미지를 이곳에 드래그 앤 드롭하거나 클릭하여 파일을 선택하세요.
+            </p>
           )}
           <div className="image-preview">
             {imageFiles.map((file) => (
-              <img key={file.name} src={file.preview} alt="Preview" className="form-image" />
+              <img
+                key={file.name}
+                src={file.preview}
+                alt="Preview"
+                className="form-image"
+              />
             ))}
           </div>
         </div>
       </div>
 
       <div className="form-button-container">
-        <button
-          type="submit"
-          className="form-submit-button"
-        >
+        <button type="submit" className="form-submit-button">
           제출하기
         </button>
       </div>
