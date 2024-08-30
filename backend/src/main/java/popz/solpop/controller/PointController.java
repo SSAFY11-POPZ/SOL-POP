@@ -41,6 +41,12 @@ public class PointController {
 
         String userName = tokenProvider.getUserName(token.substring(7));
         Member member = memberService.getMemberByUserName(userName);
+        Point point = new Point();
+        point.setMember(member);
+        point.setPointPlace("포인트 충전");
+        point.setUseAmount(amount);
+        point.setAfterBalance(member.getPointBalance() + amount);
+        pointService.savePoint(point);
         return memberService.chargePoint(member, amount);
     }
 

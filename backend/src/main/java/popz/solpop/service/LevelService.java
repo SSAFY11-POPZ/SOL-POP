@@ -9,7 +9,7 @@ import popz.solpop.repository.LevelRepository;
 
 @Service
 @Transactional
-public class LevelService {
+public class  LevelService {
 
   @Autowired
   private LevelRepository levelRepository;
