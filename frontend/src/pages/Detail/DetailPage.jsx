@@ -207,14 +207,14 @@ const DetailPage = () => {
         {isLoggedIn ? (
           <button
             onClick={handleLogout}
-            className="cursor-pointer border-none bg-transparent p-0 text-red-500"
+            className="text-sm font-semibold text-gray-400 transition duration-300 hover:text-red-800"
           >
             로그아웃
           </button>
         ) : (
           <button
             onClick={() => navigate('/login')}
-            className="cursor-pointer border-none bg-transparent p-0 text-blue-500"
+            className="text-sm font-semibold text-gray-400 transition duration-300 hover:text-blue-800"
           >
             로그인
           </button>
