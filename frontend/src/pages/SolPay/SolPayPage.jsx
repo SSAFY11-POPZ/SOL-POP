@@ -66,9 +66,21 @@ const SolPayPage = () => {
   const handleGenerateQr = async () => {
     const numericAmount = amount.replace(/,/g, '');
     if (numericAmount) {
-      const url = `${baseUrl}/solpay/${user.userName}-popupStore?amount=${numericAmount}`;
+      const url = `${baseUrl}/solpay/?amount=${numericAmount}`;
       try {
-        const qrCodeDataUrl = await QRCode.toDataURL(url);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'userId': user.userId,  // userId를 헤더에 추가
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('네트워크 응답이 실패했습니다');
+        }
+
+        const qrCodeDataUrl = await QRCode.toDataURL(await response.text());
         setQrImageUrl(qrCodeDataUrl);
       } catch (error) {
         console.error('Error generating QR code', error);
