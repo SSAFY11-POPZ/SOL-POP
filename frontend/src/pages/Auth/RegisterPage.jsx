@@ -74,7 +74,7 @@ const RegisterPage = () => {
 
     // SSAFY 사용자 계정 조회
     await axios
-      .post('http://localhost:8080/api/v1/auth/checkSSAFYUser', {
+      .post('https://solpop.xyz/api/v1/auth/checkSSAFYUser', {
         apiKey: import.meta.env.VITE_ADMIN_SECRET_KEY,
         userId: email,
       })
@@ -253,10 +253,10 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-5 bg-gray-100">
-      <div className="relative w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
-        <h2 className="mb-4 text-xl font-semibold text-center">회원가입</h2>
-        <div className="relative z-0 w-full mb-6 group">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 px-5">
+      <div className="relative w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
+        <h2 className="mb-4 text-center text-xl font-semibold">회원가입</h2>
+        <div className="group relative z-0 mb-6 w-full">
           <input
             type="text"
             name="name"
@@ -275,9 +275,9 @@ const RegisterPage = () => {
             <p className="mt-2 text-sm text-red-600">{nameError}</p>
           )}
         </div>
-        <div className="relative z-0 w-full mb-6 group">
+        <div className="group relative z-0 mb-6 w-full">
           <div className="flex flex-row justify-between">
-            <div className="flex flex-row w-2/3">
+            <div className="flex w-2/3 flex-row">
               <input
                 type="text"
                 name="email"
@@ -295,7 +295,7 @@ const RegisterPage = () => {
             </div>
             <button
               onClick={() => handleEmailCheck()}
-              className="px-4 py-1 mt-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+              className="mt-2 rounded bg-blue-500 px-4 py-1 text-white hover:bg-blue-600"
             >
               중복확인
             </button>
@@ -305,7 +305,7 @@ const RegisterPage = () => {
           )}
         </div>
 
-        <div className="relative z-0 w-full mb-6 group">
+        <div className="group relative z-0 mb-6 w-full">
           <input
             type="password"
             name="password"
@@ -324,7 +324,7 @@ const RegisterPage = () => {
             <p className="mt-2 text-sm text-red-600">{passwordError}</p>
           )}
         </div>
-        <div className="relative z-0 w-full mb-6 group">
+        <div className="group relative z-0 mb-6 w-full">
           <input
             type="password"
             name="confirmPassword"
@@ -343,11 +343,11 @@ const RegisterPage = () => {
             <p className="mt-2 text-sm text-red-600">{confirmPasswordError}</p>
           )}
         </div>
-        <div className="flex items-center mb-4">
+        <div className="mb-4 flex items-center">
           <input
             type="checkbox"
             id="agreement"
-            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+            className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500"
             checked={isAgreed}
             onChange={(e) => setIsAgreed(e.target.checked)}
           />
@@ -357,13 +357,13 @@ const RegisterPage = () => {
         </div>
         <button
           onClick={() => handleSignUp()}
-          className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600"
+          className="w-full rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
         >
           회원가입하기
         </button>
         {isSaving && (
           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-white bg-opacity-80">
-            <div className="w-8 h-8 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-dashed border-blue-500"></div>
           </div>
         )}
       </div>
