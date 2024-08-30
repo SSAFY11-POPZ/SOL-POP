@@ -7,7 +7,12 @@ const QRPayPage = () => {
 
   const handleScan = (data) => {
     if (data) {
-      window.location.href = data; // QR 코드로 리다이렉트
+      const scannedUrl = typeof data === 'string' ? data : data.text; // QR 코드에서 텍스트 추출
+      if (scannedUrl && isValidUrl(scannedUrl)) {
+        window.location.href = scannedUrl; // QR 코드로 리다이렉트
+      } else {
+        console.error('잘못된 URL:', scannedUrl);
+      }
     }
   };
 
@@ -19,6 +24,15 @@ const QRPayPage = () => {
     setFacingMode((prevMode) =>
       prevMode === 'environment' ? 'user' : 'environment',
     );
+  };
+
+  const isValidUrl = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
   };
 
   return (
