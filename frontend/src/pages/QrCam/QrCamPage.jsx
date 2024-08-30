@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import QrScanner from 'react-qr-scanner';
-import cameraIcon from './img/1.png'; // 이미지 임포트
+import cameraIcon from './img/1.png';
 
 const QRPayPage = () => {
-  const [facingMode, setFacingMode] = useState('environment'); // 후방 카메라로 초기화
+  const [facingMode, setFacingMode] = useState('environment');
 
   const handleScan = (data) => {
     if (data) {
-      window.location.href = data; // QR 코드로 리다이렉트
+      window.location.href = data;
     }
   };
 
