@@ -142,15 +142,15 @@ public class AuthController {
             return Response.setFailed("리프레시 토큰 검증에 실패했습니다.");
         }
 
-        String userName = (String) tokenData.get("userName");
+        String userId = (String) tokenData.get("userId");
 
-        Member memberEntity = memberRepository.findMemberByUserName(userName);
+        Member memberEntity = memberRepository.findMemberByUserName(userId);
         if (memberEntity == null || !memberEntity.getToken().equals(refreshToken)) {
             return Response.setFailed("리프레시 토큰이 유효하지 않습니다.");
         }
 
         int accessTokenDuration = 3600;
-        String newAccessToken = tokenProvider.createAccessToken(userName, accessTokenDuration);
+        String newAccessToken = tokenProvider.createAccessToken(userId, accessTokenDuration);
 
         if (newAccessToken == null) {
             return Response.setFailed("엑세스토큰 생성에 실패했습니다.");
