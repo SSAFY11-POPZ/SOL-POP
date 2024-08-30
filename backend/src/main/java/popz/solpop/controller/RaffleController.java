@@ -9,16 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import popz.solpop.dto.CheckReservation;
 import popz.solpop.dto.EnterRaffleRequest;
-import popz.solpop.entity.EnterRaffle;
-import popz.solpop.entity.Member;
-import popz.solpop.entity.Raffle;
-import popz.solpop.entity.Reservation;
+import popz.solpop.dto.PointUse;
+import popz.solpop.entity.*;
 import popz.solpop.security.CouponNumber;
 import popz.solpop.security.TokenProvider;
-import popz.solpop.service.EnterRaffleService;
-import popz.solpop.service.MemberService;
-import popz.solpop.service.RaffleService;
-import popz.solpop.service.ReservationService;
+import popz.solpop.service.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +22,8 @@ import java.util.zip.CRC32;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/raffle")
-public class RaffleController {
+public class
+RaffleController {
 
     private static final Logger logger = LoggerFactory.getLogger(RaffleController.class);
 
@@ -42,7 +38,8 @@ public class RaffleController {
     private TokenProvider tokenProvider;
     @Autowired
     private ReservationService reservationService;
-
+    @Autowired
+    private PointService pointService;
 
 
     @GetMapping("")
@@ -79,12 +76,12 @@ public class RaffleController {
         if (alreadyEntered) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .body("이미 응모한 래플");
+                    .body("이미 응모한 래플입니다.");
         }
 
         boolean reserved = reservationService.existsByStoreIdAndMemId(raffle.getStore().getStoreId(), member);
         if (!reserved) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("예약하지 않은 팝업 래플");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("예약 후 이용 가능한 서비스 입니다.");
         }
 
         // CRC32
@@ -92,16 +89,32 @@ public class RaffleController {
         String crtNo = generator.generateCoupon(userName + enterRaffleRequest.getRaffleId());
         String inputCrtNo = enterRaffleRequest.getRaffleCrtNo().replace("-", "").substring(1, 9);
         if (!crtNo.equals(inputCrtNo)) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("raffleCrtNo does not match");
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("잘못된 응모번호 입니다. 다시 입력해주세요.");
+        }
+        boolean enoughBalance = member.getPointBalance() >= raffle.getRafflePrice();
+        if (!enoughBalance) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("포인트가 부족합니다.");
         }
 
-        Reservation reservation = reservationService.findReservationByStoreAndMember(raffle.getStore(), member);
-        reservation.setIsEnter(true);
-
-        EnterRaffle enterRaffle = new EnterRaffle();
-        enterRaffle.setMember(member);
-        enterRaffle.setRaffle(raffle);
+        Point point = new Point();
+        Reservation reservation;
+        EnterRaffle enterRaffle;
+        try {
+            point.setMember(member);
+            point.setPointPlace(raffle.getRaffleName());
+            point.setUseAmount(raffle.getRafflePrice());
+            point.setAfterBalance(member.getPointBalance() - 100);
+            reservation = reservationService.findReservationByStoreAndMember(raffle.getStore(), member);
+            reservation.setIsEnter(true);
+            enterRaffle = new EnterRaffle();
+            enterRaffle.setMember(member);
+            enterRaffle.setRaffle(raffle);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("래플 요청에 실패했습니다.");
+        }
+        pointService.savePoint(point);
         enterRaffleService.saveEnterRaffle(enterRaffle);
+
         return ResponseEntity.ok().build();
     }
 

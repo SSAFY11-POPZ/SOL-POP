@@ -43,13 +43,13 @@ public class Raffle {
   private String raffleThumbnailUrl;
 
   @Column(name = "raffle_price")
-  private long rafflePrice;
+  private Integer rafflePrice;
 
   @Column(name = "raffle_crt_no")
   private String raffleCrtNo;
 
   @Column(name = "raffle_num_winners")
-  private long raffleNumWinners;
+  private Integer raffleNumWinners;
 
   @OneToOne
   @JoinColumn(name = "store_id")
