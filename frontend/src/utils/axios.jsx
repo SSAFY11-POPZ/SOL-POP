@@ -13,7 +13,6 @@ const api2 = axios.create({
 // API 요청 전에 토큰의 유효성을 확인하는 인터셉터
 api.interceptors.request.use(
   async (config) => {
-    console.log("cookie"+document.cookie);
 
     let token = localStorage.getItem('accessToken');
     if (token) {
@@ -21,17 +20,11 @@ api.interceptors.request.use(
 
       const currentTime = Math.floor(Date.now() / 1000); // 현재 시간 (초 단위)
       const exp = decodedToken.exp;
-      const test = new Date(exp*1000);
-      console.log("now"+new Date(Date.now()));
-      console.log("test"+test);
-//      console.log(now);
-      console.log("exp :" + exp);
-      console.log("curTime : "+currentTime);
-      console.log(exp<=currentTime);
       if (exp <= currentTime) {
         // 토큰이 만료되었으면 갱신 요청
         token = await refreshAccessToken();
-        console.log("토큰 재발급 요청 완료");
+        // 안정적으로 토큰 확보를 위한 딜레이 설정
+        await new Promise((resolve) => setTimeout(resolve, 500));
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         } else {
@@ -57,7 +50,6 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       const newAccessToken = await refreshAccessToken();
-      console.log("신규 토큰 : ", newAccessToken);
       if (newAccessToken) {
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
@@ -69,17 +61,11 @@ api.interceptors.response.use(
 
 async function refreshAccessToken() {
   try {
-    console.log(document.cookie);
     const response = await api2.post('/api/v1/auth/refresh-token');
-    // const response = await axios.post('http://localhost:8080/api/v1/auth/refresh-token');
-    console.log(response);
     const newAccessToken = response.data.data.accessToken;
-    console.log("엑세스 토큰 발급중!");
     localStorage.setItem('accessToken', newAccessToken);
-    console.log(newAccessToken);
     return newAccessToken;
   } catch (error) {
-    console.error('Failed to refresh access token', error);
 
     // 리프레시 토큰이 만료되었거나 유효하지 않다면 로그아웃 처리 및 로그인 페이지로 리다이렉트
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
@@ -95,20 +81,6 @@ export async function checkTokenValidity() {
   const token = localStorage.getItem('accessToken');
   if (!token) return false;
   try {
-    const decodedToken = jwtDecode(token);
-    const exp = decodedToken.exp;
-    const iat = decodedToken.iat;
-    console.log(iat);
-    const currentTime = Math.floor(Date.now() / 1000);
-    const expDate = new Date(exp * 1000);
-    console.log(expDate.toString());
-    console.log("here");
-    // if (exp < currentTime) {
-    //   return false; // 토큰이 만료됨
-    // }
-
-    console.log('after');
-
     const response = await api.get('/api/v1/auth/check-token', {
       headers: { Authorization: `Bearer ${token}` }
     });

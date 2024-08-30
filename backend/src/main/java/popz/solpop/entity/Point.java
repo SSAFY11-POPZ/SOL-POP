@@ -34,6 +34,12 @@ public class Point {
   @Column(name = "point_place")
   private String pointPlace;
 
+  @Column(name = "use_amount")
+  private Integer useAmount;
+
+  @Column(name = "after_balance")
+  private Integer afterBalance;
+
   @PrePersist
   public void prePersist() {
       this.pointUsedAt = LocalDateTime.now();

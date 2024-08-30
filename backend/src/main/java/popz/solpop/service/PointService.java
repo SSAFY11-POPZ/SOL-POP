@@ -26,11 +26,15 @@ public class PointService {
   @Transactional
   public void usePoint(Member member, PointUse pointUse) {
 
-    member.setPointBalance(member.getPointBalance() - pointUse.getAmount());
-    Point point = new Point();
-    point.setPointPlace(pointUse.getPointPlace());
-    point.setMember(member);
-    point.setPointUsedAt(LocalDateTime.now());
+//    member.setPointBalance(member.getPointBalance() - pointUse.getAmount());
+//    Point point = new Point();
+//    point.setPointPlace(pointUse.getPointPlace());
+//    point.setMember(member);
+//    point.setPointUsedAt(LocalDateTime.now());
+//    pointRepository.save(point);
+  }
+
+  public void savePoint(Point point) {
     pointRepository.save(point);
   }
 }

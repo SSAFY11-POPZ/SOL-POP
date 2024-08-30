@@ -5,7 +5,7 @@ const SolPayPage = () => {
   const [amount, setAmount] = useState('');
   const [qrImageUrl, setQrImageUrl] = useState('');
 
-  const baseUrl = 'https://solpop.xyz'; // baseurl을 실제 값으로 교체하세요
+  const baseUrl = 'https://solpop.xyz';
 
   const formatNumber = (value) => {
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
