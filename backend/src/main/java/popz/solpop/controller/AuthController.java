@@ -151,7 +151,7 @@ public class AuthController {
         }
 
         int accessTokenDuration = 7200;
-        String newAccessToken = tokenProvider.createAccessToken(userName, accessTokenDuration);
+        String newAccessToken = tokenProvider.createAccessToken(userId, accessTokenDuration);
 
         if (newAccessToken == null) {
             return Response.setFailed("엑세스토큰 생성에 실패했습니다.");
