@@ -44,19 +44,13 @@ public class CompanyController {
         return ResponseEntity.ok(myStoreList);
     }
 
-    @GetMapping("/static/{storeId}")
-    public ResponseEntity<?> getStatic(
-            @PathVariable Integer storeId,
-            @RequestHeader("Authorization") String token
+
+
+    @GetMapping("/statistics/{storeId}")
+    public List<Reservation.ReservationStatic> getStatic(
+            @PathVariable Integer storeId
     ) {
-        String userName = tokenProvider.getUserName(token.substring(7));
-        Member member = memberService.getMemberByUserName(userName);
-        Store store = storeService.getStoreByStoreId(storeId);
-        if (member == null || store == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        List<Reservation.ReservationStatic> reservationList = myStoreService.getReservationsByStoreId(storeId);
-        return ResponseEntity.ok(reservationList);
+        return myStoreService.getReservationStaticByStoreId(storeId);
     }
 }
 
