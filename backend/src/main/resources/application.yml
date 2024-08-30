@@ -26,7 +26,9 @@ spring:
             enable: true
           auth: true
 
-
+logging:
+  level:
+    root: info
 #properties
 props:
   reset-password-url: ${FrontEndUrl}

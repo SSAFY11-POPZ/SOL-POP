@@ -5,7 +5,7 @@ import { Autoplay, Navigation } from 'swiper/modules';
 import axios from 'axios';
 
 // 이미지 import (경로를 컴포넌트 위치에 맞춰 수정)
-import menuImage from '../img/menu.png';   // 상대 경로로 이미지 import
+import menuImage from '../img/menu.png'; // 상대 경로로 이미지 import
 
 const slideData = [
   { label: '전체', imagePath: menuImage },
@@ -17,73 +17,12 @@ const slideData = [
   { label: '동명동' }
 ];
 
-const styles = {
-  swip1: {
-    height: '24px',
-  },
-  storeNameOverlay: {
-    position: 'absolute',
-    bottom: '0px',
-    left: '10px',
-    color: 'white',
-    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
-    fontSize: '1.2rem',
-  },
-  subCarouselContainer: {
-    width: '100%',
-    height: '250px',
-    marginBottom: '20px',
-    overflow: 'hidden',
-  },
-  slideWithImage: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  slideImage: {
-    marginRight: '8px', // 이미지와 텍스트 사이 간격
-  },
-  subSwiper1: {
-    height: '55px',
-  },
-  subSwiperSlide: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '85px',
-    height: '40px',
-    border: '2px solid #ccc',
-    borderRadius: '20px',
-    backgroundColor: '#f9f9f9',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-  },
-  subSwiperSlideActive: {
-    border: '2px solid #0066ff',
-    backgroundColor: '#ffffff',
-    color: '#0066ff',
-    fontWeight: 'bold',
-  },
-  imageWrapper: {
-    position: 'relative',
-    width: '100%',
-    paddingTop: '100%', // Maintain aspect ratio
-  },
-  image: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  }
-};
-
 const Carousel_sub = () => {
   const [images, setImages] = useState([]);
   const [activeSlide, setActiveSlide] = useState('전체');
 
   const baseURL = 'https://solpop.xyz'; // 기본 URL을 설정합니다.
-  
+
   const fetchImages = async (tag) => {
     const fetchUrl = `${baseURL}/api/v1/store/main/slide?keyword=${tag}`;
     try {
@@ -110,26 +49,28 @@ const Carousel_sub = () => {
   };
 
   return (
-    <div style={styles.subCarouselContainer}>
+    <div className="w-full h-[250px] mb-5 overflow-hidden">
       {/* 첫 번째 Swiper: slidesPerView는 기본값 */}
       <Swiper 
-        style={styles.subSwiper1}
+        className="h-[55px]"
         spaceBetween={15}
-        slidesPerView={'auto'} // 또는 다른 값으로 설정 가능
+        slidesPerView={'auto'}
       >
         {slideData.map((slide, index) => (
           <SwiperSlide
             key={index}
             onClick={() => handleSlideClick(slide.label)}
-            style={activeSlide === slide.label ? { ...styles.subSwiperSlide, ...styles.subSwiperSlideActive } : styles.subSwiperSlide}
+            className={`flex justify-center items-center w-[70px] h-[35px] border rounded-full cursor-pointer transition-all duration-300 ${
+              activeSlide === slide.label ? 'border-blue-600 bg-white text-blue-600 font-bold' : ""
+            }`}
           >
             {slide.imagePath ? (
-              <div style={styles.slideWithImage}>
-                <img src={slide.imagePath} alt={slide.label} style={{ ...styles.slideImage, width: '18px', height: '18px' }} />
-                <span style={{ color: activeSlide === slide.label ? '#0066ff' : 'inherit' }}>{slide.label}</span>
+              <div className="flex items-center text-sm">
+                <img src={slide.imagePath} alt={slide.label} className="mr-1 w-[18px] h-[18px]" />
+                <span className={`${activeSlide === slide.label ? 'text-blue-600' : ''} hover:bg-gray-200 `}>{slide.label}</span>
               </div>
             ) : (
-              <span>{slide.label}</span>
+              <span className="text-sm">{slide.label}</span>
             )}
           </SwiperSlide>
         ))}
@@ -138,7 +79,7 @@ const Carousel_sub = () => {
       {/* 두 번째 Swiper: slidesPerView={2.5} 적용 */}
       <Swiper
         spaceBetween={15}
-        slidesPerView={2.5} // 2.5 slides visible
+        slidesPerView={2.5}
         modules={[Navigation, Autoplay]}
         loop={true}
         autoplay={{
@@ -149,11 +90,16 @@ const Carousel_sub = () => {
       >
         {images.map((image, index) => (
           <SwiperSlide key={index}>
-            <div onClick={() => handleImageClick(image.storeId)} style={{ cursor: 'pointer' }}>
-              <div style={styles.imageWrapper}>
-                <img src={image.storeThumbnailUrl} alt={`Slide ${index + 1}`} style={styles.image} />
-              </div>
-              {/* <div style={styles.storeNameOverlay}>{image.storeName}</div> */}
+            <div onClick={() => handleImageClick(image.storeId)} className="cursor-pointer">
+            <div className="relative w-full pt-[100%]">
+              <img
+                src={image.storeThumbnailUrl}
+                alt={`Slide ${index + 1}`}
+                className="absolute top-0 left-0 object-cover w-full h-full"
+              />
+              <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-gray-800 to-transparent"></div>
+            </div>
+              <div className="absolute w-full text-xs font-medium text-white truncate bottom-2 left-2">{image.storeName}</div>
             </div>
           </SwiperSlide>
         ))}

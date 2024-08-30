@@ -131,7 +131,7 @@ public class AuthService {
         }
 
 
-        int accessTokenDuration = 3600; // 1 hour
+        int accessTokenDuration = 999999; // 1 hour
         int refreshTokenDuration = 1209600; // 2 weeks
 
         // 토큰 생성

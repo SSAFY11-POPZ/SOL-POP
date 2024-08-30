@@ -14,7 +14,7 @@ const EventList = ({ events, error, selectedDate, onEventClick }) => {
   };
 
   return (
-    <div className="events space-y-4">
+    <div className="space-y-4 events">
       {error && (
         <p className="text-red-500">데이터를 불러올 수 없습니다.</p>
       )}
@@ -29,7 +29,7 @@ const EventList = ({ events, error, selectedDate, onEventClick }) => {
             <img
               src={event.storeThumbnailUrl}
               alt={event.storeName}
-              className="event-image w-24 h-24 object-cover rounded-lg"
+              className="object-cover w-24 h-24 rounded-lg event-image"
             />
             <div className="event-summary">
               <h4 className="text-lg font-semibold text-gray-800">{event.storeName}</h4>
@@ -37,17 +37,11 @@ const EventList = ({ events, error, selectedDate, onEventClick }) => {
                 {`${new Date(event.storeStartDate).toLocaleDateString()} ~ ${new Date(event.storeEndDate).toLocaleDateString()}`}
               </p>
               <p className="text-sm text-gray-600">위치: {event.storePlace}</p>
-              <p className="text-sm text-gray-600">
-                {event.storeDetail.length > 25 
-                  ? `${event.storeDetail.slice(0, 25)}...`
-                  : event.storeDetail}
-              </p>
-              <p className="text-sm text-gray-600">입장료: {event.storePrice}원</p>
-              <p className="text-sm text-blue-500 mt-2">{event.hashtag}</p>
+              <p className="mt-2 text-sm text-blue-500">{event.hashtag}</p>
             </div>
           </div>
           {openEvents.includes(index) && (
-            <div className="pl-10">
+            <div className="">
               <EventDetails event={event} /> {/* 클릭된 이벤트의 세부 정보만 표시 */}
             </div>
           )}
