@@ -21,10 +21,14 @@ import ReserveDetailPage from './pages/Profile/ReserveDetailPage';
 import LoginPage from './pages/Auth/LoginPage';
 import RegisterPage from './pages/Auth/RegisterPage';
 import CompanyPage from './pages/Company/CompanyPage';
+<<<<<<< HEAD
 import SolpayPage from './pages/SolPay/SolPayPage';
 import StatsPage from './pages/Company/StatsPage';
 import QRPayPage from './pages/QrCam/QrCamPage';
+=======
+>>>>>>> fix/UpperBar
 import './index.css';
+import TransHistoryPage from './pages/Profile/TransHistoryPage';
 
 function App() {
   return (
@@ -32,7 +36,7 @@ function App() {
       <Router>
         <Navbar />
         <div className="mx-auto flex max-w-[450px] justify-center">
-          <div className="min-h-dvh w-full">
+          <div className="w-full min-h-dvh">
             <Routes>
               {/* 메인페이지 */}
               <Route exact path="/" element={<MainPage />} />
@@ -62,18 +66,29 @@ function App() {
                 path="/profile/reservation/:reserveId"
                 element={<ReserveDetailPage />}
               />
+<<<<<<< HEAD
+=======
+              {/* 내 포인트 사용 내역 조회*/}
+              <Route
+                path="/profile/trans-history"
+                element={<TransHistoryPage />}
+              />
+>>>>>>> fix/UpperBar
               {/* 로그인 페이지 */}
               <Route path="/login" element={<LoginPage />} />
               {/* 회원가입 페이지 */}
               <Route path="/register" element={<RegisterPage />} />
               {/* 기업 페이지 */}
               <Route path="/company" element={<CompanyPage />} />
+<<<<<<< HEAD
               {/* Qr 생성 페이지 */}
               <Route path="/solpay" element={<SolpayPage />} />
               {/* 기업 통계 페이지 */}
               <Route path="/statspage" element={<StatsPage />} />
               {/* Qr 인식 페이지 */}
               <Route path="/qrcam" element={<QRPayPage />} />
+=======
+>>>>>>> fix/UpperBar
             </Routes>
           </div>
         </div>
