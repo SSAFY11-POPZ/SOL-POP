@@ -193,7 +193,7 @@ const ProfilePage = () => {
     navigate('/qrcam');
   };
   const goToSolPayPage = () => {
-    navigate('/solpay');
+    navigate('/solpay/1');
   };
 
   return (
@@ -249,20 +249,22 @@ const ProfilePage = () => {
           <p className={`text-base ${hoverCss} p-1`} onClick={goToReservation}>
             내 예약 목록
           </p>
-          <p className="p-1 text-slate-500"> - 내 팝업스토어</p>
+          <p className={`text-base ${hoverCss} p-1`} onClick={goToQRCam}>
+            결제
+          </p>
+          <p className="p-1 text-slate-500"> </p>
+
           <p
             className={`text-base ${hoverCss} p-1`}
             onClick={goToPopupStoreRegistration}
           >
             팝업스토어 등록
           </p>
-          <p className="p-1 text-slate-500"> - 결제 기능</p>
+
           <p className={`text-base ${hoverCss} p-1`} onClick={goToSolPayPage}>
             QRcode 생성
           </p>
-          <p className={`text-base ${hoverCss} p-1`} onClick={goToQRCam}>
-            결제
-          </p>
+
         </div>
       </div>
 
