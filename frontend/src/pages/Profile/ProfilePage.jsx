@@ -11,14 +11,13 @@ import { formatDateAndTime } from '../../utils/utils';
 const ProfilePage = () => {
   const navigate = useNavigate();
 
-  // 공통된 css
   const hoverCss = 'hover:bg-slate-300 hover:bg-opacity-20';
 
-  const [balance, setBalance] = useState(0); // 계좌 잔액
-  const [point, setPoint] = useState(0); // 포인트
-  const [user, setUser] = useState({}); // 유저정보
-  const [amount, setAmount] = useState(''); // 충전하기에서 입력한 금액
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 오픈 여부
+  const [balance, setBalance] = useState(0);
+  const [point, setPoint] = useState(0);
+  const [user, setUser] = useState({});
+  const [amount, setAmount] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [warning, setWarning] = useState('');
 
   useEffect(() => {
@@ -102,10 +101,7 @@ const ProfilePage = () => {
 
     if (isNaN(value) || parseFloat(value) < 0) {
       setWarning('0 이상의 숫자만 입력할 수 있습니다.');
-      return;
-    }
-    if (numericValue < 0) {
-      setWarning('0보다 큰 값을 입력해주세요.');
+
       return;
     }
 
@@ -254,7 +250,6 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* 모달 창 */}
       {isModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
@@ -298,7 +293,7 @@ const ProfilePage = () => {
 
             <button
               className={`w-full rounded-lg py-3 font-semibold text-white ${warning !== '' || amount === 0 ? 'cursor-not-allowed bg-gray-400' : 'bg-yellow-400'}`}
-              onClick={() => chargePoint()}
+              onClick={chargePoint}
               disabled={warning !== '' || amount === 0}
             >
               충전하기
