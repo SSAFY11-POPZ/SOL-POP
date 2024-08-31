@@ -26,6 +26,7 @@ import PaymentPage from './pages/SolPay/PaymentPage';
 import StatsPage from './pages/Company/StatsPage';
 import QRPayPage from './pages/QrCam/QrCamPage';
 import './index.css';
+import StatsListPage from './pages/Company/StatsListPage';
 import TransHistoryPage from './pages/Profile/TransHistoryPage';
 
 function App() {
@@ -80,7 +81,9 @@ function App() {
               {/* Qr 결제 페이지 */}
               <Route path="/payment/:storeId/:numericAmount" element={<PaymentPage />} />
               {/* 기업 통계 페이지 */}
-              <Route path="/statspage" element={<StatsPage />} />
+              <Route path="/stats/:storeId" element={<StatsPage />} />
+              {/* 기업 통계 list 페이지 */}
+              <Route path="/stats-list" element={<StatsListPage />} />
               {/* Qr 인식 페이지 */}
               <Route path="/qrcam" element={<QRPayPage />} />
             </Routes>

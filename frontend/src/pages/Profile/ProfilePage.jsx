@@ -38,11 +38,6 @@ const ProfilePage = () => {
           return;
         }
 
-        // if (!response.result) {
-        //   navigate("/login");
-        //   return;
-        // }
-
         // 토큰이 유효하다면 반환된 데이터를 user에 할당
         console.log(response.data.data);
         setUser(response.data.data);
@@ -208,6 +203,11 @@ const ProfilePage = () => {
     navigate('/profile/trans-history');
   };
 
+  // 7. 통계 페이지로 이동
+  const goToStatsPage = () => {
+    navigate('/statslistpage');
+  };
+
   return (
     <div className="flex h-screen flex-col gap-2.5 bg-[#f7f8fc] px-4 py-4">
       <div className="w-full flex-row gap-2.5 rounded-[20px] bg-[#4472ea] p-5">
@@ -270,6 +270,12 @@ const ProfilePage = () => {
           >
             내 예약목록
           </p>
+          <p
+            className={`text-base ${hoverCss} p-1`}
+            onClick={() => goToStatsPage()}
+          >
+            기업 통계 페이지
+          </p>
         </div>
       </div>
 
@@ -315,7 +321,11 @@ const ProfilePage = () => {
             )}
 
             <button
-              className={`w-full rounded-lg py-3 font-semibold text-white ${warning !== '' || amount === 0 ? 'cursor-not-allowed bg-gray-400' : 'bg-yellow-400'}`}
+              className={`w-full rounded-lg py-3 font-semibold text-white ${
+                warning !== '' || amount === 0
+                  ? 'cursor-not-allowed bg-gray-400'
+                  : 'bg-yellow-400'
+              }`}
               onClick={() => chargePoint()}
               disabled={warning !== '' || amount === 0}
             >

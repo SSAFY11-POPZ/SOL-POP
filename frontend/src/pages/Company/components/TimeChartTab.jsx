@@ -12,15 +12,27 @@ import {
 
 const aggregateDataByTime = (data) => {
   const result = {};
-  data.forEach(({ 시간대, 유입인원, 성별 }) => {
-    if (!result[시간대]) result[시간대] = { 시간대, 남: 0, 여: 0 };
-    result[시간대][성별] += 유입인원;
+
+  data.forEach(({ reserveTime, memSex }) => {
+    // Z 제거: 시간대 변환 없이 로컬 시간대로 처리
+    const hour = new Date(`1970-01-01T${reserveTime}`).getHours();
+    const timeSlot = `${hour}:00`;
+
+    if (!result[timeSlot])
+      result[timeSlot] = { 시간대: timeSlot, 남: 0, 여: 0 };
+    result[timeSlot][memSex === 'M' ? '남' : '여'] += 1;
   });
+
   return Object.values(result);
 };
 
 const TimeChartTab = ({ data }) => {
   const dataByTime = aggregateDataByTime(data);
+
+  if (dataByTime.length === 0) {
+    return <div>No data available for the chart</div>;
+  }
+
   const maxVisitorTime = dataByTime.reduce(
     (max, curr) => (curr.남 + curr.여 > max.남 + max.여 ? curr : max),
     dataByTime[0],
@@ -70,22 +82,7 @@ const TimeChartTab = ({ data }) => {
           <XAxis dataKey="시간대" stroke="#555" />
           <YAxis stroke="#555" />
           <Tooltip />
-          <Line
-            type="monotone"
-            dataKey="남"
-            stroke="#6C63FF"
-            strokeWidth={2}
-            activeDot={{ r: 8, fill: '#6C63FF' }}
-            dot={{ stroke: '#6C63FF', strokeWidth: 2, fill: '#fff' }}
-          />
-          <Line
-            type="monotone"
-            dataKey="여"
-            stroke="#FF6B6B"
-            strokeWidth={2}
-            activeDot={{ r: 8, fill: '#FF6B6B' }}
-            dot={{ stroke: '#FF6B6B', strokeWidth: 2, fill: '#fff' }}
-          />
+
           <Area
             type="monotone"
             dataKey="남"

@@ -5,13 +5,12 @@ const SkillsChart = ({ data }) => {
     return <div>No data available</div>;
   }
 
-  // 성별로 그룹화된 총 유입인원 계산
   const genderData = data.reduce(
-    (acc, { 성별, 유입인원 }) => {
-      if (성별 === '남') {
-        acc.male += 유입인원;
-      } else if (성별 === '여') {
-        acc.female += 유입인원;
+    (acc, { memSex }) => {
+      if (memSex === 'M') {
+        acc.male += 1;
+      } else if (memSex === 'F') {
+        acc.female += 1;
       }
       return acc;
     },
@@ -20,23 +19,31 @@ const SkillsChart = ({ data }) => {
 
   const total = genderData.male + genderData.female;
 
-  // 퍼센트 계산
   const malePercentage = ((genderData.male / total) * 100).toFixed(2);
   const femalePercentage = ((genderData.female / total) * 100).toFixed(2);
 
-  const CircularSkillBar = ({ percentage, text, color, size, rotation }) => {
+  const maleSize = malePercentage > femalePercentage ? 150 : 100;
+  const femaleSize = femalePercentage > malePercentage ? 150 : 100;
+
+  const CircularSkillBar = ({ percentage, text, color, size }) => {
     const [isHovered, setIsHovered] = useState(false);
+
+    const thickness = 20;
 
     const circleStyle = {
       width: `${size}px`,
       height: `${size}px`,
-      background: `conic-gradient(${color} ${percentage}%, transparent ${percentage}%)`,
+      background: `conic-gradient(${color} ${percentage}%, #e2e8f0 ${percentage}% 100%)`,
       borderRadius: '50%',
       position: 'absolute',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      transform: `rotate(${rotation}deg)`, // Rotate to vary start position
+      transition: 'transform 0.3s ease',
+      transform: isHovered ? 'scale(1.1)' : 'scale(1)',
+      boxShadow: isHovered
+        ? '0px 4px 15px rgba(0, 0, 0, 0.3)'
+        : '0px 2px 10px rgba(0, 0, 0, 0.1)',
     };
 
     const handleMouseEnter = () => setIsHovered(true);
@@ -45,12 +52,10 @@ const SkillsChart = ({ data }) => {
     return (
       <div
         style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
+          position: 'relative',
           width: `${size}px`,
           height: `${size}px`,
+          margin: '10px',
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -58,23 +63,28 @@ const SkillsChart = ({ data }) => {
         <div style={circleStyle}>
           <div
             style={{
-              width: `${size - 20}px`,
-              height: `${size - 20}px`,
-              margin: '10px auto',
+              width: `${size - thickness}px`,
+              height: `${size - thickness}px`,
+              margin: 'auto',
               backgroundColor: '#fff',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               position: 'relative',
+              border: `solid ${thickness / 2}px ${color}`,
             }}
           >
-            <span style={{ fontSize: '12px', color: color }}>{text}</span>
+            <span
+              style={{ fontSize: '14px', fontWeight: 'bold', color: color }}
+            >
+              {text}
+            </span>
             {isHovered && (
               <div
                 style={{
                   position: 'absolute',
-                  top: '40%',
+                  top: '50%',
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
                   backgroundColor: '#fff',
@@ -84,7 +94,9 @@ const SkillsChart = ({ data }) => {
                   zIndex: 10,
                 }}
               >
-                <span style={{ color: color, fontSize: '12px' }}>
+                <span
+                  style={{ color: color, fontSize: '14px', fontWeight: 'bold' }}
+                >
                   {percentage}%
                 </span>
               </div>
@@ -96,25 +108,26 @@ const SkillsChart = ({ data }) => {
   };
 
   return (
-    <div
-      className="relative flex items-center justify-center"
-      style={{ width: '300px', height: '300px', position: 'relative' }}
-    >
-      <CircularSkillBar
-        percentage={femalePercentage}
-        text="여자"
-        color="#ff6f61"
-        size={200} // 가장 큰 원
-        rotation={0} // 기본 위치
-      />
-      <CircularSkillBar
-        percentage={malePercentage}
-        text="남자"
-        color="#007bff"
-        size={150} // 중간 원
-        rotation={45} // 회전하여 시작 위치 변경
-        borderRadius="1"
-      />
+    <div style={{ textAlign: 'center', padding: '10px', color: '#888' }}>
+      <p>여자 비율: {femalePercentage}%</p>
+      <p>남자 비율: {malePercentage}%</p>
+      <div
+        className="flex items-center justify-center"
+        style={{ width: '100%', height: '100%', position: 'relative' }}
+      >
+        <CircularSkillBar
+          percentage={malePercentage}
+          text="남자"
+          color="#007bff"
+          size={maleSize}
+        />
+        <CircularSkillBar
+          percentage={femalePercentage}
+          text="여자"
+          color="#ff6f61"
+          size={femaleSize}
+        />
+      </div>
     </div>
   );
 };
