@@ -86,17 +86,10 @@ const StatsListPage = () => {
             className="store-item relative flex cursor-pointer items-center space-x-4 rounded-lg border border-blue-500 bg-white p-4 shadow-md transition hover:bg-gray-100"
             onClick={() => handleCardClick(store.storeId)}
           >
-            <img
-              src={store.storeThumbnailUrl || '/path/to/default-image.jpg'}
-              alt={store.storeName}
-              className="store-image rounded-lg object-cover"
-              style={{ width: '220px', height: '112px' }}
-            />
             <div className="store-summary">
               <h4 className="truncate text-xs font-semibold text-gray-800">
                 {truncateStoreName(store.storeName)}
               </h4>
-              <p className="text-gray-600">{store.storeDescription}</p>
             </div>
           </div>
         )}
