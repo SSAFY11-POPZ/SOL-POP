@@ -189,7 +189,7 @@ const ProfilePage = () => {
 
   // 7. 통계 페이지로 이동
   const goToStatsPage = () => {
-    navigate('/statslistpage');
+    navigate('/stats-list');
   };
 
   return (
