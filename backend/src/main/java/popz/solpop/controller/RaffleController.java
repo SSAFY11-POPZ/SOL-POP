@@ -101,7 +101,7 @@ RaffleController {
         EnterRaffle enterRaffle;
         try {
             point.setMember(member);
-            point.setPointPlace(raffle.getRaffleName());
+            point.setPointPlace(raffle.getRaffleName() + " 래플 응모");
             point.setUseAmount(raffle.getRafflePrice());
             point.setAfterBalance(member.getPointBalance() - 100);
             reservation = reservationService.findReservationByStoreAndMember(raffle.getStore(), member);

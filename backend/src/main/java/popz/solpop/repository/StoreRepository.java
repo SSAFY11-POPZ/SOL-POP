@@ -17,6 +17,9 @@ import java.util.Optional;
 @Transactional
 public interface StoreRepository extends JpaRepository<Store, Integer> {
 
+    @Query("SELECT store.storeName FROM Store store WHERE store.storeId = :storeId")
+    String findStoreNameByStoreId(Integer storeId);
+
     @Query("SELECT store FROM Store store JOIN store.heartList heartList "
             + "WHERE store.storeEndDate >= NOW() "
             + "GROUP BY store order by COUNT(heartList) DESC LIMIT :limit")
