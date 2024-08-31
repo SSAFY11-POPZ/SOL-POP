@@ -101,7 +101,6 @@ const ProfilePage = () => {
 
     if (isNaN(value) || parseFloat(value) < 0) {
       setWarning('0 이상의 숫자만 입력할 수 있습니다.');
-
       return;
     }
 
@@ -183,10 +182,13 @@ const ProfilePage = () => {
     navigate('/profile/trans-history');
   };
 
-  // 7. 통계 페이지로 이동
-  // const goToStatsPage = () => {
-  //   navigate('/stats-list');
-  // };
+  const goToStatsPage = () => {
+    navigate('/stats-list');
+  };
+
+  const goToPopupStoreRegistration = () => {
+    navigate('/company');
+  };
 
   return (
     <div className="flex h-screen flex-col gap-2.5 bg-[#f7f8fc] px-4 py-4">
@@ -241,12 +243,13 @@ const ProfilePage = () => {
           <p className={`text-base ${hoverCss} p-1`} onClick={goToReservation}>
             내 예약 목록
           </p>
-          {/* <p
+          <p className="p-1 text-slate-500">내 팝업스토어</p>
+          <p
             className={`text-base ${hoverCss} p-1`}
-            onClick={() => goToStatsPage()}
+            onClick={goToPopupStoreRegistration}
           >
-            기업 통계 페이지
-          </p> */}
+            팝업스토어 등록
+          </p>
         </div>
       </div>
 
