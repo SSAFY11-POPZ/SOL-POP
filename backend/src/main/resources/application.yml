@@ -33,6 +33,6 @@ logging:
 props:
   reset-password-url: ${FrontEndUrl}
 
-
-server:
-  port: 8081
+#
+#server:
+#  port: 8081
