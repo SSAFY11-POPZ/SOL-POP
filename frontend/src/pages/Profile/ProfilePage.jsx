@@ -189,6 +189,12 @@ const ProfilePage = () => {
   const goToPopupStoreRegistration = () => {
     navigate('/company');
   };
+  const goToQRCam = () => {
+    navigate('/qrcam');
+  };
+  const goToSolPayPage = () => {
+    navigate('/solpay');
+  };
 
   return (
     <div className="flex h-screen flex-col gap-2.5 bg-[#f7f8fc] px-4 py-4">
@@ -249,6 +255,13 @@ const ProfilePage = () => {
             onClick={goToPopupStoreRegistration}
           >
             팝업스토어 등록
+          </p>
+          <p className="p-1 text-slate-500">결제 기능</p>
+          <p className={`text-base ${hoverCss} p-1`} onClick={goToSolPayPage}>
+            QRcode 생성
+          </p>
+          <p className={`text-base ${hoverCss} p-1`} onClick={goToQRCam}>
+            결제
           </p>
         </div>
       </div>
