@@ -111,7 +111,7 @@ MZ 세대 맞춤 새로운 경험을 제공함으로써 신규 고객을 유치�
 <img src="https://github.com/user-attachments/assets/939723a2-7d72-4d29-9275-b814293858d1">
 
 ### ERD
-<img src="https://github.com/user-attachments/assets/a97992f0-5381-4916-b7e5-3378532ac479">
+<img src="https://github.com/user-attachments/assets/b1deaaf4-cbfe-4cd5-a6c2-e4422d492133">
 
 ### 사용 기술
 ---
