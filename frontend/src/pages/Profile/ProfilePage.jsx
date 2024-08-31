@@ -280,24 +280,24 @@ const ProfilePage = () => {
           onClick={handleOverlayClick}
         >
           <div
-            className="relative w-4/5 max-w-lg p-6 bg-white rounded-lg"
+            className="relative w-4/5 max-w-lg rounded-lg bg-white p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute text-gray-500 right-2 top-2"
+              className="absolute right-2 top-2 text-gray-500"
               onClick={closeModal}
             >
               X
             </button>
-            <h2 className="mb-4 text-xl font-semibold text-center">
+            <h2 className="mb-4 text-center text-xl font-semibold">
               포인트 충전
             </h2>
-            <p className="mb-4 text-sm text-center text-gray-500">
+            <p className="mb-4 text-center text-sm text-gray-500">
               잔액 : {balance}원
             </p>
 
             <div className="mb-4">
-              <label htmlFor="amount" className="block mb-2 text-center">
+              <label htmlFor="amount" className="mb-2 block text-center">
                 충전할 금액
               </label>
               <input
@@ -305,7 +305,7 @@ const ProfilePage = () => {
                 id="amount"
                 value={amount}
                 onChange={handleAmount}
-                className="w-full px-3 py-2 text-center border rounded-lg"
+                className="w-full rounded-lg border px-3 py-2 text-center"
                 placeholder="금액을 입력하세요"
               />
             </div>
