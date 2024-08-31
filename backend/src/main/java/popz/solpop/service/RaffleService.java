@@ -26,7 +26,7 @@ public class RaffleService {
 
 
   public Raffle getRaffleByRaffleId(Integer raffleId) {
-    return raffleRepository.findRaffleByRaffleId(raffleId);
+    return raffleRepository.findRaffleByRaffleId(raffleId).orElse(null);
   }
 
 }

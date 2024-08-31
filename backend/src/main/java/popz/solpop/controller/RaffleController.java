@@ -60,18 +60,32 @@ RaffleController {
             @RequestHeader("Authorization") String token,
             @RequestBody EnterRaffleRequest enterRaffleRequest
     ) {
-        String userName = tokenProvider.getUserName(token.substring(7));
+        String userName;
+        try {
+            userName = tokenProvider.getUserName(token.substring(7));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e + "Invalid token");
+        }
         System.out.println(userName);
         if (userName == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
-        Member member = memberService.getMemberByUserName(userName);
-        Raffle raffle = raffleService.getRaffleByRaffleId(enterRaffleRequest.getRaffleId());
+        Member member;
+        Raffle raffle;
+        try {
+            member = memberService.getMemberByUserName(userName);
+            raffle = raffleService.getRaffleByRaffleId(enterRaffleRequest.getRaffleId());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e + "Invalid member or raffle");
+        }
 
         System.out.println(member);
         System.out.println(raffle);
-        if (member == null || raffle == null) {
-            return ResponseEntity.badRequest().body("Invalid member or raffle");
+        if (member == null) {
+            return ResponseEntity.badRequest().body("Invalid member ");
+        }
+        if (raffle == null) {
+            return ResponseEntity.badRequest().body("Invalid raffle");
         }
 
 
