@@ -233,7 +233,7 @@ const ProfilePage = () => {
       </div>
       <div className="flex h-full w-full flex-col gap-y-2 rounded-t-[20px] bg-white px-4 py-3">
         <div className="flex flex-col gap-y-3">
-          <p className="p-1 text-slate-500">조회</p>
+          <p className="p-1 text-slate-500"> - 조회</p>
           <p className={`text-base ${hoverCss} p-1`} onClick={showBalance}>
             내 계좌 잔액
           </p>
@@ -249,14 +249,14 @@ const ProfilePage = () => {
           <p className={`text-base ${hoverCss} p-1`} onClick={goToReservation}>
             내 예약 목록
           </p>
-          <p className="p-1 text-slate-500">내 팝업스토어</p>
+          <p className="p-1 text-slate-500"> - 내 팝업스토어</p>
           <p
             className={`text-base ${hoverCss} p-1`}
             onClick={goToPopupStoreRegistration}
           >
             팝업스토어 등록
           </p>
-          <p className="p-1 text-slate-500">결제 기능</p>
+          <p className="p-1 text-slate-500"> - 결제 기능</p>
           <p className={`text-base ${hoverCss} p-1`} onClick={goToSolPayPage}>
             QRcode 생성
           </p>
