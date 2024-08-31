@@ -100,11 +100,23 @@ const RankPage = () => {
 
         {adStore && (
           <div
-            className="store-item relative flex cursor-pointer items-center space-x-4 rounded-lg border border-blue-500 bg-white p-4 shadow-md transition hover:bg-gray-100"
+            className="store-item relative flex cursor-pointer items-center space-x-4 rounded-lg p-4 shadow-md transition"
+            style={{
+              borderImage:
+                'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet) 1',
+              borderWidth: '4px',
+              borderStyle: 'solid',
+            }}
             onClick={() => navigate(`/detail/${adStore.storeId}`)}
           >
+            <div
+              className="store-rank text-mb font-bold text-gray-800"
+              style={{ width: '15px' }} // 숫자가 차지하는 공간만큼의 너비로 설정
+            ></div>
             <div className="absolute left-2 top-2 rounded-full border border-gray-300 bg-white px-2 py-1 text-xs text-gray-500">
-              AD
+              <span className="text-[10px] font-extrabold uppercase tracking-wide text-indigo-600 drop-shadow-sm">
+                AD
+              </span>
             </div>
             <img
               src={adStore.storeThumbnailUrl}
@@ -112,10 +124,13 @@ const RankPage = () => {
               className="store-image rounded-lg object-cover"
               style={{ width: '220px', height: '112px' }}
             />
-            <div className="store-summary">
-              <h4 className="max-w-xs truncate text-xs font-semibold text-gray-800">
+            <div className="store-summary flex-1">
+              <h4 className="truncate text-xs font-semibold text-gray-800">
                 {truncateStoreName(adStore.storeName)}
               </h4>
+            </div>
+            <div className="absolute right-2 top-2 text-xs font-bold text-blue-600">
+              신한은행 연계 팝업
             </div>
           </div>
         )}

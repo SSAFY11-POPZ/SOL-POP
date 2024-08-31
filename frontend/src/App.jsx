@@ -35,7 +35,7 @@ function App() {
       <Router>
         <Navbar />
         <div className="mx-auto flex max-w-[450px] justify-center">
-          <div className="w-full min-h-dvh">
+          <div className="min-h-dvh w-full">
             <Routes>
               {/* 메인페이지 */}
               <Route exact path="/" element={<MainPage />} />
@@ -79,7 +79,10 @@ function App() {
               {/* Qr 생성 페이지 */}
               <Route path="/solpay/:storeId" element={<SolpayPage />} />
               {/* Qr 결제 페이지 */}
-              <Route path="/payment/:storeId/:numericAmount" element={<PaymentPage />} />
+              <Route
+                path="/payment/:storeId/:numericAmount"
+                element={<PaymentPage />}
+              />
               {/* 기업 통계 페이지 */}
               <Route path="/stats/:storeId" element={<StatsPage />} />
               {/* 기업 통계 list 페이지 */}
