@@ -64,36 +64,34 @@ RaffleController {
         try {
             userName = tokenProvider.getUserName(token.substring(7));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e + "Invalid token");
+            logger.error("Invalid token", e);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
-        System.out.println(userName);
+
         if (userName == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
+
         Member member;
         Raffle raffle;
         try {
             member = memberService.getMemberByUserName(userName);
             raffle = raffleService.getRaffleByRaffleId(enterRaffleRequest.getRaffleId());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e + "Invalid member or raffle");
+            logger.error("Invalid member or raffle", e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Invalid member or raffle");
         }
 
-        System.out.println(member);
-        System.out.println(raffle);
         if (member == null) {
-            return ResponseEntity.badRequest().body("Invalid member ");
+            return ResponseEntity.badRequest().body("Invalid member");
         }
         if (raffle == null) {
             return ResponseEntity.badRequest().body("Invalid raffle");
         }
 
-
         boolean alreadyEntered = enterRaffleService.existsByRaffleAndMember(raffle, member);
         if (alreadyEntered) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body("이미 응모한 래플입니다.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 응모한 래플입니다.");
         }
 
         boolean reserved = reservationService.existsByStoreIdAndMemId(raffle.getStore().getStoreId(), member);
@@ -108,6 +106,7 @@ RaffleController {
         if (!crtNo.equals(inputCrtNo)) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("잘못된 응모번호 입니다. 다시 입력해주세요.");
         }
+
         boolean enoughBalance = member.getPointBalance() >= raffle.getRafflePrice();
         if (!enoughBalance) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("포인트가 부족합니다.");
@@ -119,17 +118,18 @@ RaffleController {
         try {
             point.setMember(member);
             point.setPointPlace(raffle.getRaffleName() + " 래플 응모");
-
             point.setUseAmount(raffle.getRafflePrice());
-            point.setAfterBalance(member.getPointBalance() - 100);
+            point.setAfterBalance(member.getPointBalance() - raffle.getRafflePrice());
             reservation = reservationService.findReservationByStoreAndMember(raffle.getStore(), member);
             reservation.setIsEnter(true);
             enterRaffle = new EnterRaffle();
             enterRaffle.setMember(member);
             enterRaffle.setRaffle(raffle);
         } catch (Exception e) {
+            logger.error("래플 요청에 실패했습니다.", e);
             return ResponseEntity.status(HttpStatus.CONFLICT).body("래플 요청에 실패했습니다.");
         }
+
         pointService.savePoint(point);
         enterRaffleService.saveEnterRaffle(enterRaffle);
 
