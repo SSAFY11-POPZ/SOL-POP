@@ -22,4 +22,6 @@ public class SignUp {
     private LocalDateTime lastLoginAt;
     private Integer levelId;
     private String accountNo;
+    private Integer ageGroup;
+    private String gender;
 }

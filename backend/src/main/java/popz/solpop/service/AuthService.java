@@ -80,6 +80,8 @@ public class AuthService {
                 .createdAt(LocalDateTime.now())
                 .editedAt(LocalDateTime.now())
                 .level(level)
+                .memAge(dto.getAgeGroup())
+                .memSex(dto.getGender())
                 .build();
 
 
