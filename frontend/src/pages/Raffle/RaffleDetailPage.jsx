@@ -45,7 +45,15 @@ const RaffleDetailPage = () => {
   const handleRaffle = async () => {
     try {
       if (!localStorage.getItem('accessToken')) {
-        navigate('/login');
+        Swal.fire({
+          icon: 'error',
+          text: '로그인이 필요한 서비스입니다.',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate('/login');
+          }
+        });
+        setTicketNumber('');
         return;
       }
       // 토큰이 유효한지 검증
@@ -69,9 +77,9 @@ const RaffleDetailPage = () => {
       if (result.isConfirmed) {
         const amount = raffle.rafflePrice; // 차감할 포인트 금액, 실제 로직에 맞게 수정 필요
         await api.post('/api/v1/raffle/request', {
-          amount: amount,
-          pointPlace: `${raffle.raffleName} - 응모`,
-        });
+          "raffleId": raffleId,
+          "raffleCrtNo": ticketNumber
+      });
         // 응모 완료 알림
         await Swal.fire('응모완료!', '응모가 완료되었습니다.', 'success');
         setTicketNumber('');
@@ -81,7 +89,6 @@ const RaffleDetailPage = () => {
       Swal.fire('ERROR', error.data, 'error');
     }
   };
-
   return (
     <div ref={mainRef}>
       <UpperBar title={'래플 목록'} />
