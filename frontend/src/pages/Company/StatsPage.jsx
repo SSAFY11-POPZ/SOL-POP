@@ -14,7 +14,12 @@ const StatsPage = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    console.log("storeId from params:", storeId);
     const fetchData = async () => {
+      if (!storeId) {
+        console.error("storeId is undefined");
+        return;
+      }
       try {
         const response = await api.get(`/api/v1/company/statistics/${storeId}`);
         const processedData = response.data.map((item) => ({
@@ -28,9 +33,10 @@ const StatsPage = () => {
         console.error('Error fetching data:', error);
       }
     };
-
+  
     fetchData();
   }, [storeId]);
+  
 
   const sliderSettings = {
     dots: true,

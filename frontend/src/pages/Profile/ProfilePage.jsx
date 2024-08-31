@@ -8,6 +8,7 @@ import api, { checkTokenValidity } from '../../utils/axios';
 import axios from 'axios';
 import { formatDateAndTime } from '../../utils/utils';
 
+
 const ProfilePage = () => {
   const navigate = useNavigate();
 
@@ -101,7 +102,6 @@ const ProfilePage = () => {
 
     if (isNaN(value) || parseFloat(value) < 0) {
       setWarning('0 이상의 숫자만 입력할 수 있습니다.');
-
       return;
     }
 
@@ -183,9 +183,18 @@ const ProfilePage = () => {
     navigate('/profile/trans-history');
   };
 
-  // 7. 통계 페이지로 이동
   const goToStatsPage = () => {
     navigate('/stats-list');
+  };
+
+  const goToPopupStoreRegistration = () => {
+    navigate('/company');
+  };
+  const goToQRCam = () => {
+    navigate('/qrcam');
+  };
+  const goToSolPayPage = () => {
+    navigate('/solpay/1');
   };
 
   return (
@@ -225,7 +234,7 @@ const ProfilePage = () => {
       </div>
       <div className="flex h-full w-full flex-col gap-y-2 rounded-t-[20px] bg-white px-4 py-3">
         <div className="flex flex-col gap-y-3">
-          <p className="p-1 text-slate-500">조회</p>
+          <p className="p-1 text-slate-500"> - 조회</p>
           <p className={`text-base ${hoverCss} p-1`} onClick={showBalance}>
             내 계좌 잔액
           </p>
@@ -241,12 +250,22 @@ const ProfilePage = () => {
           <p className={`text-base ${hoverCss} p-1`} onClick={goToReservation}>
             내 예약 목록
           </p>
+          <p className={`text-base ${hoverCss} p-1`} onClick={goToQRCam}>
+            결제
+          </p>
+          <p className="p-1 text-slate-500"> </p>
+
           <p
             className={`text-base ${hoverCss} p-1`}
-            onClick={() => goToStatsPage()}
+            onClick={goToPopupStoreRegistration}
           >
-            기업 통계 페이지
+            팝업스토어 등록
           </p>
+
+          <p className={`text-base ${hoverCss} p-1`} onClick={goToSolPayPage}>
+            QRcode 생성
+          </p>
+
         </div>
       </div>
 
