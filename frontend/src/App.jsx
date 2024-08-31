@@ -22,6 +22,7 @@ import LoginPage from './pages/Auth/LoginPage';
 import RegisterPage from './pages/Auth/RegisterPage';
 import CompanyPage from './pages/Company/CompanyPage';
 import SolpayPage from './pages/SolPay/SolPayPage';
+import PaymentPage from './pages/SolPay/PaymentPage';
 import StatsPage from './pages/Company/StatsPage';
 import QRPayPage from './pages/QrCam/QrCamPage';
 import './index.css';
@@ -76,6 +77,8 @@ function App() {
               <Route path="/company" element={<CompanyPage />} />
               {/* Qr 생성 페이지 */}
               <Route path="/solpay/:storeId" element={<SolpayPage />} />
+              {/* Qr 결제 페이지 */}
+              <Route path="/payment/:storeId/:numericAmount" element={<PaymentPage />} />
               {/* 기업 통계 페이지 */}
               <Route path="/statspage" element={<StatsPage />} />
               {/* Qr 인식 페이지 */}
