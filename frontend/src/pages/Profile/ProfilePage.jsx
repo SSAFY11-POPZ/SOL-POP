@@ -239,7 +239,7 @@ const ProfilePage = () => {
             내 찜한 목록
           </p>
           <p className={`text-base ${hoverCss} p-1`} onClick={goToReservation}>
-            내 예약목록
+            내 예약 목록
           </p>
           <p
             className={`text-base ${hoverCss} p-1`}

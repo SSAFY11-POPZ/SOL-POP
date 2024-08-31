@@ -12,10 +12,18 @@ const StatsListPage = () => {
       try {
         const response = await api.get('/api/v1/company/myStore');
 
-        if (response.data && response.data.length > 0) {
-          const storeId = response.data[0].store.storeId;
-          const storeDetailResponse = await api.get(`/api/v1/store/${storeId}`);
-          setStore(storeDetailResponse.data);
+        if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+          const storeId = response.data[0]?.store?.storeId;
+          if (storeId) {
+            const storeDetailResponse = await api.get(`/api/v1/store/${storeId}`);
+            if (storeDetailResponse.data) {
+              setStore(storeDetailResponse.data);
+            } else {
+              setError('Store details not found.');
+            }
+          } else {
+            setError('Store ID not found.');
+          }
         } else {
           setError('등록된 가게가 없습니다.');
         }
@@ -41,7 +49,7 @@ const StatsListPage = () => {
   };
 
   const truncateStoreName = (name) => {
-    if (name.length > 15) {
+    if (name && name.length > 15) {
       return name.slice(0, 10) + '...';
     }
     return name;

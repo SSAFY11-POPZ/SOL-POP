@@ -64,9 +64,9 @@ const ReservationPage = () => {
   // 필터링된 예약 목록 반환
   const getFilteredReservations = () => {
     switch (filter) {
-      case '방문전':
+      case '방문 전':
         return reservations.filter(reservation => !reservation.isVisited);
-      case '방문완료':
+      case '방문 완료':
         return reservations.filter(reservation => reservation.isVisited);
       default:
         return reservations;
