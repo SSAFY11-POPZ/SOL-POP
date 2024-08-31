@@ -21,7 +21,6 @@ const ProfilePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 오픈 여부
   const [warning, setWarning] = useState('');
 
-  // 1. 초기 렌더링시에 실행되는 함수
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -29,28 +28,18 @@ const ProfilePage = () => {
           navigate('/login');
           return;
         }
-        // 토큰이 유효한지 검증
+
         const response = await checkTokenValidity();
-        console.log(response);
         if (!response || response.status !== 200) {
           navigate('/login');
-          console.log(response);
           return;
         }
 
-        // if (!response.result) {
-        //   navigate("/login");
-        //   return;
-        // }
-
-        // 토큰이 유효하다면 반환된 데이터를 user에 할당
-        console.log(response.data.data);
         setUser(response.data.data);
-        // 포인트 조회
+
         const pointResponse = await api.get('/api/v1/user/point/balance');
         setPoint(pointResponse.data);
 
-        // 계좌 잔액 조회
         const { transmissionDate, transmissionTime, transmissionCode } =
           formatDateAndTime();
         const balanceResponse = await api.post(
@@ -58,16 +47,16 @@ const ProfilePage = () => {
           {
             Header: {
               apiName: 'inquireDemandDepositAccountBalance',
-              transmissionDate: transmissionDate,
-              transmissionTime: transmissionTime,
+              transmissionDate,
+              transmissionTime,
               institutionCode: '00100',
               fintechAppNo: '001',
               apiServiceCode: 'inquireDemandDepositAccountBalance',
               institutionTransactionUniqueNo: transmissionCode,
               apiKey: import.meta.env.VITE_ADMIN_SECRET_KEY,
-              userKey: response.data.data.userKey, // 여기서 response.data.data.userKey를 사용
+              userKey: response.data.data.userKey,
             },
-            accountNo: response.data.data.accountNo, // response.data.data.accountNo를 사용
+            accountNo: response.data.data.accountNo,
           },
         );
 
@@ -84,38 +73,33 @@ const ProfilePage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [navigate]);
 
-  // 2. 포인트 충전하기
-  // 포인트 충전하기 모달 열기
   const openModal = () => {
     setIsModalOpen(true);
   };
 
-  // 포인트 충전하기 모달 닫기
   const closeModal = () => {
     setIsModalOpen(false);
     setAmount('');
     setWarning('');
   };
 
-  // 금액 변경 처리
-  const handleAmount = (e) => {
-    const value = e.target.value;
+  const formatNumber = (value) => {
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
 
-    // 입력된 값이 빈 문자열이면 경고를 표시하지 않고 금액을 빈 문자열로 설정
+  const handleAmount = (e) => {
+    let value = e.target.value.replace(/,/g, '');
+
     if (value === '') {
       setAmount('');
       setWarning('');
       return;
     }
 
-    // 입력한 값이 숫자인지 확인
-    const numericValue = parseFloat(value);
-
-    // 입력한 값이 숫자가 아니면 경고 메시지 설정
-    if (isNaN(numericValue)) {
-      setWarning('숫자만 입력할 수 있습니다.');
+    if (isNaN(value) || parseFloat(value) < 0) {
+      setWarning('0 이상의 숫자만 입력할 수 있습니다.');
       return;
     }
     if (numericValue < 0) {
@@ -123,68 +107,60 @@ const ProfilePage = () => {
       return;
     }
 
-    // 입력한 금액이 계좌 잔액보다 크면 계좌 잔액으로 설정
-    if (numericValue > balance) {
-      setAmount(balance);
+    value = parseFloat(value);
+
+    if (value > balance) {
+      setAmount(formatNumber(balance.toString()));
       setWarning('한도를 초과했습니다.');
     } else {
-      setAmount(numericValue);
+      setAmount(formatNumber(value.toString()));
       setWarning('');
     }
   };
 
-  // 모달 바깥 부분을 클릭했을 때 모달을 닫기
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       closeModal();
     }
   };
 
-  // 포인트 충전하기
   const chargePoint = async () => {
     try {
-      // 계좌 출금 신청
       const { transmissionDate, transmissionTime, transmissionCode } =
         formatDateAndTime();
-      await axios
-        .post('https://solpop.xyz/api/v1/account/withdrawal', {
-          Header: {
-            apiName: 'updateDemandDepositAccountWithdrawal',
-            transmissionDate: transmissionDate,
-            transmissionTime: transmissionTime,
-            institutionCode: '00100',
-            fintechAppNo: '001',
-            apiServiceCode: 'updateDemandDepositAccountWithdrawal',
-            institutionTransactionUniqueNo: transmissionCode,
-            apiKey: import.meta.env.VITE_ADMIN_SECRET_KEY,
-            userKey: user.userKey,
-          },
-          accountNo: user.accountNo,
-          transactionBalance: `${amount}`,
-          transactionSummary: '(수시입출금) : 출금',
-        })
-        .then(() => {
-          setBalance((prev) => prev - amount);
-        });
-      // 포인트 충전
-      await api
-        .put(`/api/v1/point/charge?amount=${amount}`)
-        .then(() => {})
-        .then(() => {
-          closeModal();
-          Swal.fire({
-            title: '충전완료',
-            icon: 'success',
-            html: '충전이 완료되었습니다. <br> 다양한 콘텐츠를 즐겨보세요!',
-          });
-          setPoint((prev) => prev + amount);
-        });
+
+      await axios.post('https://solpop.xyz/api/v1/account/withdrawal', {
+        Header: {
+          apiName: 'updateDemandDepositAccountWithdrawal',
+          transmissionDate: transmissionDate,
+          transmissionTime: transmissionTime,
+          institutionCode: '00100',
+          fintechAppNo: '001',
+          apiServiceCode: 'updateDemandDepositAccountWithdrawal',
+          institutionTransactionUniqueNo: transmissionCode,
+          apiKey: import.meta.env.VITE_ADMIN_SECRET_KEY,
+          userKey: user.userKey,
+        },
+        accountNo: user.accountNo,
+        transactionBalance: amount.replace(/,/g, ''),
+        transactionSummary: '(수시입출금) : 출금',
+      });
+
+      await api.put(`/api/v1/point/charge?amount=${amount.replace(/,/g, '')}`);
+
+      closeModal();
+      Swal.fire({
+        title: '충전완료',
+        icon: 'success',
+        html: '충전이 완료되었습니다. <br> 다양한 콘텐츠를 즐겨보세요!',
+      });
+      setPoint((prev) => prev + parseFloat(amount.replace(/,/g, '')));
+      setBalance((prev) => prev - parseFloat(amount.replace(/,/g, '')));
     } catch {
       Swal.fire('ERROR', '오류가 발생했습니다.', 'warning');
     }
   };
 
-  // 3. 내 계좌 잔액
   const showBalance = () => {
     const formattedAccountNo = user.accountNo.replace(/(\d{4})(?=\d)/g, '$1-');
 
@@ -197,18 +173,15 @@ const ProfilePage = () => {
     });
   };
 
-  // 4. 내 찜한 목록
   const showWishlist = () => {
     navigate('/wishlist');
   };
 
-  // 5. 내 예약 목록
   const goToReservation = () => {
     navigate('/profile/reservation');
   };
 
-  // 6. 결제 내역
-  const showTransactionHistory = async () => {
+  const showTransactionHistory = () => {
     navigate('/profile/trans-history');
   };
 
@@ -250,28 +223,19 @@ const ProfilePage = () => {
       <div className="flex h-full w-full flex-col gap-y-2 rounded-t-[20px] bg-white px-4 py-3">
         <div className="flex flex-col gap-y-3">
           <p className="p-1 text-slate-500">조회</p>
-          <p
-            className={`text-base ${hoverCss} p-1`}
-            onClick={() => showBalance()}
-          >
+          <p className={`text-base ${hoverCss} p-1`} onClick={showBalance}>
             내 계좌 잔액
           </p>
           <p
             className={`text-base ${hoverCss} p-1`}
-            onClick={() => showTransactionHistory()}
+            onClick={showTransactionHistory}
           >
             내 포인트 결제 내역
           </p>
-          <p
-            className={`text-base ${hoverCss} p-1`}
-            onClick={() => showWishlist()}
-          >
+          <p className={`text-base ${hoverCss} p-1`} onClick={showWishlist}>
             내 찜한 목록
           </p>
-          <p
-            className={`text-base ${hoverCss} p-1`}
-            onClick={() => goToReservation()}
-          >
+          <p className={`text-base ${hoverCss} p-1`} onClick={goToReservation}>
             내 예약목록
           </p>
         </div>
@@ -284,33 +248,34 @@ const ProfilePage = () => {
           onClick={handleOverlayClick}
         >
           <div
-            className="relative w-4/5 max-w-lg p-6 bg-white rounded-lg"
+            className="relative w-4/5 max-w-lg rounded-lg bg-white p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute text-gray-500 right-2 top-2"
+              className="absolute right-2 top-2 text-gray-500"
               onClick={closeModal}
             >
               X
             </button>
-            <h2 className="mb-4 text-xl font-semibold text-center">
+            <h2 className="mb-4 text-center text-xl font-semibold">
               포인트 충전
             </h2>
-            <p className="mb-4 text-sm text-center text-gray-500">
+            <p className="mb-4 text-center text-sm text-gray-500">
               잔액 : {balance}원
             </p>
 
             <div className="mb-4">
-              <label htmlFor="amount" className="block mb-2 text-center">
+              <label htmlFor="amount" className="mb-2 block text-center">
                 충전할 금액
               </label>
               <input
-                type="number"
+                type="text"
                 id="amount"
                 value={amount}
                 onChange={handleAmount}
-                className="w-full px-3 py-2 text-center border rounded-lg"
+                className="w-full rounded-lg border px-3 py-2 text-center"
                 placeholder="금액을 입력하세요"
+                // 스피너 버튼 없애기 위해 type="text" 사용
               />
             </div>
 
@@ -319,9 +284,9 @@ const ProfilePage = () => {
             )}
 
             <button
-              className={`w-full rounded-lg py-3 font-semibold text-white ${warning !== '' || amount === 0 ? 'cursor-not-allowed bg-gray-400' : 'bg-yellow-400'}`}
-              onClick={() => chargePoint()}
-              disabled={warning !== '' || amount === 0}
+              className={`w-full rounded-lg py-3 font-semibold text-white ${warning !== '' || amount === '' ? 'cursor-not-allowed bg-gray-400' : 'bg-yellow-400'}`}
+              onClick={chargePoint}
+              disabled={warning !== '' || amount === ''}
             >
               충전하기
             </button>
