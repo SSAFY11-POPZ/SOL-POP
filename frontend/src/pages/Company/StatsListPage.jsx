@@ -11,7 +11,8 @@ const StatsListPage = () => {
     const fetchStore = async () => {
       try {
         const response = await api.get('/api/v1/company/myStore');
-        if (response.data.length > 0) {
+
+        if (response.data && response.data.length > 0) {
           const storeId = response.data[0].store.storeId;
           const storeDetailResponse = await api.get(`/api/v1/store/${storeId}`);
           setStore(storeDetailResponse.data);
