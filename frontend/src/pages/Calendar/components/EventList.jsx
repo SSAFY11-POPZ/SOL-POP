@@ -14,14 +14,12 @@ const EventList = ({ events, error, selectedDate, onEventClick }) => {
   };
 
   return (
-    <div className="space-y-4 events">
-      {error && (
-        <p className="text-red-500">데이터를 불러올 수 없습니다.</p>
-      )}
+    <div className="events space-y-4">
+      {error && <p className="text-red-500">데이터를 불러올 수 없습니다.</p>}
       {events.map((event, index) => (
         <React.Fragment key={event.storeId}>
           <div
-            className={`event-item flex items-center space-x-4 p-4 bg-white shadow-md rounded-lg cursor-pointer hover:bg-gray-100 transition ${
+            className={`event-item flex cursor-pointer items-center space-x-4 rounded-lg bg-white p-4 shadow-md transition hover:bg-gray-100 ${
               openEvents.includes(index) ? 'border border-blue-500' : ''
             }`}
             onClick={() => handleEventClick(event, index)} // 클릭 이벤트 처리
@@ -29,10 +27,12 @@ const EventList = ({ events, error, selectedDate, onEventClick }) => {
             <img
               src={event.storeThumbnailUrl}
               alt={event.storeName}
-              className="object-cover w-24 h-24 rounded-lg event-image"
+              className="aspect-[1/1] h-24 rounded-lg object-fill"
             />
             <div className="event-summary">
-              <h4 className="text-lg font-semibold text-gray-800">{event.storeName}</h4>
+              <h4 className="text-lg font-semibold text-gray-800">
+                {event.storeName}
+              </h4>
               <p className="text-sm text-gray-600">
                 {`${new Date(event.storeStartDate).toLocaleDateString()} ~ ${new Date(event.storeEndDate).toLocaleDateString()}`}
               </p>
@@ -42,7 +42,8 @@ const EventList = ({ events, error, selectedDate, onEventClick }) => {
           </div>
           {openEvents.includes(index) && (
             <div className="">
-              <EventDetails event={event} /> {/* 클릭된 이벤트의 세부 정보만 표시 */}
+              <EventDetails event={event} />{' '}
+              {/* 클릭된 이벤트의 세부 정보만 표시 */}
             </div>
           )}
         </React.Fragment>

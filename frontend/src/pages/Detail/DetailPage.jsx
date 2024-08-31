@@ -9,7 +9,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Swal from 'sweetalert2';
-import { logout } from '../../utils/axios'; // Import the logout function
+import { logout } from '../../utils/axios';
 
 const DetailPage = () => {
   const { id } = useParams();
@@ -123,14 +123,14 @@ const DetailPage = () => {
   };
 
   const handleLogout = async () => {
-    await logout(); // Call the logout function
+    await logout();
     Swal.fire({
       icon: 'success',
       title: '로그아웃 되었습니다.',
       showConfirmButton: false,
       timer: 1500,
     }).then(() => {
-      navigate('/'); // Navigate to the main page
+      navigate('/');
     });
   };
 

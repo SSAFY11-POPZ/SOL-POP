@@ -22,18 +22,27 @@ function MainPage() {
     });
   };
 
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   return (
     <div className="relative">
       <div
         className="absolute left-0 top-0 z-50 flex w-full justify-center"
         style={{ margin: 0, padding: 0 }}
       >
-        <img
-          src="/logo1.png"
-          alt="Logo"
-          className="h-16"
-          style={{ marginBottom: 0, paddingBottom: 0 }}
-        />
+        <button
+          onClick={handleLogoClick}
+          style={{ border: 'none', background: 'none', padding: 0, margin: 0 }}
+        >
+          <img
+            src="/logo1.png"
+            alt="Logo"
+            className="h-16"
+            style={{ marginBottom: 0, paddingBottom: 0 }}
+          />
+        </button>
       </div>
 
       <div className="relative mx-auto flex w-full max-w-4xl flex-col items-center space-y-6 rounded-lg bg-white p-5">
