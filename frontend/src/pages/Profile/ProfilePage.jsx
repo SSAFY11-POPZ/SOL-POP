@@ -184,9 +184,9 @@ const ProfilePage = () => {
   };
 
   // 7. 통계 페이지로 이동
-  const goToStatsPage = () => {
-    navigate('/stats-list');
-  };
+  // const goToStatsPage = () => {
+  //   navigate('/stats-list');
+  // };
 
   return (
     <div className="flex h-screen flex-col gap-2.5 bg-[#f7f8fc] px-4 py-4">
@@ -241,12 +241,12 @@ const ProfilePage = () => {
           <p className={`text-base ${hoverCss} p-1`} onClick={goToReservation}>
             내 예약 목록
           </p>
-          <p
+          {/* <p
             className={`text-base ${hoverCss} p-1`}
             onClick={() => goToStatsPage()}
           >
             기업 통계 페이지
-          </p>
+          </p> */}
         </div>
       </div>
 
