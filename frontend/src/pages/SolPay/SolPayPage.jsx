@@ -3,11 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { checkTokenValidity } from '../../utils/axios';
 import Swal from 'sweetalert2';
 
-
 import QRCode from 'qrcode';
 
 const SolPayPage = () => {
-
   const { storeId } = useParams();
   const navigate = useNavigate();
   const [amount, setAmount] = useState('');
@@ -35,7 +33,6 @@ const SolPayPage = () => {
 
         // 토큰이 유효하다면 반환된 데이터를 user에 할당
         console.log(response.data.data);
-
       } catch (error) {
         console.error('Error fetching data:', error);
         Swal.fire(
@@ -49,7 +46,6 @@ const SolPayPage = () => {
 
     fetchData();
   }, []);
-
 
   const baseUrl = 'https://solpop.xyz';
 
