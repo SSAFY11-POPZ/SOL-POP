@@ -20,7 +20,7 @@ public interface RaffleRepository extends JpaRepository<Raffle, Integer> {
     @Query("SELECT raffle FROM Raffle raffle WHERE raffle.raffleStartDate <= :dateTime AND raffle.raffleEndDate >= :dateTime")
     List<Raffle.RaffleCard> findAllByDateTime(LocalDateTime dateTime);
 
-    Optional<Raffle> findRaffleByRaffleId(Integer raffleId);
+    Raffle findRaffleByRaffleId(Integer raffleId);
 
 
 

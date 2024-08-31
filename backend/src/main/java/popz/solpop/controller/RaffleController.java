@@ -61,12 +61,15 @@ RaffleController {
             @RequestBody EnterRaffleRequest enterRaffleRequest
     ) {
         String userName = tokenProvider.getUserName(token.substring(7));
+        System.out.println(userName);
         if (userName == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
         Member member = memberService.getMemberByUserName(userName);
         Raffle raffle = raffleService.getRaffleByRaffleId(enterRaffleRequest.getRaffleId());
 
+        System.out.println(member);
+        System.out.println(raffle);
         if (member == null || raffle == null) {
             return ResponseEntity.badRequest().body("Invalid member or raffle");
         }
@@ -102,6 +105,7 @@ RaffleController {
         try {
             point.setMember(member);
             point.setPointPlace(raffle.getRaffleName() + " 래플 응모");
+
             point.setUseAmount(raffle.getRafflePrice());
             point.setAfterBalance(member.getPointBalance() - 100);
             reservation = reservationService.findReservationByStoreAndMember(raffle.getStore(), member);
