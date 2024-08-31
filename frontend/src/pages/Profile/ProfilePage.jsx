@@ -118,6 +118,11 @@ const ProfilePage = () => {
       setWarning('숫자만 입력할 수 있습니다.');
       return;
     }
+       // 입력한 값이 숫자가 아니면 경고 메시지 설정
+       if (numericValue < 0) {
+        setWarning('0보다 큰 값을 입력해주세요.');
+        return;
+      }
 
     // 입력한 금액이 계좌 잔액보다 크면 계좌 잔액으로 설정
     if (numericValue > balance) {
