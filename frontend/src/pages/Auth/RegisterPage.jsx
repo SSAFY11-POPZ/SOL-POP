@@ -11,7 +11,10 @@ const RegisterPage = () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
 
-  // 생성과정에서 사용하는 변수들 => userKey와 accountNo 위치 고민해보기!
+  // 추가된 필드들
+  const [ageGroup, setAgeGroup] = useState('20대');
+  const [gender, setGender] = useState('남성'); // 기본값을 "남성"으로 설정
+
   const [isEmailValid, setIsEmailValid] = useState(null);
   const [emailError, setEmailError] = useState('');
   const [nameError, setNameError] = useState('');
@@ -21,50 +24,36 @@ const RegisterPage = () => {
   const [isEmailChecked, setIsEmailChecked] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
 
-  // 저장중일때에 멈추기
   const [isSaving, setIsSaving] = useState(false);
 
-  // 초기 렌더링
   useEffect(() => {
-    // accessToken이 존재한다면, 메인페이지로 이동
     if (localStorage.getItem('accessToken')) {
       navigate('/');
       return;
     }
   }, []);
 
-  // 이름 변경 함수 / 한글을 제외한 문자 or 글자 수 제한 위반시
   const validateName = (name) => {
     const lengthValidate = name.length > 0 && name.length < 6;
     const nameRegex = /^[가-힣]{1,5}$/;
     return lengthValidate && nameRegex.test(name);
   };
 
-  // 이름 변경사항 적용 함수
   const handleNameChange = (e) => {
     setName(e.target.value);
-    if (e.target.value.length != 0 && !validateName(e.target.value)) {
+    if (e.target.value.length !== 0 && !validateName(e.target.value)) {
       setNameError('이름은 한글로 1자 이상 5자 이하로 입력해주세요.');
     } else {
       setNameError('');
     }
   };
 
-  // 이메일 유효성 검사
   const validateEmail = (email) => {
     const lengthValidate = email.length > 0 && email.length < 30;
-
-    // 수정된 정규 표현식
-    // ^[a-zA-Z0-9]+ : 이메일의 사용자명 부분은 영어 대소문자 또는 숫자만 허용
-    // @[a-zA-Z0-9]+ : @ 다음에는 영어 대소문자 또는 숫자만 허용
-    // \.[a-zA-Z]{2,}$ : 도메인 마지막 부분은 . 이후 2자 이상의 영어만 허용
     const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/;
-
     return lengthValidate && emailRegex.test(email);
   };
 
-  /** - 이메일 중복 여부 체크
-   * - 이메일형식이 유효하지 않으면 오류문구 표시 및 관리 */
   const handleEmailCheck = async () => {
     if (!validateEmail(email)) {
       setEmailError('이메일 형식이 유효하지 않습니다.');
@@ -72,7 +61,6 @@ const RegisterPage = () => {
       return;
     }
 
-    // SSAFY 사용자 계정 조회
     await axios
       .post('https://solpop.xyz/api/v1/auth/checkSSAFYUser', {
         apiKey: import.meta.env.VITE_ADMIN_SECRET_KEY,
@@ -83,14 +71,12 @@ const RegisterPage = () => {
         setIsEmailValid(false);
       })
       .catch(() => {
-        // error 발생 = email과 동일한 계정 없다.
         setEmailError('사용 가능한 이메일입니다.');
         setIsEmailValid(true);
         setIsEmailChecked(true);
       });
   };
 
-  // 이메일 변경 적용 / 변경시 중복 체크 여부 false
   const handleEmailChange = (e) => {
     if (e.target.value.length < 30) {
       setEmail(e.target.value);
@@ -101,10 +87,8 @@ const RegisterPage = () => {
     setIsEmailChecked(false);
   };
 
-  // Password 변경 로직 / 공백 제외 5자 이상
   const handlePasswordChange = (e) => {
-    // 공백을 제외한 password
-    if (e.target.value != '' && e.target.value.length < 5) {
+    if (e.target.value !== '' && e.target.value.length < 5) {
       setPassword(e.target.value);
       setPasswordError('비밀번호는 5자 이상 입력해야합니다.');
     } else if (e.target.value.length > 30) {
@@ -115,31 +99,25 @@ const RegisterPage = () => {
     }
   };
 
-  // 비밀번호 확인 / confirmPassword와 일치하는지 확인
   const handleConfirmPasswordChange = (e) => {
     setConfirmPassword(e.target.value);
-    if (e.target.value != '' && e.target.value !== password) {
+    if (e.target.value !== '' && e.target.value !== password) {
       setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
     } else {
       setConfirmPasswordError('');
     }
   };
 
-  // 오류 메시지를 보여주는 함수
   const showError = (title, message) => {
     Swal.fire(title, message, 'warning');
   };
 
-  /** 최종적인 회원가입 함수 */
-  // 회원가입 처리 함수
   const handleSignUp = async () => {
     if (nameError) {
-      // 이름에 오류가 있으면 오류 메시지 표시
       showError('이름 확인', '이름이 조건에 맞지 않습니다.');
       return;
     }
     if (!validateEmail(email) || !isEmailChecked || !isEmailValid) {
-      // 이메일이 유효하지 않거나 중복 체크가 안되었으면 오류 메시지 표시
       showError(
         '이메일 확인',
         '이메일 형식이 잘못되었거나 중복 확인이 필요합니다.',
@@ -147,7 +125,6 @@ const RegisterPage = () => {
       return;
     }
     if (passwordError || confirmPasswordError) {
-      // 비밀번호에 오류가 있으면 오류 메시지 표시
       showError(
         '비밀번호 확인',
         '비밀번호 조건이 맞지 않거나 비밀번호가 일치하지 않습니다.',
@@ -155,16 +132,14 @@ const RegisterPage = () => {
       return;
     }
     if (!isAgreed) {
-      // 약관에 동의하지 않았으면 오류 메시지 표시
       showError('동의 확인', '동의사항에 체크해주세요.');
       return;
     }
 
-    setIsSaving(true); // 회원가입 요청 중 상태로 설정
+    setIsSaving(true);
 
     try {
       if (!localStorage.getItem('userKey')) {
-        // SSAFY 사용자 계정 생성
         const res = await axios.post(
           'https://solpop.xyz/api/v1/auth/createSSAFYUser',
           {
@@ -172,14 +147,13 @@ const RegisterPage = () => {
             userId: email,
           },
         );
-        localStorage.setItem('userKey', res.data.userKey); // userKey를 로컬 저장소에 저장
+        localStorage.setItem('userKey', res.data.userKey);
       }
 
       const { transmissionDate, transmissionTime, transmissionCode } =
-        formatDateAndTime(); // 날짜와 시간 포맷 설정
+        formatDateAndTime();
 
       if (!localStorage.getItem('accountNo')) {
-        // SSAFY 계좌 생성
         const res = await axios.post(
           'https://solpop.xyz/api/v1/auth/createSSAFYAccount',
           {
@@ -197,22 +171,26 @@ const RegisterPage = () => {
             accountTypeUniqueNo: '088-1-2fe8b9c9733b41',
           },
         );
-        localStorage.setItem('accountNo', res.data.REC.accountNo); // 계좌번호를 로컬 저장소에 저장
+        localStorage.setItem('accountNo', res.data.REC.accountNo);
       }
 
+      // 나이와 성별 변환
+      const ageGroupValue = ageGroup.replace('대', '');
+      const genderValue = gender === '남성' ? 'male' : 'female';
+
       if (localStorage.getItem('userKey')) {
-        // BE 사용자 생성
         await axios.post('https://solpop.xyz/api/v1/auth/signUp', {
           userId: email,
           password,
           name,
           userKey: localStorage.getItem('userKey'),
           accountNo: localStorage.getItem('accountNo'),
+          ageGroup: ageGroupValue, // 나이 값을 20, 30, 40 등으로 전송
+          gender: genderValue, // 성별을 male, female로 전송
         });
       }
 
       if (localStorage.getItem('accountNo')) {
-        // 계좌에 10000원 충전
         await axios.post('https://solpop.xyz/api/v1/auth/depositSSAFYAccount', {
           Header: {
             apiName: 'updateDemandDepositAccountDeposit',
@@ -226,29 +204,27 @@ const RegisterPage = () => {
             userKey: localStorage.getItem('userKey'),
           },
           accountNo: localStorage.getItem('accountNo'),
-          transactionBalance: '10000', // 입금할 금액
+          transactionBalance: '10000',
           transactionSummary: '(수시입출금) : 입금',
         });
 
         Swal.fire({
-          // 회원가입 성공 메시지 표시
           icon: 'success',
           title: `환영합니다, ${name} 님!`,
           html: `이벤트로 제공된 10000원으로<br> 다양한 콘텐츠를 즐겨보세요!`,
           confirmButtonText: '로그인하기',
         }).then((result) => {
           if (result.isConfirmed) {
-            // 로그인 페이지로 이동
-            localStorage.removeItem('userKey'); // userKey 제거
-            localStorage.removeItem('accountNo'); // accountNo 제거
+            localStorage.removeItem('userKey');
+            localStorage.removeItem('accountNo');
             navigate('/login');
           }
         });
       }
     } catch {
-      showError('ERROR', '오류가 발생했습니다.'); // 오류 발생 시 메시지 표시
+      showError('ERROR', '오류가 발생했습니다.');
     } finally {
-      setIsSaving(false); // 저장 상태 초기화
+      setIsSaving(false);
     }
   };
 
@@ -256,6 +232,8 @@ const RegisterPage = () => {
     <div className="flex min-h-screen items-center justify-center bg-gray-100 px-5">
       <div className="relative w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
         <h2 className="mb-4 text-center text-xl font-semibold">회원가입</h2>
+
+        {/* 이름 입력 */}
         <div className="group relative z-0 mb-6 w-full">
           <input
             type="text"
@@ -275,6 +253,8 @@ const RegisterPage = () => {
             <p className="mt-2 text-sm text-red-600">{nameError}</p>
           )}
         </div>
+
+        {/* 이메일 입력 */}
         <div className="group relative z-0 mb-6 w-full">
           <div className="flex flex-row justify-between">
             <div className="flex w-2/3 flex-row">
@@ -305,6 +285,7 @@ const RegisterPage = () => {
           )}
         </div>
 
+        {/* 비밀번호 입력 */}
         <div className="group relative z-0 mb-6 w-full">
           <input
             type="password"
@@ -324,6 +305,8 @@ const RegisterPage = () => {
             <p className="mt-2 text-sm text-red-600">{passwordError}</p>
           )}
         </div>
+
+        {/* 비밀번호 확인 */}
         <div className="group relative z-0 mb-6 w-full">
           <input
             type="password"
@@ -343,6 +326,60 @@ const RegisterPage = () => {
             <p className="mt-2 text-sm text-red-600">{confirmPasswordError}</p>
           )}
         </div>
+
+        {/* 나이 선택 */}
+        <div className="group relative z-0 mb-6 w-full">
+          <label
+            htmlFor="ageGroup"
+            className="block text-sm font-medium text-gray-700"
+          >
+            나이
+          </label>
+          <select
+            name="ageGroup"
+            id="ageGroup"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+            value={ageGroup}
+            onChange={(e) => setAgeGroup(e.target.value)}
+          >
+            <option value="20대">20대</option>
+            <option value="30대">30대</option>
+            <option value="40대">40대</option>
+            <option value="50대">50대</option>
+            <option value="60대 이상">60대 이상</option>
+          </select>
+        </div>
+
+        {/* 성별 선택 */}
+        <div className="group relative z-0 mb-6 w-full">
+          <span className="block text-sm font-medium text-gray-700">성별</span>
+          <div className="mt-2 flex space-x-4">
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                className="form-radio h-4 w-4 text-blue-600"
+                name="gender"
+                value="남성"
+                checked={gender === '남성'}
+                onChange={(e) => setGender(e.target.value)}
+              />
+              <span className="ml-2 text-gray-700">남성</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                className="form-radio h-4 w-4 text-blue-600"
+                name="gender"
+                value="여성"
+                checked={gender === '여성'}
+                onChange={(e) => setGender(e.target.value)}
+              />
+              <span className="ml-2 text-gray-700">여성</span>
+            </label>
+          </div>
+        </div>
+
+        {/* 약관 동의 */}
         <div className="mb-4 flex items-center">
           <input
             type="checkbox"
@@ -355,12 +392,15 @@ const RegisterPage = () => {
             회원가입시 계좌가 자동으로 생성됩니다.
           </label>
         </div>
+
+        {/* 회원가입 버튼 */}
         <button
           onClick={() => handleSignUp()}
           className="w-full rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
         >
           회원가입하기
         </button>
+
         {isSaving && (
           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-white bg-opacity-80">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-dashed border-blue-500"></div>
