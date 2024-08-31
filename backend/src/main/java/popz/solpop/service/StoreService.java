@@ -19,6 +19,10 @@ public class StoreService {
   @Autowired
   private StoreRepository storeRepository;
 
+  public String getStoreNameByStoreId(Integer storeId) {
+    return storeRepository.findStoreNameByStoreId(storeId);
+  }
+
   public List<Store.StoreCard> getTopStoresByHeartCount(int limit) {
 
     return storeRepository.findTopStoresByHeartCount(limit);

@@ -60,12 +60,21 @@ public class PointController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
         Member member = memberService.getMemberByUserName(userName);
-        try {
-            pointService.usePoint(member, pointUse);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+
+        if (member.getPointBalance() < pointUse.getAmount()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("포인트가 부족합니다.");
         }
+        Point point = new Point();
+        try {
+            point.setMember(member);
+            point.setPointPlace(pointUse.getPointPlace());
+            point.setUseAmount(pointUse.getAmount());
+            point.setAfterBalance(member.getPointBalance() - pointUse.getAmount());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("결제에 실패했습니다.");
+        }
+        pointService.savePoint(point);
+        return ResponseEntity.ok().build();
 
     }
 }

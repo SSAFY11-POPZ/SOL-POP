@@ -46,6 +46,13 @@
         private TokenProvider tokenProvider;
 
 
+        @GetMapping("name/{storeId}")
+        public String getStoreName(
+                @PathVariable Integer storeId
+        ) {
+            return storeService.getStoreNameByStoreId(storeId);
+        }
+
         @GetMapping("/main/carousel")
         public List<Store.StoreCard> getMainCarousel() {
             return storeService.getTopStoresByHeartCount(5);
@@ -103,8 +110,6 @@
                 boolean isHearted = heartService.isHearted(member, store);
                 return ResponseEntity.ok(new StoreDetailResponse(store, heartCount, isHearted));
             }
-
-
 
 
 

@@ -26,14 +26,14 @@ const ProfilePage = () => {
     const fetchData = async () => {
       try {
         if (!localStorage.getItem('accessToken')) {
-          // navigate("/login")
+          navigate('/login');
           return;
         }
         // 토큰이 유효한지 검증
         const response = await checkTokenValidity();
         console.log(response);
         if (!response || response.status !== 200) {
-          // navigate("/login");
+          navigate('/login');
           console.log(response);
           return;
         }
@@ -44,6 +44,7 @@ const ProfilePage = () => {
         // }
 
         // 토큰이 유효하다면 반환된 데이터를 user에 할당
+        console.log(response.data.data);
         setUser(response.data.data);
         // 포인트 조회
         const pointResponse = await api.get('/api/v1/user/point/balance');
@@ -73,7 +74,11 @@ const ProfilePage = () => {
         setBalance(balanceResponse.data.REC.accountBalance);
       } catch (error) {
         console.error('Error fetching data:', error);
-        Swal.fire('ERROR', '오류가 발생했습니다.', 'warning');
+        Swal.fire(
+          'ERROR',
+          '오류가 발생했습니다. 다시 로그인해주세요.',
+          'warning',
+        );
         navigate('/login');
       }
     };
@@ -190,12 +195,17 @@ const ProfilePage = () => {
 
   // 4. 내 찜한 목록
   const showWishlist = () => {
-    navigate('/profile/wishlist');
+    navigate('/wishlist');
   };
 
   // 5. 내 예약 목록
   const goToReservation = () => {
     navigate('/profile/reservation');
+  };
+
+  // 6. 결제 내역
+  const showTransactionHistory = async () => {
+    navigate('/profile/trans-history');
   };
 
   return (
@@ -207,7 +217,7 @@ const ProfilePage = () => {
           </div>
           <div className="flex-row justify-end align-bottom">
             <span className="font-['Noto Sans'] block text-lg font-bold text-white">
-              {user.name} 님,
+              {user.Name} 님,
             </span>
             <span className="font-['Noto Sans'] block text-sm font-bold text-white">
               오늘도 쏠쏠한 혜택을 누리세요!
@@ -241,6 +251,12 @@ const ProfilePage = () => {
             onClick={() => showBalance()}
           >
             내 계좌 잔액
+          </p>
+          <p
+            className={`text-base ${hoverCss} p-1`}
+            onClick={() => showTransactionHistory()}
+          >
+            내 포인트 결제 내역
           </p>
           <p
             className={`text-base ${hoverCss} p-1`}

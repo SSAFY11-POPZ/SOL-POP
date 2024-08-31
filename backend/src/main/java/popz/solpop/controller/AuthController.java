@@ -100,7 +100,7 @@ public class AuthController {
 
         Date issuedAt = (Date) tokenData.get("issuedAt");
         long elapsedSeconds = (new Date().getTime() - issuedAt.getTime()) / 1000;
-        int accessTokenDuration = 3600;
+        int accessTokenDuration = 7200;
 
         if (elapsedSeconds > accessTokenDuration) {
             return Response.setFailed("엑세스토큰이 만료되었습니다.");
@@ -150,7 +150,7 @@ public class AuthController {
             return Response.setFailed("리프레시 토큰이 유효하지 않습니다.");
         }
 
-        int accessTokenDuration = 15;
+        int accessTokenDuration = 7200;
         String newAccessToken = tokenProvider.createAccessToken(userId, accessTokenDuration);
 
         if (newAccessToken == null) {

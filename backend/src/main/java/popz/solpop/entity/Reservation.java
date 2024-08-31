@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 
 @Data
@@ -68,4 +67,18 @@ public class Reservation {
       }
     }
   }
+
+  public interface ReservationStatic {
+    Integer getReserveId();
+    LocalDate getReserveDate();
+    LocalTime getReserveTime();
+    MemberInfo getMember();
+    interface MemberInfo {
+      String getMemAge();
+      String getMemSex();
+
+    }
+  }
+
+
 }

@@ -1,82 +1,80 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { BrowserMultiFormatReader } from '@zxing/library';
+import React, { useState } from 'react';
+import QrScanner from 'react-qr-scanner';
+import cameraIcon from './img/1.png'; // 이미지 임포트
 
 const QRPayPage = () => {
-  const videoRef = useRef(null);
-  const [scanResult, setScanResult] = useState('');
+  const [facingMode, setFacingMode] = useState('environment'); // 후방 카메라로 초기화
 
-  useEffect(() => {
-    const codeReader = new BrowserMultiFormatReader();
-    let selectedDeviceId;
+  const handleScan = (data) => {
+    if (data) {
+      const scannedUrl = typeof data === 'string' ? data : data.text; // QR 코드에서 텍스트 추출
+      if (scannedUrl && isValidUrl(scannedUrl)) {
+        window.location.href = scannedUrl; // QR 코드로 리다이렉트
+      } else {
+        console.error('잘못된 URL:', scannedUrl);
+      }
+    }
+  };
 
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
-        videoRef.current.srcObject = stream;
-        videoRef.current.setAttribute('playsinline', true);
-        videoRef.current.play();
-      })
-      .catch((err) => {
-        console.error('Error accessing camera: ', err);
-      });
+  const handleError = (err) => {
+    console.error('QR 스캐너 오류:', err);
+  };
 
-    codeReader
-      .listVideoInputDevices()
-      .then((videoInputDevices) => {
-        selectedDeviceId = videoInputDevices[0].deviceId;
-        codeReader.decodeFromVideoDevice(
-          selectedDeviceId,
-          videoRef.current,
-          (result, err) => {
-            if (result) {
-              setScanResult(result.getText());
-              window.location.href = result.getText();
-            }
-            if (err && !(err instanceof NotFoundException)) {
-              console.error(err);
-            }
-          },
-        );
-      })
-      .catch((err) => {
-        console.error('Error listing video devices: ', err);
-      });
+  const toggleCamera = () => {
+    setFacingMode((prevMode) =>
+      prevMode === 'environment' ? 'user' : 'environment',
+    );
+  };
 
-    return () => {
-      codeReader.reset();
-    };
-  }, []);
+  const isValidUrl = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
 
   return (
     <div className="relative flex min-h-screen flex-col items-center bg-white text-gray-800">
-      <div className="flex w-full items-center justify-between bg-blue-500 p-4">
-        <div className="rounded-full bg-white px-2 py-1 text-lg font-semibold text-blue-500">
+      {/* 왼쪽 상단의 버튼형 이미지 */}
+      <div className="absolute left-4 top-4 z-10">
+        <button onClick={toggleCamera} className="focus:outline-none">
+          <img src={cameraIcon} alt="Camera Icon" className="h-8 w-8" />
+        </button>
+      </div>
+
+      {/* 중앙의 Sol-Pay */}
+      <div className="absolute left-0 right-0 top-0 flex items-center justify-center bg-blue-500 p-4">
+        <div className="rounded-full bg-white px-4 py-2 text-lg font-semibold text-blue-500">
           Sol-Pay
-        </div>
-        <div className="text-2xl text-white">QR-Code</div>
-        <div className="flex items-center">
-          <button
-            onClick={() => window.history.back()}
-            className="ml-4 cursor-pointer border-none bg-transparent text-white focus:outline-none"
-          >
-            ✖️
-          </button>
         </div>
       </div>
 
+      {/* QR 스캔 영역 */}
       <div className="flex flex-grow flex-col items-center justify-center">
-        <video
-          ref={videoRef}
-          className="h-72 w-72 border-4 border-blue-500 bg-gray-100"
-        ></video>
+        <QrScanner
+          delay={300}
+          style={{ width: '100%', height: 'auto' }}
+          onError={handleError}
+          onScan={handleScan}
+          constraints={{
+            video: { facingMode: facingMode }, // 'user'는 전방 카메라, 'environment'는 후방 카메라를 의미
+          }}
+        />
         <div className="mt-2 text-xl font-semibold text-gray-800">
           QR코드를 스캔하세요
         </div>
-        {scanResult && (
-          <div className="mt-4 text-sm text-gray-600">
-            스캔된 URL: {scanResult}
-          </div>
-        )}
+      </div>
+
+      {/* 뒤로가기 버튼 */}
+      <div className="absolute right-0 top-0 p-4">
+        <button
+          onClick={() => window.history.back()}
+          className="ml-4 cursor-pointer border-none bg-transparent text-white focus:outline-none"
+        >
+          ✖️
+        </button>
       </div>
     </div>
   );
